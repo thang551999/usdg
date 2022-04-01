@@ -1,0 +1,144 @@
+import {
+  HttpCode,
+  Param,
+  ParseUUIDPipe,
+  Put,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
+import { IUserInfo, UserInfo } from 'src/common/decorators/user.decorator';
+import { AuthService } from './auth.service';
+import {
+  ChangePasswordUserDto,
+  ResChangePasswordUserDto,
+} from './dto/change-password.dto';
+import { ConfirmForgotPasswordDto } from './dto/confirm-forgot-password.dto';
+import { ConfirmRegisterdDto } from './dto/confirm-register.dto copy';
+import { ConfirmForgotPasswordOTPDto } from './dto/forgot-password-otp.dto';
+import {
+  ForgotPasswordDto,
+  ResForgotPasswordDto,
+} from './dto/forgot-password.dto';
+import { HistoryCharge } from './dto/history-charge.dto';
+import { LoginUserDto, ResLoginUserDto } from './dto/login.dto';
+import { OTPDto } from './dto/otp.dto';
+import { RefreshTokenDto, ResRefreshTokenDto } from './dto/refresh-token.dto';
+import {
+  RegisterUserDto,
+  ResRegisterDto,
+  ResUserInfoDto,
+} from './dto/register.dto';
+import { ResUpdateUserDto, UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from './jwt.strategy';
+@ApiTags('Auth Api')
+@ApiConsumes('Auth Api')
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+  @ApiOperation({ summary: 'Register user - {Thang}' })
+  @ApiOkResponse({ type: ResRegisterDto, status: 200 })
+  @Post('register')
+  async register(@Body() registerUserDto: RegisterUserDto) {
+    return this.authService.register(registerUserDto);
+  }
+
+  @Post('login')
+  @ApiOperation({ summary: 'Login user Api - {Thang}' })
+  @ApiOkResponse({ type: ResLoginUserDto, status: 200 })
+  async login(@Body() loginUserDto: LoginUserDto) {
+    return this.authService.login(loginUserDto);
+  }
+
+  @Post('forgot-password')
+  @ApiOperation({
+    summary: 'Send mail Forgot Password . Gửi mail khi quên mật khẩu - {Thang}',
+  })
+  @ApiOkResponse({ type: ResForgotPasswordDto, status: 200 })
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('confirm-otp-forgot-password')
+  @ApiOperation({
+    summary:
+      'Confirm Forgot Password . Xác Nhận Đổi mật khẩu khi quên mk - {Thang}',
+  })
+  @ApiOkResponse({ type: ConfirmForgotPasswordOTPDto, status: 200 })
+  async confirmForgotPassword(
+    @Body() confirmForgotPasswordDto: ConfirmForgotPasswordOTPDto,
+  ) {
+    return this.authService.confirmForgotPassword(confirmForgotPasswordDto);
+  }
+
+  @Post('send-otp')
+  @Throttle(60, 10)
+  @ApiOperation({ summary: 'Send OTP . Gửi Mã OTP - {Thang}' })
+  @ApiOkResponse({ type: ConfirmRegisterdDto, status: 200 })
+  async confirmOTP(@Body() OTPDto: OTPDto) {
+    return this.authService.sendSms(OTPDto);
+  }
+
+  @Get('me')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: ResUserInfoDto, status: 200 })
+  @ApiOperation({
+    summary: 'Get user info of me . Lấy Thông Tin Của Tôi-thang',
+  })
+  async getInfo(@UserInfo() user: IUserInfo) {
+    return this.authService.getUser(user.id);
+  }
+
+  @Put('update')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Update User Info . Cập nhật thông tin của user -{thangdp}',
+  })
+  @ApiOkResponse({ type: ResUpdateUserDto, status: 200 })
+  async updateInfo(
+    @Body() updateUserDto: UpdateUserDto,
+    @UserInfo() user: IUserInfo,
+  ) {
+    return this.authService.updateInfo(user.id, updateUserDto);
+  }
+
+  @Put('change-password')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Change Password User .Đổi mật khẩu của user' })
+  @ApiOkResponse({ type: ResChangePasswordUserDto, status: 200 })
+  async changePassword(
+    @Body() changePasswordUserDto: ChangePasswordUserDto,
+    @UserInfo() user: IUserInfo,
+  ) {
+    return this.authService.changePassword(user.id, changePasswordUserDto);
+  }
+
+  @Post('refresh-token')
+  @ApiOperation({ summary: 'Refresh token Api .Refresh token Api' })
+  @ApiOkResponse({ type: ResRefreshTokenDto, status: 200 })
+  @HttpCode(200)
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshToken(refreshTokenDto.token);
+  }
+
+  @Put('active/:id')
+  @ApiOperation({ summary: 'Active tài khoản user' })
+  @ApiOkResponse({ type: ResRefreshTokenDto, status: 200 })
+  @HttpCode(200)
+  async active(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.authService.active(id);
+  }
+}
