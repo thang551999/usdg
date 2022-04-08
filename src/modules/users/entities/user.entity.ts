@@ -1,16 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ROLE } from 'src/common/constant';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ERoleUser } from '../user.enum';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -47,15 +43,7 @@ export class UserEntity {
   phone: string;
 
   @ApiProperty()
-  @Column({ default: 1 })
-  rank: number;
-
-  @ApiProperty()
-  @Column({ length: 20, name: 'referral_code' })
-  referralCode: string;
-
-  @ApiProperty()
-  @Column('enum', { default: 1, enum: ERoleUser })
+  @Column('enum', { default: 1, enum: ROLE })
   role: number;
 
   @ApiProperty()
@@ -70,29 +58,9 @@ export class UserEntity {
   @Column('boolean', { default: false })
   actived: boolean;
 
-  @ApiProperty({ description: 'số point', example: 10 })
-  @Column('int', { default: 0 })
-  point: number;
-
-  @ApiProperty({ description: 'số point', example: 10 })
-  @Column('int', { default: 0, name: 'total_point' })
-  totalPoint: number;
-
-  @ApiProperty()
-  @Column('boolean', { default: false })
-  updatedInfo: boolean;
-
   @ApiProperty()
   @Column({ nullable: true })
   birthday: Date;
-
-  @ApiProperty()
-  @Column('uuid', { name: 'user_invite', nullable: true })
-  userInviteId: string;
-
-  @ApiProperty()
-  @Column('simple-array', { name: 'token_devices', nullable: true })
-  tokenDevices: string[];
 
   @ApiProperty()
   @Column({ length: 50, nullable: true, name: 'code_forgot_password' })
@@ -101,26 +69,6 @@ export class UserEntity {
   @ApiProperty({ nullable: true })
   @Column({ type: 'text', nullable: true, name: 'token_forgot_password' })
   tokenForgotPassword: string;
-
-  @ApiProperty({ nullable: true })
-  @Column({ type: 'text', nullable: true })
-  city: string;
-
-  @ApiProperty({ nullable: true })
-  @Column({ type: 'text', nullable: true })
-  district: string;
-
-  @ApiProperty({ nullable: true })
-  @Column({ type: 'text', nullable: true })
-  backIdCard: string;
-
-  @ApiProperty()
-  @Column('int', { default: 0 })
-  score: number;
-
-  @ApiProperty({ nullable: true })
-  @Column({ type: 'text', nullable: true })
-  frontIdCard: string;
 
   @ApiProperty()
   @CreateDateColumn()

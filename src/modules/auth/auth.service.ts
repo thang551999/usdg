@@ -5,7 +5,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { I18nService } from 'nestjs-i18n';
 import {
   radomNumber,
   radomText,
@@ -25,7 +24,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResUpdateUserDto, UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordUserDto } from './dto/change-password.dto';
-import { MailerService } from '@nestjs-modules/mailer';
+import { MailService } from '../mail/mail.service';
 import { ConfirmForgotPasswordDto } from './dto/confirm-forgot-password.dto';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
@@ -39,6 +38,7 @@ import {
 } from 'src/common/decorators/typerOTP.decorator';
 import { OTPDto } from './dto/otp.dto';
 import { ConfirmForgotPasswordOTPDto } from './dto/forgot-password-otp.dto';
+import { AUTH_MESSAGE } from 'src/common/constant';
 
 @Injectable()
 export class AuthService {
@@ -47,9 +47,8 @@ export class AuthService {
     private usersRepository: Repository<UserEntity>,
     @InjectRepository(SendSmsEntity)
     private sendSMSRepository: Repository<SendSmsEntity>,
-    private readonly i18n: I18nService,
     private readonly jwtService: JwtService,
-    private readonly mailerService: MailerService,
+    private readonly mailerService: MailService,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
   ) {}
@@ -57,87 +56,66 @@ export class AuthService {
   async register(registerUserDto: RegisterUserDto) {
     const userCheck = await this.usersRepository.findOne({
       where: {
-        phone: registerUserDto.phone,
+        email: registerUserDto.email,
       },
     });
-    if (userCheck) {
-      throw new HttpException(
-        await this.i18n.translate('user.PHONE_IS_EXITS'),
-        HttpStatus.BAD_REQUEST,
-      );
+    if (userCheck?.actived) {
+      throw new HttpException(AUTH_MESSAGE.EMAIL_EXITS, HttpStatus.BAD_REQUEST);
     }
-    const confirm = await this.confirmRegister({
-      phone: registerUserDto.phone,
-      code: registerUserDto.code,
-    });
-    if (confirm) {
-      const referralCode = radomNumber(4);
-      const passwordHash = await bcrypt.hashSync(
-        registerUserDto.password.trim(),
-        this.HASH_ROUND_NUMBER,
-      );
-      const user = await this.usersRepository.create(registerUserDto);
-      if (registerUserDto.inviteCode) {
-        const userInvite = await this.usersRepository.findOne({
-          where: {
-            referralCode: registerUserDto.inviteCode.toUpperCase(),
-          },
-        });
-        if (userInvite) {
-          user.userInviteId = userInvite.id;
-          await this.usersRepository.save(userInvite);
-        }
-      }
-      user.referralCode = referralCode;
-      user.password = passwordHash;
-      user.actived = true;
-      await this.usersRepository.save(user);
+    if (userCheck?.actived === false) {
       const token = await this.jwtService.signAsync(
         {
-          id: user.id,
-          role: user.role,
-          userType: user.userType,
+          id: userCheck.id,
         },
-        { expiresIn: '365d' },
+        { expiresIn: '5m' },
       );
-      const refreshToken = await this.jwtService.signAsync(
-        {
-          id: user.id,
-          role: user.role,
-          userType: user.userType,
-        },
-        { expiresIn: '365d' },
-      );
+      await this.mailerService.sendUserConfirmation(token, userCheck.fullName);
       return {
-        message: 'Đăng Ký Thành Công',
-        token,
-        refreshToken,
+        message: 'Check email pls',
       };
     }
-    throw new BadRequestException('OTP Het Han');
+    const passwordHash = await bcrypt.hashSync(
+      registerUserDto.password.trim(),
+      this.HASH_ROUND_NUMBER,
+    );
+    const user = await this.usersRepository.create(registerUserDto);
+    user.password = passwordHash;
+    await this.usersRepository.save(user);
+
+    const token = await this.jwtService.signAsync(
+      {
+        id: user.id,
+        role: user.role,
+        userType: user.userType,
+      },
+      { expiresIn: '5m' },
+    );
+    await this.mailerService.sendUserConfirmation(token, 'abc');
+    return {
+      message: 'Đăng Ký Thành Công',
+    };
   }
   async login(loginUserDto: LoginUserDto) {
     const user = await this.usersRepository.findOne({
       where: {
-        phone: loginUserDto.phone,
+        email: loginUserDto.email,
       },
-      relations: ['infoBody'],
     });
     if (!user) {
       throw new HttpException(
-        await this.i18n.translate('user.PHONE_IS_NOT_EXITS'),
+        AUTH_MESSAGE.EMAIL_NOT_FOUND,
         HttpStatus.NOT_FOUND,
       );
     }
     if (!bcrypt.compareSync(loginUserDto.password.trim(), user.password)) {
       throw new HttpException(
-        await this.i18n.translate('user.PASSWORD_IS_INCORRECT'),
+        AUTH_MESSAGE.WRONG_PASSWORD,
         HttpStatus.BAD_REQUEST,
       );
     }
     if (user.role == 1 && user.actived == false) {
       throw new HttpException(
-        await this.i18n.translate('user.USER_NOT_ACTIVED'),
+        AUTH_MESSAGE.EMAIL_NOT_ACTIVE,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -147,7 +125,7 @@ export class AuthService {
         role: user.role,
         userType: user.userType,
       },
-      { expiresIn: '365d' },
+      { expiresIn: '1d' },
     );
     const refreshToken = await this.jwtService.signAsync(
       {
@@ -174,10 +152,7 @@ export class AuthService {
       },
     });
     if (!user) {
-      throw new HttpException(
-        await this.i18n.translate('user.PHONE_IS_NOT_EXITS'),
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(AUTH_MESSAGE.EMAIL_EXITS, HttpStatus.BAD_REQUEST);
     }
     const confirm = await this.confirmForgotPassword({
       code: forgotPasswordDto.code,
@@ -201,7 +176,6 @@ export class AuthService {
       where: {
         id,
       },
-      relations: ['infoBody'],
       select: [
         'avatar',
         'email',
@@ -209,26 +183,15 @@ export class AuthService {
         'id',
         'role',
         'userType',
-        'userInviteId',
         'phone',
         'address',
         'money',
-        'referralCode',
         'birthday',
-        'city',
-        'district',
-        'rank',
-        'frontIdCard',
-        'backIdCard',
-        'score',
       ],
     });
 
     if (!user) {
-      throw new HttpException(
-        await this.i18n.translate('user.USER_NOT_FOUND'),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(AUTH_MESSAGE.EMAIL_EXITS, HttpStatus.NOT_FOUND);
     }
     return user;
   }
@@ -239,15 +202,9 @@ export class AuthService {
       },
     });
     if (!user) {
-      throw new HttpException(
-        await this.i18n.translate('user.USER_NOT_FOUND'),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(AUTH_MESSAGE.EMAIL_EXITS, HttpStatus.NOT_FOUND);
     }
-    await this.usersRepository.update(
-      { id },
-      { ...updateUserDto, updatedInfo: true },
-    );
+    await this.usersRepository.update({ id }, { ...updateUserDto });
     return { message: 'Cập nhật thành công.' };
   }
   async changePassword(
@@ -260,18 +217,12 @@ export class AuthService {
       },
     });
     if (!user) {
-      throw new HttpException(
-        await this.i18n.translate('user.USER_NOT_FOUND'),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(AUTH_MESSAGE.EMAIL_EXITS, HttpStatus.NOT_FOUND);
     }
     if (
       !bcrypt.compareSync(changePasswordUserDto.password.trim(), user.password)
     ) {
-      throw new HttpException(
-        await this.i18n.translate('user.PASSWORD_IS_INCORRECT'),
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(AUTH_MESSAGE.EMAIL_EXITS, HttpStatus.BAD_REQUEST);
     }
     const passwordHash = bcrypt.hashSync(
       changePasswordUserDto.newPassword.trim(),
@@ -398,5 +349,9 @@ export class AuthService {
       return true;
     }
     return false;
+  }
+
+  async activeEmail(params) {
+    console.log(params);
   }
 }

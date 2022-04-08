@@ -9,6 +9,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { SendSmsEntity } from '../users/entities/send-sms.entity';
+import { MailModule } from '../mail/mail.module';
+import { MailService } from '../mail/mail.service';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -18,6 +20,8 @@ import { SendSmsEntity } from '../users/entities/send-sms.entity';
     TypeOrmModule.forFeature([UserEntity, SendSmsEntity]),
     PassportModule,
     HttpModule,
+    MailModule,
+    MailService,
   ],
   providers: [AuthService, ConfigService, JwtStrategy],
   controllers: [AuthController],

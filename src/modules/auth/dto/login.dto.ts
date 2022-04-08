@@ -4,7 +4,7 @@ import { IsEmail, IsString } from 'class-validator';
 export class LoginUserDto {
   @ApiProperty({ example: '0973551247' })
   @IsString()
-  phone: string;
+  email: string;
 
   @ApiProperty({ example: 'khanh' })
   @IsString()
@@ -37,4 +37,9 @@ export class ResLoginUserDto {
 
   @ApiProperty({ example: 1 })
   role: number;
+}
+
+export class ActiveEmail {
+  @IsString()
+  token: string;
 }

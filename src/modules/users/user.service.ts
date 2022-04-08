@@ -25,14 +25,12 @@ export class UserService {
       where: {
         id: userId,
       },
-      relations: ['infoBody'],
     });
     if (!user) {
       throw new HttpException('Người Dùng Không Tồn Tại', HttpStatus.NOT_FOUND);
     }
     return pick(user, [
       'fullName',
-      'infoBody',
       'rank',
       'point',
       'phone',
@@ -52,14 +50,5 @@ export class UserService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const nextBonus = UserBonus.filter((item) => {
-      return item.rank > user.rank;
-    });
-    return {
-      rank: user.rank,
-      nextLevelPoint: nextBonus[0] ? nextBonus[0].gradePoint : 10000000,
-      currentPoint: user.point,
-      nextLevelBonus: nextBonus,
-    };
   }
 }

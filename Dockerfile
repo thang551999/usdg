@@ -2,7 +2,7 @@ FROM node:16-alpine3.14 AS development
 
 WORKDIR /usr/src/app
 
-COPY ../package.json ./
+# COPY ../package.json ./
 
 # RUN npm install -g npm@8.6.0
 
@@ -10,7 +10,7 @@ COPY ../package.json ./
 
 # RUN npm install --only=development --legacy-peer-deps
 
-COPY . .
+# COPY . .
 
 # RUN npm run build
 

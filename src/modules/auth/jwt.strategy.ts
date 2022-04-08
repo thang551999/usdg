@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ROLE } from 'src/common/constant';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -54,7 +55,23 @@ export class AdminAuthGuard extends AuthGuard('jwt') {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }
-    if (user.role != 2) {
+    if (user.role != ROLE.admin) {
+      throw new ForbiddenException();
+    }
+    return user;
+  }
+}
+
+@Injectable()
+export class OwnerAuthGuard extends AuthGuard('jwt') {
+  canActivate(context: ExecutionContext) {
+    return super.canActivate(context);
+  }
+  handleRequest(err, user, info) {
+    if (err || !user) {
+      throw err || new UnauthorizedException();
+    }
+    if (user.role != ROLE.owner) {
       throw new ForbiddenException();
     }
     return user;
