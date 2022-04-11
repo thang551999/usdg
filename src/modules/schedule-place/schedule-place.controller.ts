@@ -1,18 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SchedulePlaceService } from './schedule-place.service';
 import { CreateSchedulePlaceDto } from './dto/create-schedule-place.dto';
 import { UpdateSchedulePlaceDto } from './dto/update-schedule-place.dto';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Api lich sân thể thao')
+@ApiConsumes('Auth Api')
 @Controller('schedule-place')
 export class SchedulePlaceController {
   constructor(private readonly schedulePlaceService: SchedulePlaceService) {}
 
-  @Post()
-  create(@Body() createSchedulePlaceDto: CreateSchedulePlaceDto) {
+  @Post('admin')
+  createPlace(@Body() createSchedulePlaceDto: CreateSchedulePlaceDto) {
     return this.schedulePlaceService.create(createSchedulePlaceDto);
   }
 
-  @Get()
+  @Post('user')
+  createSchedule(@Body() createSchedulePlaceDto: CreateSchedulePlaceDto) {
+    return this.schedulePlaceService.create(createSchedulePlaceDto);
+  }
+
+  @Get('user')
   findAll() {
     return this.schedulePlaceService.findAll();
   }
@@ -23,7 +39,10 @@ export class SchedulePlaceController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSchedulePlaceDto: UpdateSchedulePlaceDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSchedulePlaceDto: UpdateSchedulePlaceDto,
+  ) {
     return this.schedulePlaceService.update(+id, updateSchedulePlaceDto);
   }
 

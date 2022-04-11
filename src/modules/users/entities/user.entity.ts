@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ROLE } from 'src/common/constant';
+import { OwnerPlace } from '../../owner-place/entities/owner-place.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -77,4 +79,9 @@ export class UserEntity {
   @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToOne(() => OwnerPlace, (user) => user.userInfo, {
+    cascade: true,
+  })
+  ownerPlace: UserEntity;
 }

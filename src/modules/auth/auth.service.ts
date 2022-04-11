@@ -28,7 +28,6 @@ import { MailService } from '../mail/mail.service';
 import { ConfirmForgotPasswordDto } from './dto/confirm-forgot-password.dto';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
-import { SendSmsEntity } from '../users/entities/send-sms.entity';
 import { lastValueFrom, map, Observable } from 'rxjs';
 import { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { ConfirmRegisterdDto } from './dto/confirm-register.dto copy';
@@ -45,8 +44,6 @@ export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-    @InjectRepository(SendSmsEntity)
-    private sendSMSRepository: Repository<SendSmsEntity>,
     private readonly jwtService: JwtService,
     private readonly mailerService: MailService,
     private readonly configService: ConfigService,
@@ -236,21 +233,21 @@ export class AuthService {
   async confirmForgotPassword(
     confirmForgotPasswordDto: ConfirmForgotPasswordOTPDto,
   ) {
-    const currenDate = new Date(new Date().getTime() - 300000);
-    const user = await this.sendSMSRepository.findOne({
-      where: {
-        phone: confirmForgotPasswordDto.phone,
-        code: confirmForgotPasswordDto.code,
-        type: OTP_FORGOT_PASSWORD,
-        createdAt: MoreThanOrEqual(currenDate),
-      },
-    });
-    if (!user) {
-      return {
-        message: 'Sai mã OTP hoặc mã hết hạn.',
-        status: 0,
-      };
-    }
+    // const currenDate = new Date(new Date().getTime() - 300000);
+    // const user = await this.sendSMSRepository.findOne({
+    //   where: {
+    //     phone: confirmForgotPasswordDto.phone,
+    //     code: confirmForgotPasswordDto.code,
+    //     type: OTP_FORGOT_PASSWORD,
+    //     createdAt: MoreThanOrEqual(currenDate),
+    //   },
+    // });
+    // if (!user) {
+    //   return {
+    //     message: 'Sai mã OTP hoặc mã hết hạn.',
+    //     status: 0,
+    //   };
+    // }
 
     return {
       message: 'Thành công  .',
@@ -276,72 +273,64 @@ export class AuthService {
     await this.usersRepository.update({ id }, { actived: true });
   }
   async sendSms(OTPDto: OTPDto) {
-    const currenDate = new Date(new Date().getTime() - 30000);
-    const user = await this.sendSMSRepository.findOne({
-      where: {
-        phone: OTPDto.phone,
-        createdAt: MoreThanOrEqual(currenDate),
-      },
-    });
-    if (user) {
-      throw new BadRequestException('Thử lại sau 30s  .');
-    }
+    // const currenDate = new Date(new Date().getTime() - 30000);
+    // const user = await this.sendSMSRepository.findOne({
+    //   where: {
+    //     phone: OTPDto.phone,
+    //     createdAt: MoreThanOrEqual(currenDate),
+    //   },
+    // });
+    // if (user) {
+    //   throw new BadRequestException('Thử lại sau 30s  .');
+    // }
 
-    if (OTPDto.type === OTP_REGISTER) {
-      const user = await this.usersRepository.findOne({
-        where: {
-          phone: OTPDto.phone,
-        },
-      });
-      if (user) {
-        throw new BadRequestException('Tài khoản đã được đăng ký.');
-      }
-    }
-    const sendSMSDto = {
-      code: radomNumber(4),
-      phone: OTPDto.phone,
-      type: OTPDto.type,
-    };
-    const smsType = OTPDto.type === OTP_REGISTER ? 'đăng ký' : 'quên mật khẩu';
-    const requestConfig: AxiosRequestConfig = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+    // if (OTPDto.type === OTP_REGISTER) {
+    //   const user = await this.usersRepository.findOne({
+    //     where: {
+    //       phone: OTPDto.phone,
+    //     },
+    //   });
+    //   if (user) {
+    //     throw new BadRequestException('Tài khoản đã được đăng ký.');
+    //   }
+    // }
+    // const sendSMSDto = {
+    //   code: radomNumber(4),
+    //   phone: OTPDto.phone,
+    //   type: OTPDto.type,
+    // };
+    // const smsType = OTPDto.type === OTP_REGISTER ? 'đăng ký' : 'quên mật khẩu';
+    // const requestConfig: AxiosRequestConfig = {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // };
 
-    await lastValueFrom(
-      this.httpService.post(
-        this.configService.get('URL_SEND_SMS'),
-        {
-          UserName: this.configService.get('USER_NAME_SMS'),
-          Password: this.configService.get('PASSWORD_SMS'),
-          BrandName: this.configService.get('BRAND_NAME'),
-          SmsContent: `Ma ${smsType} VNSUPP : ${sendSMSDto.code} . Ma chi co hieu luc trong 2 phut`,
-          TimeSend: getDateFormatSMS(new Date().getTime() + 10000),
-          Phones: OTPDto.phone,
-          ClientId: new Date().getTime() + radomNumber(3),
-        },
-        requestConfig,
-      ),
-    );
-    const sendSMS = await this.sendSMSRepository.create(sendSMSDto);
-    await this.sendSMSRepository.save(sendSMS);
-    return {
-      message: 'Gửi mã OTP thành công .',
-      status: 1,
-    };
+    // await lastValueFrom(
+    //   this.httpService.post(
+    //     this.configService.get('URL_SEND_SMS'),
+    //     {
+    //       UserName: this.configService.get('USER_NAME_SMS'),
+    //       Password: this.configService.get('PASSWORD_SMS'),
+    //       BrandName: this.configService.get('BRAND_NAME'),
+    //       SmsContent: `Ma ${smsType} VNSUPP : ${sendSMSDto.code} . Ma chi co hieu luc trong 2 phut`,
+    //       TimeSend: getDateFormatSMS(new Date().getTime() + 10000),
+    //       Phones: OTPDto.phone,
+    //       ClientId: new Date().getTime() + radomNumber(3),
+    //     },
+    //     requestConfig,
+    //   ),
+    // );
+    // const sendSMS = await this.sendSMSRepository.create(sendSMSDto);
+    // await this.sendSMSRepository.save(sendSMS);
+    // return {
+    //   message: 'Gửi mã OTP thành công .',
+    //   status: 1,
+    // };
   }
   async confirmRegister(confirmDto: ConfirmRegisterdDto) {
     const currenDate = new Date(new Date().getTime() - 300000);
-    const user = await this.sendSMSRepository.findOne({
-      where: {
-        phone: confirmDto.phone,
-        code: confirmDto.code,
-        type: OTP_REGISTER,
-        createdAt: MoreThanOrEqual(currenDate),
-      },
-    });
-    if (user) {
+    if (true) {
       await this.usersRepository.update(
         { phone: confirmDto.phone },
         { actived: true },

@@ -5,6 +5,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { OrderModule } from './modules/order/order.module';
+import { OwnerPlaceModule } from './modules/owner-place/owner-place.module';
 @Module({
   imports: [
     SharedModule,
@@ -30,6 +32,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         charset: 'utf8mb4_unicode_ci',
       }),
     }),
+    OrderModule,
+    OwnerPlaceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
