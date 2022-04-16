@@ -30,7 +30,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
   handleRequest(err, user, info) {
     if (err || !user) {
-      throw err || new UnauthorizedException();
+      throw err || new UnauthorizedException(info);
     }
     return user;
   }
@@ -41,7 +41,7 @@ export class UserAuthGuard extends AuthGuard('jwt') {
   }
   handleRequest(err, user, info) {
     if (err || !user) {
-      throw err || new UnauthorizedException();
+      throw err || new UnauthorizedException(info);
     }
     return user;
   }
@@ -53,7 +53,7 @@ export class AdminAuthGuard extends AuthGuard('jwt') {
   }
   handleRequest(err, user, info) {
     if (err || !user) {
-      throw err || new UnauthorizedException();
+      throw err || new UnauthorizedException(info);
     }
     if (user.role != ROLE.admin) {
       throw new ForbiddenException();
@@ -69,7 +69,7 @@ export class OwnerAuthGuard extends AuthGuard('jwt') {
   }
   handleRequest(err, user, info) {
     if (err || !user) {
-      throw err || new UnauthorizedException();
+      throw err || new UnauthorizedException(info);
     }
     if (user.role != ROLE.owner) {
       throw new ForbiddenException();

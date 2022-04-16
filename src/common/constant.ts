@@ -11,3 +11,6 @@ export const AUTH_MESSAGE = {
   WRONG_PASSWORD: 'Wrong password',
   EMAIL_NOT_ACTIVE: 'Email not active',
 };
+
+export const enum TYPE_COMMENT {}
+export const enum TYPE_ORDER {}

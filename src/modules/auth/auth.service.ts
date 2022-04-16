@@ -283,7 +283,6 @@ export class AuthService {
     // if (user) {
     //   throw new BadRequestException('Thử lại sau 30s  .');
     // }
-
     // if (OTPDto.type === OTP_REGISTER) {
     //   const user = await this.usersRepository.findOne({
     //     where: {
@@ -305,7 +304,6 @@ export class AuthService {
     //     'Content-Type': 'application/json',
     //   },
     // };
-
     // await lastValueFrom(
     //   this.httpService.post(
     //     this.configService.get('URL_SEND_SMS'),
@@ -337,7 +335,6 @@ export class AuthService {
       );
       return true;
     }
-    return false;
   }
 
   async activeEmail(params) {

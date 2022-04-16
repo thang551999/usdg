@@ -7,6 +7,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { OrderModule } from './modules/order/order.module';
 import { OwnerPlaceModule } from './modules/owner-place/owner-place.module';
+import { PlaceModule } from './modules/place/place.module';
+import { VoucherModule } from './modules/voucher/voucher.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { AdminModule } from './modules/admin/admin.module';
 @Module({
   imports: [
     SharedModule,
@@ -34,6 +38,10 @@ import { OwnerPlaceModule } from './modules/owner-place/owner-place.module';
     }),
     OrderModule,
     OwnerPlaceModule,
+    PlaceModule,
+    VoucherModule,
+    CommentModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
