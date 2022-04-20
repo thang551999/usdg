@@ -1,5 +1,6 @@
 import { Catch, ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { API_FAIL } from '../constant';
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
@@ -11,7 +12,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const message = exception.message;
       if (exception.response) {
         response.status(status).json({
-          code: status,
+          code: API_FAIL,
           timestamp: new Date().toISOString(),
           path: request.url,
           message:
@@ -24,7 +25,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         });
       } else {
         response.status(status).json({
-          code: status,
+          code: API_FAIL,
           timestamp: new Date().toISOString(),
           path: request.url,
           message: message,
@@ -33,7 +34,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } catch {
       console.log(exception);
       response.status(500).json({
-        code: 500,
+        code: API_FAIL,
         timestamp: new Date().toISOString(),
         path: request.url,
         message: exception.stack,

@@ -5,10 +5,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Admin } from '../../admin/entities/admin.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -65,6 +67,10 @@ export class UserEntity {
   birthday: Date;
 
   @ApiProperty()
+  @Column({ nullable: true })
+  forgotPasswordCode: string;
+
+  @ApiProperty()
   @Column({ length: 50, nullable: true, name: 'code_forgot_password' })
   codeForgotPassword: string;
 
@@ -83,5 +89,12 @@ export class UserEntity {
   @OneToOne(() => OwnerPlace, (user) => user.userInfo, {
     cascade: true,
   })
-  ownerPlace: UserEntity;
+  @JoinColumn()
+  ownerPlace: OwnerPlace;
+
+  @OneToOne(() => Admin, (user) => user.userInfo, {
+    cascade: true,
+  })
+  @JoinColumn()
+  admin: Admin;
 }

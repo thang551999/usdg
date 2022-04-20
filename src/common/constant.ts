@@ -14,3 +14,9 @@ export const AUTH_MESSAGE = {
 
 export const enum TYPE_COMMENT {}
 export const enum TYPE_ORDER {}
+export const PLACE_MESSAGE = {
+  CREATE_PLACE_SUCCESS: 'Create place success',
+  DISABLE_SUCCESS: 'disable success',
+};
+export const MAX_SIZE = 100000;
+export const FILE_LIMIT = 'File limit';

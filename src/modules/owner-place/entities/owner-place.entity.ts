@@ -1,5 +1,12 @@
 import { UserEntity } from 'src/modules/users/entities/user.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Place } from '../../place/entities/place.entity';
 
 @Entity('owner-place')
 export class OwnerPlace {
@@ -9,9 +16,18 @@ export class OwnerPlace {
   @Column()
   address: string;
 
+  // @Column()
+  // start: string;
+
+  @Column({ default: false })
+  active: boolean;
+
   @Column()
-  start: string;
+  phone: string;
 
   @OneToOne(() => UserEntity, (user) => user.ownerPlace)
   userInfo: UserEntity;
+
+  @OneToMany(() => Place, (place) => place.owner)
+  places: Place[];
 }

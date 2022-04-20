@@ -5,45 +5,35 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  radomNumber,
-  radomText,
-  getDateFormatSMS,
-} from 'src/common/text.helper';
-import {
-  LessThanOrEqual,
-  MoreThan,
-  MoreThanOrEqual,
-  Repository,
-} from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import { RegisterUserDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { ResUpdateUserDto, UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordUserDto } from './dto/change-password.dto';
 import { MailService } from '../mail/mail.service';
-import { ConfirmForgotPasswordDto } from './dto/confirm-forgot-password.dto';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
-import { lastValueFrom, map, Observable } from 'rxjs';
-import { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { ConfirmRegisterdDto } from './dto/confirm-register.dto copy';
-import {
-  OTP_FORGOT_PASSWORD,
-  OTP_REGISTER,
-} from 'src/common/decorators/typerOTP.decorator';
 import { OTPDto } from './dto/otp.dto';
 import { ConfirmForgotPasswordOTPDto } from './dto/forgot-password-otp.dto';
-import { AUTH_MESSAGE } from 'src/common/constant';
+import { AUTH_MESSAGE, ROLE } from 'src/common/constant';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
+
+    @InjectRepository(UserEntity)
+    private ownerRepository: Repository<UserEntity>,
+
+    @InjectRepository(UserEntity)
+    private adminRepository: Repository<UserEntity>,
+
     private readonly jwtService: JwtService,
     private readonly mailerService: MailService,
     private readonly configService: ConfigService,
@@ -97,6 +87,7 @@ export class AuthService {
       where: {
         email: loginUserDto.email,
       },
+      relations: ['ownerPlace', 'admin'],
     });
     if (!user) {
       throw new HttpException(
@@ -116,11 +107,19 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    let relativeId = '';
+    if (user.role === ROLE.admin) {
+      relativeId = user.admin.id;
+    }
+    if (user.role === ROLE.owner) {
+      relativeId = user.ownerPlace.id;
+    }
     const token = await this.jwtService.signAsync(
       {
         id: user.id,
         role: user.role,
         userType: user.userType,
+        relativeId,
       },
       { expiresIn: '1d' },
     );
@@ -233,25 +232,10 @@ export class AuthService {
   async confirmForgotPassword(
     confirmForgotPasswordDto: ConfirmForgotPasswordOTPDto,
   ) {
-    // const currenDate = new Date(new Date().getTime() - 300000);
-    // const user = await this.sendSMSRepository.findOne({
-    //   where: {
-    //     phone: confirmForgotPasswordDto.phone,
-    //     code: confirmForgotPasswordDto.code,
-    //     type: OTP_FORGOT_PASSWORD,
-    //     createdAt: MoreThanOrEqual(currenDate),
-    //   },
-    // });
-    // if (!user) {
-    //   return {
-    //     message: 'Sai mã OTP hoặc mã hết hạn.',
-    //     status: 0,
-    //   };
-    // }
-
     return {
       message: 'Thành công  .',
       status: 1,
+      confirmForgotPasswordDto,
     };
   }
 
@@ -273,71 +257,24 @@ export class AuthService {
     await this.usersRepository.update({ id }, { actived: true });
   }
   async sendSms(OTPDto: OTPDto) {
-    // const currenDate = new Date(new Date().getTime() - 30000);
-    // const user = await this.sendSMSRepository.findOne({
-    //   where: {
-    //     phone: OTPDto.phone,
-    //     createdAt: MoreThanOrEqual(currenDate),
-    //   },
-    // });
-    // if (user) {
-    //   throw new BadRequestException('Thử lại sau 30s  .');
-    // }
-    // if (OTPDto.type === OTP_REGISTER) {
-    //   const user = await this.usersRepository.findOne({
-    //     where: {
-    //       phone: OTPDto.phone,
-    //     },
-    //   });
-    //   if (user) {
-    //     throw new BadRequestException('Tài khoản đã được đăng ký.');
-    //   }
-    // }
-    // const sendSMSDto = {
-    //   code: radomNumber(4),
-    //   phone: OTPDto.phone,
-    //   type: OTPDto.type,
-    // };
-    // const smsType = OTPDto.type === OTP_REGISTER ? 'đăng ký' : 'quên mật khẩu';
-    // const requestConfig: AxiosRequestConfig = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // };
-    // await lastValueFrom(
-    //   this.httpService.post(
-    //     this.configService.get('URL_SEND_SMS'),
-    //     {
-    //       UserName: this.configService.get('USER_NAME_SMS'),
-    //       Password: this.configService.get('PASSWORD_SMS'),
-    //       BrandName: this.configService.get('BRAND_NAME'),
-    //       SmsContent: `Ma ${smsType} VNSUPP : ${sendSMSDto.code} . Ma chi co hieu luc trong 2 phut`,
-    //       TimeSend: getDateFormatSMS(new Date().getTime() + 10000),
-    //       Phones: OTPDto.phone,
-    //       ClientId: new Date().getTime() + radomNumber(3),
-    //     },
-    //     requestConfig,
-    //   ),
-    // );
-    // const sendSMS = await this.sendSMSRepository.create(sendSMSDto);
-    // await this.sendSMSRepository.save(sendSMS);
-    // return {
-    //   message: 'Gửi mã OTP thành công .',
-    //   status: 1,
-    // };
+    return OTPDto;
   }
   async confirmRegister(confirmDto: ConfirmRegisterdDto) {
-    const currenDate = new Date(new Date().getTime() - 300000);
-    if (true) {
-      await this.usersRepository.update(
-        { phone: confirmDto.phone },
-        { actived: true },
-      );
-      return true;
-    }
+    return confirmDto;
   }
 
   async activeEmail(params) {
-    console.log(params);
+    const payload = await this.jwtService.verify(params.token);
+    const user = await this.usersRepository.findOne(payload.id);
+    if (user) {
+      if (user.role === ROLE.user) {
+        await this.usersRepository.update(
+          { id: user.id },
+          {
+            actived: true,
+          },
+        );
+      }
+    }
   }
 }

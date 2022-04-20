@@ -11,6 +11,7 @@ import { PlaceModule } from './modules/place/place.module';
 import { VoucherModule } from './modules/voucher/voucher.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { UploadModule } from './modules/upload/upload.module';
 @Module({
   imports: [
     SharedModule,
@@ -42,6 +43,7 @@ import { AdminModule } from './modules/admin/admin.module';
     VoucherModule,
     CommentModule,
     AdminModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

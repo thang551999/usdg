@@ -6,7 +6,7 @@ export class MailService {
   constructor(private mailerService: MailerService) {}
 
   async sendUserConfirmation(token: string, name) {
-    const url = `example.com/auth/confirm?token=${token}`;
+    const url = `${process.env.BASE_URL}/auth/active?token=${token}`;
 
     await this.mailerService.sendMail({
       to: 'duongphucthangts@gmail.com',

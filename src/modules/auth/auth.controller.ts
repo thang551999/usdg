@@ -1,14 +1,6 @@
-import {
-  HttpCode,
-  Param,
-  ParseUUIDPipe,
-  Put,
-  Query,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { HttpCode, Put, Query, UseGuards } from '@nestjs/common';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+// import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiConsumes,
@@ -16,23 +8,18 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { Throttle } from '@nestjs/throttler';
 import { IUserInfo, UserInfo } from 'src/common/decorators/user.decorator';
+import { API_SUCCESS } from '../../common/constant';
 import { AuthService } from './auth.service';
 import {
   ChangePasswordUserDto,
   ResChangePasswordUserDto,
 } from './dto/change-password.dto';
-import { ConfirmForgotPasswordDto } from './dto/confirm-forgot-password.dto';
-import { ConfirmRegisterdDto } from './dto/confirm-register.dto copy';
-import { ConfirmForgotPasswordOTPDto } from './dto/forgot-password-otp.dto';
 import {
   ForgotPasswordDto,
   ResForgotPasswordDto,
 } from './dto/forgot-password.dto';
-import { HistoryCharge } from './dto/history-charge.dto';
 import { ActiveEmail, LoginUserDto, ResLoginUserDto } from './dto/login.dto';
-import { OTPDto } from './dto/otp.dto';
 import { RefreshTokenDto, ResRefreshTokenDto } from './dto/refresh-token.dto';
 import {
   RegisterUserDto,
@@ -63,8 +50,11 @@ export class AuthController {
   @Get('active')
   @ApiOperation({ summary: 'Login user Api - {Thang}' })
   @ApiOkResponse({ type: ResLoginUserDto, status: 200 })
-  async activeEmail(@Param() activeEmail: ActiveEmail) {
-    return this.authService.activeEmail(activeEmail);
+  async activeEmail(@Query() token: ActiveEmail) {
+    await this.authService.activeEmail(token);
+    return {
+      code: API_SUCCESS,
+    };
   }
 
   @Post('forgot-password')
