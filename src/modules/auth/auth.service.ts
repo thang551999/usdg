@@ -65,7 +65,11 @@ export class AuthService {
       registerUserDto.password.trim(),
       this.HASH_ROUND_NUMBER,
     );
-    const user = await this.usersRepository.create(registerUserDto);
+    const user = await this.usersRepository.create({
+      email: registerUserDto.email,
+      password: passwordHash,
+      role: registerUserDto.role,
+    });
     user.password = passwordHash;
     await this.usersRepository.save(user);
 
@@ -265,7 +269,9 @@ export class AuthService {
 
   async activeEmail(params) {
     const payload = await this.jwtService.verify(params.token);
-    const user = await this.usersRepository.findOne(payload.id);
+    const user = await this.usersRepository.findOne({
+      where: { id: payload.id },
+    });
     if (user) {
       if (user.role === ROLE.user) {
         await this.usersRepository.update(

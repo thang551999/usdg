@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ORDER_STATUS } from '../../../common/constant';
 
 @Entity({ name: 'order' })
 export class Order {
@@ -16,8 +17,8 @@ export class Order {
   @Column()
   price: number;
 
-  @Column()
-  status: Date;
+  @Column({ default: ORDER_STATUS.WAIT_CONFIRM })
+  status: number;
 
   @Column()
   dayorder: Date;

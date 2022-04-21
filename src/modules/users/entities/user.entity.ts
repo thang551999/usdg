@@ -11,6 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Admin } from '../../admin/entities/admin.entity';
+import { Customer } from './customer.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -97,4 +98,10 @@ export class UserEntity {
   })
   @JoinColumn()
   admin: Admin;
+
+  @OneToOne(() => Customer, (user) => user.userInfo, {
+    cascade: true,
+  })
+  @JoinColumn()
+  customer: Customer;
 }

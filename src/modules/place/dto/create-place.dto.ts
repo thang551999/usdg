@@ -34,4 +34,12 @@ export class CreatePlaceDto {
   @ApiProperty({ required: true, example: 1000 })
   @IsArray()
   imageDetails;
+
+  @ApiProperty({ example: 1000 })
+  @IsArray()
+  timeGold;
+
+  @ApiProperty({ example: 1000 })
+  @IsArray()
+  services;
 }

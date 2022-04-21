@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Place } from './place.entity';
+import { BackUpPlace } from './backup-place.entity';
 
 @Entity({ name: 'time-gold' })
 export class TimeGold {
@@ -22,6 +22,6 @@ export class TimeGold {
   @Column()
   price: number;
 
-  @ManyToOne(() => Place, (place) => place.timeGold)
-  place: Place;
+  @ManyToOne(() => BackUpPlace, (place) => place.timeGold)
+  place: BackUpPlace;
 }

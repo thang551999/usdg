@@ -20,3 +20,8 @@ export const PLACE_MESSAGE = {
 };
 export const MAX_SIZE = 100000;
 export const FILE_LIMIT = 'File limit';
+export enum ORDER_STATUS {
+  WAIT_CONFIRM = 0,
+  CONFIRM_OK = 1,
+  CONFIRM_FAIL = 2,
+}

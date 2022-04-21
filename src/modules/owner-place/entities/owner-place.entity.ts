@@ -6,7 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Place } from '../../place/entities/place.entity';
+import { BackUpPlace } from '../../place/entities/backup-place.entity';
 
 @Entity('owner-place')
 export class OwnerPlace {
@@ -28,6 +28,6 @@ export class OwnerPlace {
   @OneToOne(() => UserEntity, (user) => user.ownerPlace)
   userInfo: UserEntity;
 
-  @OneToMany(() => Place, (place) => place.owner)
-  places: Place[];
+  @OneToMany(() => BackUpPlace, (place) => place.owner)
+  places: BackUpPlace[];
 }

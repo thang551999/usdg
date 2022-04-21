@@ -13,7 +13,7 @@ import {
 import { PlaceService } from './place.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
-import { OwnerAuthGuard } from '../auth/jwt.strategy';
+import { OwnerAuthGuard, UserAuthGuard } from '../auth/jwt.strategy';
 import { API_SUCCESS, PLACE_MESSAGE } from '../../common/constant';
 import { GetPlaceParams } from './dto/get-place.dto';
 import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
@@ -25,6 +25,20 @@ export class PlaceController {
   @Post()
   @UseGuards(OwnerAuthGuard)
   async create(
+    @Body() createPlaceDto: CreatePlaceDto,
+    @UserInfo() user: IUserInfo,
+  ) {
+    const place = await this.placeService.create(createPlaceDto, user);
+    return {
+      code: API_SUCCESS,
+      message: PLACE_MESSAGE.CREATE_PLACE_SUCCESS,
+      data: place,
+    };
+  }
+
+  @Post('order')
+  @UseGuards(UserAuthGuard)
+  async createSchedule(
     @Body() createPlaceDto: CreatePlaceDto,
     @UserInfo() user: IUserInfo,
   ) {
@@ -56,8 +70,9 @@ export class PlaceController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    await this.placeService.remove(id);
+  @UseGuards(OwnerAuthGuard)
+  async remove(@Param('id') id: string, @UserInfo() user: IUserInfo) {
+    await this.placeService.remove(id, user);
     return {
       code: API_SUCCESS,
       message: PLACE_MESSAGE.DISABLE_SUCCESS,

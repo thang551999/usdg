@@ -6,13 +6,13 @@ import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { GetPlaceParams } from './dto/get-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
-import { Place } from './entities/place.entity';
+import { BackUpPlace } from './entities/backup-place.entity';
 
 @Injectable()
 export class PlaceService {
   constructor(
-    @InjectRepository(Place)
-    private placeRepository: Repository<Place>,
+    @InjectRepository(BackUpPlace)
+    private placeRepository: Repository<BackUpPlace>,
     @InjectRepository(OwnerPlace)
     private ownerPlaceRepository: Repository<OwnerPlace>,
   ) {}
@@ -21,17 +21,9 @@ export class PlaceService {
     const owner = await this.ownerPlaceRepository.findOne({
       where: { id: user.relativeId },
     });
-    console.log(owner);
 
     const place = await this.placeRepository.create({
-      owner: owner,
-      // timeOpen: createPlaceDto.timeOpen,
-      // timeClose: createPlaceDto.timeClose,
-      // timeDistance: createPlaceDto.timeDistance,
-      // priceMin: createPlaceDto.priceMin,
-      // address: createPlaceDto.address,
-      // imageBanner: createPlaceDto.imageBanner,
-      // imageDetails: createPlaceDto.imageDetails,
+      owner,
       ...createPlaceDto,
     });
     await this.placeRepository.save(place);
@@ -68,10 +60,16 @@ export class PlaceService {
     return `This action updates a #${id} place`;
   }
 
-  async remove(id: string) {
-    await this.placeRepository.update(id, {
-      isEnable: false,
+  async remove(id: string, user) {
+    const place = await this.placeRepository.findOne({
+      where: { id: id },
+      relations: ['owner'],
     });
+    if (place.owner.id === user.relativeId) {
+      await this.placeRepository.update(id, {
+        isEnable: false,
+      });
+    }
     return PLACE_MESSAGE.DISABLE_SUCCESS;
   }
 }
