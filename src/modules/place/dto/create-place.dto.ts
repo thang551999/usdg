@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsOptional,
+} from 'class-validator';
 
 export class CreatePlaceDto {
   @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
@@ -42,4 +49,9 @@ export class CreatePlaceDto {
   @ApiProperty({ example: 1000 })
   @IsArray()
   services;
+
+  @ApiProperty({ example: 1000 })
+  @IsOptional()
+  @IsNumber()
+  limitUser;
 }

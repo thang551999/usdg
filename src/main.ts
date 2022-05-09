@@ -31,8 +31,8 @@ async function bootstrap() {
   });
   const PORT = config1.get<number>('PORT');
   const configDocs = new DocumentBuilder()
-    .setTitle('back end vnsupplements  ')
-    .setDescription('back end vnsupplements')
+    .setTitle('doan')
+    .setDescription('doan')
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('back end')

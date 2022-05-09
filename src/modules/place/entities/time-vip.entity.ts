@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BackUpPlace } from './backup-place.entity';
+import { BackUpPlace } from './place.entity';
 
 @Entity({ name: 'time-gold' })
 export class TimeGold {
@@ -14,10 +14,10 @@ export class TimeGold {
   id: string;
 
   @Column()
-  timeStart: Date;
+  timeStart: string;
 
   @Column()
-  timeEnd: Date;
+  timeEnd: string;
 
   @Column()
   price: number;

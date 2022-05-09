@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { BackUpPlace } from './backup-place.entity';
+import { BackUpPlace } from './place.entity';
 
 @Entity({ name: 'service-place' })
 export class ServicePlace {

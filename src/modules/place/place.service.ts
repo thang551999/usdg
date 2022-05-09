@@ -1,20 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PLACE_MESSAGE } from '../../common/constant';
+import { API_FAIL, PLACE_MESSAGE, ROLE } from '../../common/constant';
 import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { GetPlaceParams } from './dto/get-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
-import { BackUpPlace } from './entities/backup-place.entity';
+import { Place } from './entities/place.entity';
 
 @Injectable()
 export class PlaceService {
   constructor(
-    @InjectRepository(BackUpPlace)
-    private placeRepository: Repository<BackUpPlace>,
+    @InjectRepository(Place)
+    private placeRepository: Repository<Place>,
     @InjectRepository(OwnerPlace)
     private ownerPlaceRepository: Repository<OwnerPlace>,
+    private readonly jwtService: JwtService,
   ) {}
   async create(createPlaceDto: CreatePlaceDto, user) {
     console.log(user);
@@ -28,6 +30,20 @@ export class PlaceService {
     });
     await this.placeRepository.save(place);
     return place;
+  }
+  async createOrder() {
+    // Kiểm tra tiền trong tk
+    // Kiểm tra giờ đặt có trống
+    // Gửi mail cho admin
+
+    return 1;
+  }
+
+  async confirmOrder(token, orderId) {
+    const payload = await this.jwtService.verify(token);
+    if (payload.role !== ROLE.owner) {
+      return API_FAIL;
+    }
   }
 
   async findAll(getParams: GetPlaceParams) {
@@ -52,6 +68,7 @@ export class PlaceService {
         isEnable: true,
         id,
       },
+      relations: ['services', 'timeGold', 'owner'],
     });
     return place;
   }

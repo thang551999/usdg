@@ -42,7 +42,7 @@ export class PlaceController {
     @Body() createPlaceDto: CreatePlaceDto,
     @UserInfo() user: IUserInfo,
   ) {
-    const place = await this.placeService.create(createPlaceDto, user);
+    const place = await this.placeService.createOrder();
     return {
       code: API_SUCCESS,
       message: PLACE_MESSAGE.CREATE_PLACE_SUCCESS,
@@ -61,6 +61,7 @@ export class PlaceController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    console.log(id);
     return this.placeService.findOne(id);
   }
 

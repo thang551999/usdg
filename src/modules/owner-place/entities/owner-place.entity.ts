@@ -6,7 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BackUpPlace } from '../../place/entities/backup-place.entity';
+import { BackUpPlace } from '../../place/entities/place.entity';
 
 @Entity('owner-place')
 export class OwnerPlace {
