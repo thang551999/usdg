@@ -1,0 +1,67 @@
+version: "3.8"
+services:
+  # postgres:
+  #   container_name: postgres_container
+  #   image: postgres
+  #   environment:
+  #     POSTGRES_USER: doan
+  #     POSTGRES_PASSWORD: doan
+  #     PGDATA: /data/postgres
+  #     POSTGRES_DB: doan
+  #   volumes:
+  #      - ./postgres:/data/postgres
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - nesjs-network
+  #   restart: unless-stopped
+  # pgadmin:
+  #   container_name: pgadmin_container
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+  #     PGADMIN_CONFIG_SERVER_MODE: 'False'
+  #   volumes:
+  #      - ./pgadmin:/var/lib/pgadmin
+  #   ports:
+  #     - "${PGADMIN_PORT:-5050}:80"
+  #   networks:
+  #     - nesjs-network
+  #   restart: unless-stopped
+  doan-mysql:
+    image: mysql:5.7
+    # ports:
+    #   - "33061:3306"
+    volumes:
+      - ./mysql/.data:/var/lib/mysql
+    networks:
+      - nesjs-network
+    environment:
+      MYSQL_DATABASE: doan
+      MYSQL_USER: doan
+      MYSQL_PASSWORD: doan
+      MYSQL_ROOT_PASSWORD: doan
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    container_name: doan-mysql
+  dev:
+    container_name: nestjs_api_dev
+    image: nestjs-api-dev:1.0.0
+    build:
+        context: .
+        target: development
+        dockerfile: ../Dockerfile
+    command: npm run start:debug
+    ports:
+        - 3000:3000
+    networks:
+        - nesjs-network
+    volumes:
+        - ../.:/usr/src/app
+        # - /usr/src/app/node_modules
+    depends_on: 
+        - 'doan-mysql'
+    restart: unless-stopped
+
+networks:
+  nesjs-network:
