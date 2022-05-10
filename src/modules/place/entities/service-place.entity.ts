@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { BackUpPlace } from './place.entity';
+import { Place } from './place.entity';
 
 @Entity({ name: 'service-place' })
 export class ServicePlace {
@@ -15,6 +15,6 @@ export class ServicePlace {
   @Column({ default: false })
   isDelete: boolean;
 
-  @ManyToOne(() => BackUpPlace, (place) => place.services)
-  place: BackUpPlace;
+  @ManyToOne(() => Place, (place) => place.services)
+  place: Place;
 }
