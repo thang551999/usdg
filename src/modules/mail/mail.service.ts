@@ -5,13 +5,13 @@ import { Injectable } from '@nestjs/common';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendUserConfirmation(token: string, name) {
+  async sendUserConfirmation(token: string, name, email) {
     const url = `${process.env.BASE_URL}/auth/active?token=${token}`;
 
     await this.mailerService.sendMail({
-      to: 'duongphucthangts@gmail.com',
+      to: email,
       // from: '"Support Team" <support@example.com>', // override default from
-      subject: 'Welcome to Nice App! Confirm your Email',
+      subject: 'Welcome to DatsanApp! Confirm your Email',
       template: 'confirmation', // `.hbs` extension is appended automatically
       context: {
         // ✏️ filling curly brackets with content

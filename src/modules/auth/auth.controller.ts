@@ -33,7 +33,7 @@ import { JwtAuthGuard } from './jwt.strategy';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  @ApiOperation({ summary: 'Register user - {Thang}' })
+  @ApiOperation({ summary: 'Api đăng ký user hoặc chủ sân' })
   @ApiOkResponse({ type: ResRegisterDto, status: 200 })
   @Post('register')
   async register(@Body() registerUserDto: RegisterUserDto) {

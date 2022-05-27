@@ -27,14 +27,6 @@ export class RegisterUserDto {
   @IsEnum(ROLE)
   @IsNotEmpty()
   role: number;
-
-  @ApiProperty({ example: 'hello' })
-  @IsOptional()
-  customer;
-
-  @ApiProperty({ example: 'hello' })
-  @IsOptional()
-  ownerPlace;
 }
 export class ResRegisterDto {
   @ApiProperty({ example: 'Thành Công' })

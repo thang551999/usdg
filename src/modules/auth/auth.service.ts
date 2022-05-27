@@ -46,19 +46,33 @@ export class AuthService {
         email: registerUserDto.email,
       },
     });
-    if (userCheck?.actived) {
-      throw new HttpException(AUTH_MESSAGE.EMAIL_EXITS, HttpStatus.BAD_REQUEST);
+    if (userCheck) {
+      if (userCheck.actived) {
+        throw new HttpException(
+          AUTH_MESSAGE.EMAIL_EXITS,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (userCheck.actived === false && userCheck.role === ROLE.user) {
+        const token = await this.jwtService.signAsync(
+          {
+            id: userCheck.id,
+          },
+          { expiresIn: '5m' },
+        );
+        await this.mailerService.sendUserConfirmation(
+          token,
+          userCheck?.fullName,
+          registerUserDto.email,
+        );
+        return {
+          message: 'Check email pls',
+        };
+      }
     }
-    if (userCheck?.actived === false) {
-      const token = await this.jwtService.signAsync(
-        {
-          id: userCheck.id,
-        },
-        { expiresIn: '5m' },
-      );
-      await this.mailerService.sendUserConfirmation(token, userCheck.fullName);
+    if (registerUserDto.role === ROLE.admin) {
       return {
-        message: 'Check email pls',
+        message: 'Cannot register admin role',
       };
     }
     const passwordHash = await bcrypt.hashSync(
@@ -72,23 +86,28 @@ export class AuthService {
     });
     user.password = passwordHash;
     await this.usersRepository.save(user);
+    if (registerUserDto.role === ROLE.user) {
+      const token = await this.jwtService.signAsync(
+        {
+          id: user.id,
+          role: user.role,
+          userType: user.userType,
+        },
+        { expiresIn: '5m' },
+      );
+      await this.mailerService.sendUserConfirmation(
+        token,
+        userCheck.fullName,
+        registerUserDto.email,
+      );
+    }
 
-    const token = await this.jwtService.signAsync(
-      {
-        id: user.id,
-        role: user.role,
-        userType: user.userType,
-      },
-      { expiresIn: '5m' },
-    );
-    await this.mailerService.sendUserConfirmation(token, 'abc');
     return {
       message: 'Đăng Ký Thành Công',
     };
   }
   async login(loginUserDto: LoginUserDto) {
     console.log(loginUserDto);
-    
     const user = await this.usersRepository.findOne({
       where: {
         email: loginUserDto.email,
@@ -107,7 +126,26 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (user.role == 1 && user.actived == false) {
+    if (user.actived == false) {
+      if (user.role === ROLE.user) {
+        const token = await this.jwtService.signAsync(
+          {
+            id: user.id,
+            role: user.role,
+            userType: user.userType,
+          },
+          { expiresIn: '5m' },
+        );
+        await this.mailerService.sendUserConfirmation(
+          token,
+          user.fullName,
+          user.email,
+        );
+        throw new HttpException(
+          AUTH_MESSAGE.CHECK_MAIL_ACTIVE,
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
       throw new HttpException(
         AUTH_MESSAGE.EMAIL_NOT_ACTIVE,
         HttpStatus.BAD_REQUEST,

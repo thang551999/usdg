@@ -10,6 +10,7 @@ export const AUTH_MESSAGE = {
   EMAIL_NOT_FOUND: 'Email not found',
   WRONG_PASSWORD: 'Wrong password',
   EMAIL_NOT_ACTIVE: 'Email not active',
+  CHECK_MAIL_ACTIVE: 'Please check mail active account',
 };
 
 export const enum TYPE_COMMENT {}

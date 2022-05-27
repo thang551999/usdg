@@ -64,6 +64,10 @@ export class UserEntity {
   actived: boolean;
 
   @ApiProperty()
+  @Column('boolean', { default: false })
+  approved: boolean;
+
+  @ApiProperty()
   @Column({ nullable: true })
   birthday: Date;
 
