@@ -6,7 +6,9 @@ import {
   IsString,
   IsNumber,
   IsOptional,
+  Matches,
 } from 'class-validator';
+import { TypePlace } from '../entities/type-place.entity';
 
 export class CreatePlaceDto {
   @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
@@ -31,7 +33,9 @@ export class CreatePlaceDto {
 
   @ApiProperty({ required: true, example: 1000 })
   @IsNotEmpty()
-  @IsInt()
+  @Matches(/^[0-9]*$/, {
+    message: 'F-NFT number must be number',
+  })
   priceMin: string;
 
   @ApiProperty({ required: true, example: 1000 })
@@ -43,17 +47,23 @@ export class CreatePlaceDto {
   imageDetails;
 
   @ApiProperty({ example: 1000 })
+  @IsOptional()
   @IsArray()
   timeGold;
 
   @ApiProperty({ example: 1000 })
+  @IsOptional()
   @IsArray()
   services;
 
   @ApiProperty({ example: 1000 })
   @IsOptional()
   @IsNumber()
-  limitUser;
+  limitUsers: number;
+
+  @ApiProperty({ example: 1000 })
+  @IsNotEmpty()
+  typePlace: TypePlace;
 }
 
 export class TypePlaceDto {

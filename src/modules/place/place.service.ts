@@ -38,7 +38,6 @@ export class PlaceService {
     // Kiểm tra tiền trong tk
     // Kiểm tra giờ đặt có trống
     // Gửi mail cho admin
-
     return 1;
   }
 
@@ -56,6 +55,7 @@ export class PlaceService {
       },
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
+      relations: ['typePlace', 'timeGold', 'services', 'comments'],
     });
     return {
       total: places[1],

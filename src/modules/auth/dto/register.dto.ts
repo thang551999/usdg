@@ -1,14 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Length,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { ROLE } from '../../../common/constant';
 

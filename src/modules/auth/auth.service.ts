@@ -22,13 +22,15 @@ import { ConfirmForgotPasswordOTPDto } from './dto/forgot-password-otp.dto';
 import { AUTH_MESSAGE, ROLE } from 'src/common/constant';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { API_SUCCESS } from '../../common/constant';
+import { Customer } from '../users/entities/customer.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-
+    @InjectRepository(Customer)
+    private customerRepository: Repository<Customer>,
     @InjectRepository(UserEntity)
     private ownerRepository: Repository<UserEntity>,
 
@@ -88,10 +90,10 @@ export class AuthService {
     user.password = passwordHash;
     await this.usersRepository.save(user);
     if (registerUserDto.role === ROLE.user) {
+      const customer = await this.customerRepository.create();
+      await this.customerRepository.save(customer);
       await this.usersRepository.update(user.id, {
-        customer: {
-          money: 0,
-        },
+        customer,
       });
       const token = await this.jwtService.signAsync(
         {

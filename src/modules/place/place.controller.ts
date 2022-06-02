@@ -44,7 +44,7 @@ export class PlaceController {
     };
   }
 
-  @Get()
+  @Get('type-place')
   async getType() {
     const places = await this.placeService.getTypePlace();
     return {

@@ -39,10 +39,10 @@ services:
         appNetwork:
             ipv4_address: 172.24.2.1
     environment:
-      MYSQL_DATABASE: doan
-      MYSQL_USER: doan
-      MYSQL_PASSWORD: doan
-      MYSQL_ROOT_PASSWORD: doan
+      MYSQL_DATABASE: doan-thangdp
+      MYSQL_USER: doan-thangdp
+      MYSQL_PASSWORD: doan-thangdp
+      MYSQL_ROOT_PASSWORD: doan-thangdp
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     container_name: doan-mysql
   dev:

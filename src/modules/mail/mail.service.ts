@@ -10,12 +10,10 @@ export class MailService {
 
     await this.mailerService.sendMail({
       to: email,
-      // from: '"Support Team" <support@example.com>', // override default from
-      subject: 'Welcome to DatsanApp! Confirm your Email',
+      subject: 'Chào mừng bạn đến với app đặt sân! Vui lòng confirm email',
       template: 'confirmation', // `.hbs` extension is appended automatically
       context: {
-        // ✏️ filling curly brackets with content
-        name: name,
+        name: email,
         url,
       },
     });

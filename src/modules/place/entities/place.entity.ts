@@ -10,12 +10,12 @@ import {
 import { Comment } from '../../comment/entities/comment.entity';
 import { OwnerPlace } from '../../owner-place/entities/owner-place.entity';
 import { ServicePlace } from './service-place.entity';
-import { TimeGold } from './time-vip.entity';
+import { TimeGold } from './time-gold.entity';
 import { TypePlace } from './type-place.entity';
 import { Voucher } from '../../voucher/entities/voucher.entity';
 import { Order } from '../../order/entities/order.entity';
 
-@Entity({ name: 'place' })
+@Entity({ name: 'places' })
 export class Place {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
@@ -44,8 +44,8 @@ export class Place {
   @Column({ name: 'timeClose' })
   timeClose: string;
 
-  @Column({ nullable: true })
-  limitUser: number;
+  @Column({ name: 'limit-users', nullable: true })
+  limitUsers: number;
 
   @CreateDateColumn()
   createAt: Date;
@@ -82,8 +82,4 @@ export class Place {
 
   @OneToMany(() => Order, (order) => order.place)
   order: Order[];
-
-  // one to many voucher
-
-  //one to many order
 }
