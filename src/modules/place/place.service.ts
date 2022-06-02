@@ -8,12 +8,15 @@ import { CreatePlaceDto } from './dto/create-place.dto';
 import { GetPlaceParams } from './dto/get-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { Place } from './entities/place.entity';
+import { TypePlace } from './entities/type-place.entity';
 
 @Injectable()
 export class PlaceService {
   constructor(
     @InjectRepository(Place)
     private placeRepository: Repository<Place>,
+    @InjectRepository(TypePlace)
+    private typePlaceRepository: Repository<TypePlace>,
     @InjectRepository(OwnerPlace)
     private ownerPlaceRepository: Repository<OwnerPlace>,
     private readonly jwtService: JwtService,
@@ -88,5 +91,30 @@ export class PlaceService {
       });
     }
     return PLACE_MESSAGE.DISABLE_SUCCESS;
+  }
+
+  async createTypePlace(data) {
+    const typePlace = await this.typePlaceRepository.create(data);
+    await this.typePlaceRepository.save(typePlace);
+    return typePlace;
+  }
+
+  async getTypePlaceAdmin() {
+    const typePlace = await this.typePlaceRepository.find({
+      where: {
+        isDeleted: false,
+      },
+    });
+    return typePlace;
+  }
+
+  async getTypePlace() {
+    const typePlace = await this.typePlaceRepository.find({
+      where: {
+        isDeleted: false,
+        isActive: true,
+      },
+    });
+    return typePlace;
   }
 }

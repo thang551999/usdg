@@ -7,10 +7,13 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Comment } from '../../comment/entities/comment.entity';
 import { OwnerPlace } from '../../owner-place/entities/owner-place.entity';
 import { ServicePlace } from './service-place.entity';
 import { TimeGold } from './time-vip.entity';
 import { TypePlace } from './type-place.entity';
+import { Voucher } from '../../voucher/entities/voucher.entity';
+import { Order } from '../../order/entities/order.entity';
 
 @Entity({ name: 'place' })
 export class Place {
@@ -33,7 +36,7 @@ export class Place {
   timeOpen: string;
 
   @Column({ name: 'priceMin' })
-  priceMin: number;
+  priceMin: string;
 
   @Column({ name: 'isEnable', default: true })
   isEnable: boolean;
@@ -71,6 +74,14 @@ export class Place {
   services: ServicePlace[];
 
   //one to many comment place
+  @OneToMany(() => Comment, (comment) => comment.place)
+  comments: Comment[];
+
+  @OneToMany(() => Voucher, (voucher) => voucher.place)
+  voucherCreate: Voucher[];
+
+  @OneToMany(() => Order, (order) => order.place)
+  order: Order[];
 
   // one to many voucher
 

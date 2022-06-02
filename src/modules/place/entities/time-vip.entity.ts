@@ -20,7 +20,7 @@ export class TimeGold {
   timeEnd: string;
 
   @Column()
-  price: number;
+  price: string;
 
   @ManyToOne(() => Place, (place) => place.timeGold)
   place: Place;

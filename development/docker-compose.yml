@@ -36,7 +36,8 @@ services:
     volumes:
       - ./mysql/.data:/var/lib/mysql
     networks:
-      - nesjs-network
+        appNetwork:
+            ipv4_address: 172.24.2.1
     environment:
       MYSQL_DATABASE: doan
       MYSQL_USER: doan
@@ -55,7 +56,8 @@ services:
     ports:
         - 3500:3500
     networks:
-        - nesjs-network
+        appNetwork:
+            ipv4_address: 172.24.2.2
     volumes:
         - ../.:/usr/src/app
         # - /usr/src/app/node_modules
@@ -64,4 +66,9 @@ services:
     restart: unless-stopped
 
 networks:
-  nesjs-network:
+    appNetwork:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: "172.24.2.0/16"

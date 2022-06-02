@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  HttpStatus,
   Query,
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
@@ -21,20 +20,6 @@ import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
 @Controller('place')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
-
-  @Post()
-  @UseGuards(OwnerAuthGuard)
-  async create(
-    @Body() createPlaceDto: CreatePlaceDto,
-    @UserInfo() user: IUserInfo,
-  ) {
-    const place = await this.placeService.create(createPlaceDto, user);
-    return {
-      code: API_SUCCESS,
-      message: PLACE_MESSAGE.CREATE_PLACE_SUCCESS,
-      data: place,
-    };
-  }
 
   @Post('order')
   @UseGuards(UserAuthGuard)
@@ -53,6 +38,15 @@ export class PlaceController {
   @Get()
   async findAll(@Query() getPlacePama: GetPlaceParams) {
     const places = await this.placeService.findAll(getPlacePama);
+    return {
+      code: API_SUCCESS,
+      data: places,
+    };
+  }
+
+  @Get()
+  async getType() {
+    const places = await this.placeService.getTypePlace();
     return {
       code: API_SUCCESS,
       data: places,

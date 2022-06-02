@@ -2,11 +2,13 @@ import { UserEntity } from 'src/modules/users/entities/user.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Place } from '../../place/entities/place.entity';
+import { Voucher } from '../../voucher/entities/voucher.entity';
 
 @Entity('owner-place')
 export class OwnerPlace {
@@ -26,8 +28,12 @@ export class OwnerPlace {
   phone: string;
 
   @OneToOne(() => UserEntity, (user) => user.ownerPlace)
+  @JoinColumn()
   userInfo: UserEntity;
 
   @OneToMany(() => Place, (place) => place.owner)
   places: Place[];
+
+  @OneToMany(() => Voucher, (voucher) => voucher.owner)
+  voucherCreate: Voucher[];
 }

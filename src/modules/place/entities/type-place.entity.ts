@@ -10,7 +10,10 @@ export class TypePlace {
   name: string;
 
   @Column({ default: true })
-  isAllow: boolean;
+  isActive: boolean;
+
+  @Column({ default: false })
+  isDeleted: boolean;
 
   @OneToMany(() => Place, (place) => place.typePlace)
   place: Place[];

@@ -32,7 +32,7 @@ export class CreatePlaceDto {
   @ApiProperty({ required: true, example: 1000 })
   @IsNotEmpty()
   @IsInt()
-  priceMin: number;
+  priceMin: string;
 
   @ApiProperty({ required: true, example: 1000 })
   @IsArray()
@@ -54,4 +54,10 @@ export class CreatePlaceDto {
   @IsOptional()
   @IsNumber()
   limitUser;
+}
+
+export class TypePlaceDto {
+  @ApiProperty({ example: 1000 })
+  @IsString()
+  name: string;
 }

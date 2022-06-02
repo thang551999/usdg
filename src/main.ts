@@ -28,6 +28,7 @@ async function bootstrap() {
     allowedHeaders:
       'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Access-Control-Allow-Headers,Origin,Authorization',
     methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
+    credentials: true,
   });
   const PORT = config1.get<number>('PORT');
   const configDocs = new DocumentBuilder()

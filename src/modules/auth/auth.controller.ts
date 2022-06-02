@@ -1,4 +1,4 @@
-import { HttpCode, Put, Query, UseGuards } from '@nestjs/common';
+import { HttpCode, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 // import { AuthGuard } from '@nestjs/passport';
 import {
@@ -50,11 +50,9 @@ export class AuthController {
   @Get('active')
   @ApiOperation({ summary: 'Login user Api - {Thang}' })
   @ApiOkResponse({ type: ResLoginUserDto, status: 200 })
-  async activeEmail(@Query() token: ActiveEmail) {
+  async activeEmail(@Query() token: ActiveEmail, @Res() res) {
     await this.authService.activeEmail(token);
-    return {
-      code: API_SUCCESS,
-    };
+    return res.redirect(`${process.env.FE_USER_URL}/active-success`);
   }
 
   @Post('forgot-password')

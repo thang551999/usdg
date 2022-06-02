@@ -21,6 +21,7 @@ import { OTPDto } from './dto/otp.dto';
 import { ConfirmForgotPasswordOTPDto } from './dto/forgot-password-otp.dto';
 import { AUTH_MESSAGE, ROLE } from 'src/common/constant';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { API_SUCCESS } from '../../common/constant';
 
 @Injectable()
 export class AuthService {
@@ -87,6 +88,11 @@ export class AuthService {
     user.password = passwordHash;
     await this.usersRepository.save(user);
     if (registerUserDto.role === ROLE.user) {
+      await this.usersRepository.update(user.id, {
+        customer: {
+          money: 0,
+        },
+      });
       const token = await this.jwtService.signAsync(
         {
           id: user.id,
@@ -97,7 +103,7 @@ export class AuthService {
       );
       await this.mailerService.sendUserConfirmation(
         token,
-        userCheck.fullName,
+        userCheck?.fullName,
         registerUserDto.email,
       );
     }
@@ -107,7 +113,6 @@ export class AuthService {
     };
   }
   async login(loginUserDto: LoginUserDto) {
-    console.log(loginUserDto);
     const user = await this.usersRepository.findOne({
       where: {
         email: loginUserDto.email,
@@ -156,7 +161,7 @@ export class AuthService {
       relativeId = user.admin.id;
     }
     if (user.role === ROLE.owner) {
-      relativeId = user.ownerPlace.id;
+      relativeId = user.ownerPlace?.id;
     }
     const token = await this.jwtService.signAsync(
       {
@@ -176,6 +181,7 @@ export class AuthService {
       { expiresIn: '365d' },
     );
     return {
+      code: API_SUCCESS,
       token,
       refreshToken,
       role: user.role,
