@@ -12,6 +12,7 @@ import { VoucherModule } from './modules/voucher/voucher.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { PaymentModule } from './modules/payment/payment.module';
 @Module({
   imports: [
     SharedModule,
@@ -44,6 +45,7 @@ import { UploadModule } from './modules/upload/upload.module';
     CommentModule,
     AdminModule,
     UploadModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

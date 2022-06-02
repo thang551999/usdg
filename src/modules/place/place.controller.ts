@@ -1,21 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Param, UseGuards, Query } from '@nestjs/common';
 import { PlaceService } from './place.service';
-import { CreatePlaceDto } from './dto/create-place.dto';
-import { UpdatePlaceDto } from './dto/update-place.dto';
-import { OwnerAuthGuard, UserAuthGuard } from '../auth/jwt.strategy';
+import { UserAuthGuard } from '../auth/jwt.strategy';
 import { API_SUCCESS, PLACE_MESSAGE } from '../../common/constant';
 import { GetPlaceParams } from './dto/get-place.dto';
-import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
 
 @Controller('place')
 export class PlaceController {
@@ -23,10 +10,7 @@ export class PlaceController {
 
   @Post('order')
   @UseGuards(UserAuthGuard)
-  async createSchedule(
-    @Body() createPlaceDto: CreatePlaceDto,
-    @UserInfo() user: IUserInfo,
-  ) {
+  async createSchedule() {
     const place = await this.placeService.createOrder();
     return {
       code: API_SUCCESS,
@@ -54,23 +38,11 @@ export class PlaceController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    console.log(id);
-    return this.placeService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePlaceDto: UpdatePlaceDto) {
-    return this.placeService.update(+id, updatePlaceDto);
-  }
-
-  @Delete(':id')
-  @UseGuards(OwnerAuthGuard)
-  async remove(@Param('id') id: string, @UserInfo() user: IUserInfo) {
-    await this.placeService.remove(id, user);
+  async findOne(@Param('id') id: string) {
+    const place = await this.placeService.findOne(id);
     return {
       code: API_SUCCESS,
-      message: PLACE_MESSAGE.DISABLE_SUCCESS,
+      data: place,
     };
   }
 }

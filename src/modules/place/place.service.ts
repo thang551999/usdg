@@ -55,7 +55,7 @@ export class PlaceService {
       },
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
-      relations: ['typePlace', 'timeGold', 'services', 'comments'],
+      relations: ['typePlace', 'timeGold'],
     });
     return {
       total: places[1],
@@ -71,7 +71,7 @@ export class PlaceService {
         isEnable: true,
         id,
       },
-      relations: ['services', 'timeGold', 'owner'],
+      relations: ['services', 'timeGold', 'owner', 'comments', 'voucherCreate'],
     });
     return place;
   }

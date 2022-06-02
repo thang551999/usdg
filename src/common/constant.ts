@@ -31,3 +31,18 @@ export enum TypeVoucher {
   Percent = 0,
   Money = 1,
 }
+
+export enum PaymentStatus {
+  CREATE = 0,
+  SUCCESS = 1,
+  FAIL = -1,
+}
+
+export enum OrderStatus { // trường status trong order
+  PayMent_Success = '0', // Đơn hàng đang chờ xác nhận
+  Order_Cancel = '3', // Đơn hàng đã được hủy
+  Order_Income = '1', // Đơn hàng đang được giao ,
+  Order_Ship_Success = '2', // Đơn hàng đã được ship thành công ,
+  Order_Ship_Fail = '5', // Đơn hàng ship thất bại,
+  Order_Payment_Fail = '4', //Payment Fail
+}
