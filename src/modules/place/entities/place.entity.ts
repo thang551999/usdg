@@ -20,11 +20,14 @@ export class Place {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
-  @Column({ length: 30, name: 'address-place' })
+  @Column({ length: 250, name: 'address-place' })
   address: string;
 
   @Column({ name: 'point', default: 100 })
   point: number;
+
+  @Column({ default: 100 })
+  maxVoucherCanUse: number;
 
   @Column({ type: 'simple-array', name: 'imageBanner' })
   imageBanner: string;

@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { OwnerPlace } from '../../owner-place/entities/owner-place.entity';
 import { Place } from '../../place/entities/place.entity';
+import { VoucherHistory } from './voucher-history.entity';
 import { VoucherOrder } from './voucher_order.entity';
 
 @Entity({ name: 'voucher' })
@@ -20,16 +21,19 @@ export class Voucher {
   @Column()
   type: number;
 
+  @Column({ default: false })
+  isAdminCreate: boolean;
+
   @Column({ default: 1 })
   isActive: number;
 
   @Column({ nullable: true })
   endDate: Date;
 
-  @Column()
+  @Column({ nullable: true })
   maxMoneySale: string;
 
-  @Column()
+  @Column({ nullable: true })
   moneyCondition: string;
 
   @ManyToOne(() => OwnerPlace, (owner) => owner.voucherCreate)
@@ -40,4 +44,7 @@ export class Voucher {
 
   @OneToMany(() => VoucherOrder, (voucherOrder) => voucherOrder.voucher)
   voucherOrder: VoucherOrder[];
+
+  @OneToMany(() => VoucherHistory, (voucherHistory) => voucherHistory.voucher)
+  voucherHistory: VoucherHistory[];
 }

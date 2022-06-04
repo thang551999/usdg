@@ -11,6 +11,7 @@ export const AUTH_MESSAGE = {
   WRONG_PASSWORD: 'Sai mật khẩu',
   EMAIL_NOT_ACTIVE: 'Email chưa được active',
   CHECK_MAIL_ACTIVE: 'Vui lòng kiểm tra email để active tài khoản',
+  OWNER_NOT_APPROVE: 'Tài khoản của bạn chưa được admin phê duyệt ',
 };
 
 export const enum TYPE_COMMENT {}
@@ -45,4 +46,9 @@ export enum OrderStatus { // trường status trong order
   Order_Ship_Success = '2', // Đơn hàng đã được ship thành công ,
   Order_Ship_Fail = '5', // Đơn hàng ship thất bại,
   Order_Payment_Fail = '4', //Payment Fail
+}
+
+export enum VoucherHistoryStatus {
+  Success = 1,
+  Fail = 0,
 }

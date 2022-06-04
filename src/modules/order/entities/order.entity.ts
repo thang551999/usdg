@@ -26,7 +26,7 @@ export class Order {
   status: number;
 
   @Column()
-  dayorder: Date;
+  dayOrder: Date;
 
   @Column()
   timeStart: Date;

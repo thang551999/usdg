@@ -15,11 +15,6 @@ import { UpdateVoucherDto } from './dto/update-voucher.dto';
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
-  @Post()
-  create(@Body() createVoucherDto: CreateVoucherDto) {
-    return this.voucherService.create(createVoucherDto);
-  }
-
   @Get()
   findAll() {
     return this.voucherService.findAll();

@@ -63,11 +63,11 @@ export class AuthService {
           },
           { expiresIn: '5m' },
         );
-        await this.mailerService.sendUserConfirmation(
-          token,
-          userCheck?.fullName,
-          registerUserDto.email,
-        );
+        // await this.mailerService.sendUserConfirmation(
+        //   token,
+        //   userCheck?.fullName,
+        //   registerUserDto.email,
+        // );
         return {
           message: 'Check email pls',
         };
@@ -103,11 +103,11 @@ export class AuthService {
         },
         { expiresIn: '5m' },
       );
-      await this.mailerService.sendUserConfirmation(
-        token,
-        userCheck?.fullName,
-        registerUserDto.email,
-      );
+      // await this.mailerService.sendUserConfirmation(
+      //   token,
+      //   userCheck?.fullName,
+      //   registerUserDto.email,
+      // );
     }
 
     return {
@@ -143,11 +143,11 @@ export class AuthService {
           },
           { expiresIn: '5m' },
         );
-        await this.mailerService.sendUserConfirmation(
-          token,
-          user.fullName,
-          user.email,
-        );
+        // await this.mailerService.sendUserConfirmation(
+        //   token,
+        //   user.fullName,
+        //   user.email,
+        // );
         throw new HttpException(
           AUTH_MESSAGE.CHECK_MAIL_ACTIVE,
           HttpStatus.UNAUTHORIZED,
@@ -159,11 +159,17 @@ export class AuthService {
       );
     }
     let relativeId = '';
+    if (user.role === ROLE.owner) {
+      if (user.approved === false) {
+        throw new HttpException(
+          AUTH_MESSAGE.OWNER_NOT_APPROVE,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      relativeId = user.ownerPlace?.id;
+    }
     if (user.role === ROLE.admin) {
       relativeId = user.admin.id;
-    }
-    if (user.role === ROLE.owner) {
-      relativeId = user.ownerPlace?.id;
     }
     const token = await this.jwtService.signAsync(
       {
