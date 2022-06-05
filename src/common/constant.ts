@@ -13,7 +13,9 @@ export const AUTH_MESSAGE = {
   CHECK_MAIL_ACTIVE: 'Vui lòng kiểm tra email để active tài khoản',
   OWNER_NOT_APPROVE: 'Tài khoản của bạn chưa được admin phê duyệt ',
 };
-
+export const ORDER_MESSAGE = {
+  NOT_ENOUGH_MONEY: 'Bạn không đủ tiền',
+};
 export const enum TYPE_COMMENT {}
 export const enum TYPE_ORDER {}
 export const PLACE_MESSAGE = {
@@ -24,7 +26,7 @@ export const MAX_SIZE = 100000;
 export const FILE_LIMIT = 'File limit';
 export enum ORDER_STATUS {
   WAIT_CONFIRM = 0,
-  CONFIRM_OK = 1,
+  OK = 1,
   CONFIRM_FAIL = 2,
 }
 
@@ -41,14 +43,15 @@ export enum PaymentStatus {
 
 export enum OrderStatus { // trường status trong order
   PayMent_Success = '0', // Đơn hàng đang chờ xác nhận
-  Order_Cancel = '3', // Đơn hàng đã được hủy
-  Order_Income = '1', // Đơn hàng đang được giao ,
-  Order_Ship_Success = '2', // Đơn hàng đã được ship thành công ,
-  Order_Ship_Fail = '5', // Đơn hàng ship thất bại,
   Order_Payment_Fail = '4', //Payment Fail
 }
 
 export enum VoucherHistoryStatus {
   Success = 1,
   Fail = 0,
+}
+
+export enum TypeOrder {
+  PaymentWithoutline = 1,
+  PaymentWithWallet = 0,
 }

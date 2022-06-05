@@ -19,7 +19,7 @@ export class Customer {
   id: string;
 
   @Column({ default: 0 })
-  money: number;
+  money: string;
 
   @OneToOne(() => UserEntity, (user) => user.customer, {
     eager: true,

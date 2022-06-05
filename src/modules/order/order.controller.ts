@@ -11,16 +11,26 @@ import {
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { OwnerAuthGuard } from '../auth/jwt.strategy';
+import { OwnerAuthGuard, UserAuthGuard } from '../auth/jwt.strategy';
+import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  @UseGuards(UserAuthGuard)
+  async create(
+    @Body() createOrderDto: CreateOrderDto,
+    @UserInfo() user: IUserInfo,
+  ) {
+    return this.orderService.create(createOrderDto, user);
   }
+
+  // @Post('without-login')
+  // async createWithOutLogin(@Body() createOrderDto: CreateOrderDto) {
+  //   return this.orderService.create(createOrderDto);
+  // }
 
   @UseGuards(OwnerAuthGuard)
   @Get()

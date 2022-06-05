@@ -17,6 +17,7 @@ import { ConfigService } from '@nestjs/config';
 import { ReturnIPNDto } from './dto/return-ipn.dto';
 import { OrderStatus, PaymentStatus } from '../../common/constant';
 import { Order } from '../order/entities/order.entity';
+import { Customer } from '../users/entities/customer.entity';
 @Injectable()
 export class AppotaService {
   @InjectRepository(HistoryAppotaTransaction)
@@ -25,6 +26,8 @@ export class AppotaService {
   private orderTableResponse: Repository<Order>;
   @InjectRepository(UserEntity)
   private userRepository: Repository<UserEntity>;
+  @InjectRepository(Customer)
+  private customerRepository: Repository<Customer>;
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -59,11 +62,11 @@ export class AppotaService {
         secret: process.env.appotaSecretKey,
       },
     );
-    const user = await this.userRepository.findOne(userId);
+    const user = await this.customerRepository.findOne(userId);
     const order = await this.orderTable.create({
-      user: user,
-      money: createVnpayDto.amount,
+      money: createVnpayDto.amount.toString(),
       status: '0',
+      user: user,
     });
 
     await this.orderTable.save(order);

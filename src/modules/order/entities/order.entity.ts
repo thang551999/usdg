@@ -20,7 +20,13 @@ export class Order {
   createAt: Date;
 
   @Column()
-  price: number;
+  money: string;
+
+  @Column()
+  type: number;
+
+  @Column({ length: 10 })
+  phoneNumber: string;
 
   @Column({ default: ORDER_STATUS.WAIT_CONFIRM })
   status: number;
@@ -40,9 +46,9 @@ export class Order {
   //many to one use
 
   @ManyToOne(() => Customer, (customer) => customer.order)
-  customer: Customer[];
+  customer: Customer;
 
   // many to place
   @ManyToOne(() => Place, (place) => place.order)
-  place: Place[];
+  place: Place;
 }

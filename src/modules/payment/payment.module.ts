@@ -8,10 +8,11 @@ import { UserEntity } from '../users/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from '../auth/jwt.strategy';
 import { Order } from '../order/entities/order.entity';
+import { Customer } from '../users/entities/customer.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([OrderVnPay, UserEntity, Order]),
+    TypeOrmModule.forFeature([OrderVnPay, UserEntity, Order, Customer]),
     HttpModule,
   ],
   controllers: [AppotaController],

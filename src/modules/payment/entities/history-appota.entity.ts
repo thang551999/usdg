@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Customer } from '../../users/entities/customer.entity';
 
-@Entity({ name: 'history-transaction-appota' })
+@Entity({ name: 'history-transaction-appotapay' })
 class HistoryAppotaTransaction {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
@@ -17,7 +17,7 @@ class HistoryAppotaTransaction {
   user: Customer;
 
   @Column({ nullable: true })
-  public money: number;
+  public money: string;
 
   @Column('text', { nullable: true })
   public status: string;

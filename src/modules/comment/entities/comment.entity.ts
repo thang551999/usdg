@@ -14,7 +14,7 @@ export class Comment {
   id: string;
 
   @Column()
-  start: number;
+  star: number;
 
   @Column()
   comment: string;
