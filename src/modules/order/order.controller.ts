@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   UseGuards,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OwnerAuthGuard, UserAuthGuard } from '../auth/jwt.strategy';
 import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
+import { ORDER_MESSAGE, API_SUCCESS } from '../../common/constant';
 
 @Controller('order')
 export class OrderController {
@@ -24,7 +27,22 @@ export class OrderController {
     @Body() createOrderDto: CreateOrderDto,
     @UserInfo() user: IUserInfo,
   ) {
-    return this.orderService.create(createOrderDto, user);
+    const order = await this.orderService.create(createOrderDto, user);
+    if (order == ORDER_MESSAGE.NOT_ENOUGH_MONEY)
+      throw new HttpException(
+        ORDER_MESSAGE.NOT_ENOUGH_MONEY,
+        HttpStatus.BAD_REQUEST,
+      );
+    if (order == ORDER_MESSAGE.TIME_AVAILABILITY)
+      throw new HttpException(
+        ORDER_MESSAGE.TIME_AVAILABILITY,
+        HttpStatus.BAD_REQUEST,
+      );
+
+    return {
+      code: API_SUCCESS,
+      data: order,
+    };
   }
 
   // @Post('without-login')

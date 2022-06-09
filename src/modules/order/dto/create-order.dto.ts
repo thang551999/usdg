@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsArray,
   IsNotEmpty,
+  IsEmpty,
 } from 'class-validator';
 import { TypeOrder } from '../../../common/constant';
 import { IsDateStringFormat } from '../../../common/validate.decorator';
@@ -27,8 +28,7 @@ export class CreateOrderDto {
     required: false,
   })
   @IsString()
-  @IsDateStringFormat('MM/DD/YYYY HH:mm:ss', true)
-  dayOrder: Date;
+  timeStart: string;
 
   @ApiProperty({
     example: '03/09/2022 11:00:00',
@@ -36,17 +36,7 @@ export class CreateOrderDto {
     required: false,
   })
   @IsString()
-  @IsDateStringFormat('MM/DD/YYYY HH:mm:ss', true)
-  timeStart: Date;
-
-  @ApiProperty({
-    example: '03/09/2022 11:00:00',
-    description: 'Format: MM/DD/YYYY HH:mm:ss',
-    required: false,
-  })
-  @IsString()
-  @IsDateStringFormat('MM/DD/YYYY HH:mm:ss', true)
-  timeEnd: Date;
+  orderDay: string;
 
   @ApiProperty()
   @IsOptional()

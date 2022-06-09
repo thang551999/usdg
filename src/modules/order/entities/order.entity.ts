@@ -35,10 +35,7 @@ export class Order {
   dayOrder: Date;
 
   @Column()
-  timeStart: Date;
-
-  @Column()
-  timeEnd: Date;
+  timeStart: string;
 
   @OneToMany(() => VoucherOrder, (voucherOrder) => voucherOrder.order)
   voucherOrder: VoucherOrder[];

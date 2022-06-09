@@ -15,6 +15,7 @@ export const AUTH_MESSAGE = {
 };
 export const ORDER_MESSAGE = {
   NOT_ENOUGH_MONEY: 'Bạn không đủ tiền',
+  TIME_AVAILABILITY: 'Time not availability',
 };
 export const enum TYPE_COMMENT {}
 export const enum TYPE_ORDER {}
@@ -32,7 +33,7 @@ export enum ORDER_STATUS {
 
 export enum TypeVoucher {
   Percent = 0,
-  Money = 1,
+  Cash = 1,
 }
 
 export enum PaymentStatus {

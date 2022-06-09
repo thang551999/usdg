@@ -119,7 +119,7 @@ export class AuthService {
       where: {
         email: loginUserDto.email,
       },
-      relations: ['ownerPlace', 'admin'],
+      relations: ['ownerPlace', 'admin', 'customer'],
     });
     if (!user) {
       throw new HttpException(
@@ -140,6 +140,7 @@ export class AuthService {
             id: user.id,
             role: user.role,
             userType: user.userType,
+            relativeId: user.customer.id,
           },
           { expiresIn: '5m' },
         );
@@ -159,6 +160,9 @@ export class AuthService {
       );
     }
     let relativeId = '';
+    if (user.role === ROLE.user) {
+      relativeId = user.customer.id;
+    }
     if (user.role === ROLE.owner) {
       if (user.approved === false) {
         throw new HttpException(

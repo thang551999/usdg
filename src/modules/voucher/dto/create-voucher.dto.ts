@@ -32,11 +32,12 @@ export class CreateVoucherDto {
   @IsEnum(TypeVoucher)
   type: number;
 
-  @ApiProperty({ required: true, enum: TypeVoucher })
+  @ApiProperty({ required: true })
+  @IsOptional()
   @IsNumber()
   isActive: number;
 
-  @ApiProperty({ required: true, enum: TypeVoucher })
+  @ApiProperty({ required: true })
   @IsNumber()
   @Min(0)
   amount: number;

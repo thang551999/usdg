@@ -33,6 +33,19 @@ export class OwnerPlaceController {
     };
   }
 
+  @Post('service')
+  async createService(
+    @Body() createPlaceDto: CreatePlaceDto,
+    @UserInfo() user: IUserInfo,
+  ) {
+    const place = await this.placeService.create(createPlaceDto, user);
+    return {
+      code: API_SUCCESS,
+      message: PLACE_MESSAGE.CREATE_PLACE_SUCCESS,
+      data: place,
+    };
+  }
+
   @Get()
   async getTypePlace() {
     const place = await this.placeService.getTypePlaceAdmin();

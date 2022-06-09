@@ -24,6 +24,20 @@ export class CreatePlaceDto {
   @ApiProperty({ required: true, example: '8h30', description: 'Format 8:30' })
   @IsNotEmpty()
   @IsString()
+  description: string;
+
+  @ApiProperty({
+    required: true,
+    example: 'Sân bóng bách khoa',
+    description: 'Format 8:30',
+  })
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @ApiProperty({ required: true, example: '8h30', description: 'Format 8:30' })
+  @IsNotEmpty()
+  @IsString()
   timeClose: string;
 
   @ApiProperty({ required: true, example: 300 })
@@ -38,20 +52,20 @@ export class CreatePlaceDto {
   })
   priceMin: string;
 
-  @ApiProperty({ required: true, example: 1000 })
+  @ApiProperty()
   @IsArray()
   imageBanner;
 
-  @ApiProperty({ required: true, example: 1000 })
+  @ApiProperty()
   @IsArray()
   imageDetails;
 
-  @ApiProperty({ example: 1000 })
+  @ApiProperty()
   @IsOptional()
   @IsArray()
   timeGold;
 
-  @ApiProperty({ example: 1000 })
+  @ApiProperty()
   @IsOptional()
   @IsArray()
   services;

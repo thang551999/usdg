@@ -30,7 +30,7 @@ export class VoucherService {
     const voucher = await this.voucherPlaceRepository.create({
       amount: createVoucherDto.amount,
       type: createVoucherDto.type,
-      isActive: createVoucherDto.isActive,
+      isActive: createVoucherDto.isActive ? createVoucherDto.isActive : 0,
       endDate: createVoucherDto.endDate,
       maxMoneySale: createVoucherDto.maxMoneySale,
       moneyCondition: createVoucherDto.moneyCondition,

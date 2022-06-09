@@ -8,16 +8,13 @@ import {
 } from 'typeorm';
 import { Place } from './place.entity';
 
-@Entity({ name: 'time-gold' })
+@Entity({ name: 'time-gold-place' })
 export class TimeGold {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
   @Column()
   timeStart: string;
-
-  @Column()
-  timeEnd: string;
 
   @Column()
   price: string;
