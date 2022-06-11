@@ -8,12 +8,14 @@ import {
   UseGuards,
   Query,
   HttpCode,
+  Req,
 } from '@nestjs/common';
 import { AppotaService } from './appota.service';
 import {
   CreatePaymentDto,
   CreateAppotaDto,
   GetParams,
+  CreateVnpay,
 } from './dto/create-vnpay.dto';
 import { AdminAuthGuard, JwtAuthGuard } from '../auth/jwt.strategy';
 import { IUserInfo, UserInfo } from 'src/common/decorators/user.decorator';
@@ -23,6 +25,21 @@ import { ApiOperation } from '@nestjs/swagger';
 @Controller('payment/')
 export class AppotaController {
   constructor(private readonly vnpayService: AppotaService) {}
+
+  @Post('vnpay/create-payment')
+  @ApiOperation({ summary: '{Thang}' })
+  @UseGuards(JwtAuthGuard)
+  async createPaymentVnpay(
+    @Body() createVnpayDto: CreateVnpay,
+    @UserInfo() user: IUserInfo,
+    @Req() req,
+  ) {
+    return this.vnpayService.createPaymentVnpayUrl(
+      req,
+      createVnpayDto,
+      user.id,
+    );
+  }
 
   @Post('appotapay/create-payment')
   @ApiOperation({ summary: '{Thang}' })

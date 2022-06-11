@@ -32,8 +32,8 @@ export class Place {
   @Column({ default: 100 })
   maxVoucherCanUse: number;
 
-  @Column({ type: 'simple-array', name: 'imageBanner' })
-  imageBanner: string;
+  // @Column({ type: 'simple-array', name: 'imageBanner' })
+  // imageBanner: string;
 
   @Column({ type: 'simple-array', name: 'imageDetails' })
   imageDetails: string;

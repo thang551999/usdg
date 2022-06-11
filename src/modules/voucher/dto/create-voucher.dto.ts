@@ -16,7 +16,7 @@ export class CreateVoucherDto {
   @IsOptional()
   @IsString()
   @Matches(/^[0-9]*$/, {
-    message: 'F-NFT number must be number',
+    message: 'Giá phải chứ ký tự 0-9',
   })
   maxMoneySale: string;
 
@@ -24,9 +24,13 @@ export class CreateVoucherDto {
   @IsOptional()
   @IsString()
   @Matches(/^[0-9]*$/, {
-    message: 'F-NFT number must be number',
+    message: 'Giá phải chứ ký tự 0-9',
   })
   moneyCondition: string;
+
+  @ApiProperty({ required: true, example: '1000' })
+  @IsString()
+  name: string;
 
   @ApiProperty({ required: true, enum: TypeVoucher })
   @IsEnum(TypeVoucher)
@@ -56,3 +60,5 @@ export class CreateVoucherDto {
   @IsNotEmpty()
   place: Place;
 }
+
+export class GetVoucherOwner {}

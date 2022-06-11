@@ -7,7 +7,10 @@ export class ServicePlace {
   id: string;
 
   @Column()
-  price: number;
+  price: string;
+
+  @Column({ nullable: true })
+  lastPrice: string;
 
   @Column()
   name: string;

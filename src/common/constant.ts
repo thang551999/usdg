@@ -22,8 +22,9 @@ export const enum TYPE_ORDER {}
 export const PLACE_MESSAGE = {
   CREATE_PLACE_SUCCESS: 'Create place success',
   DISABLE_SUCCESS: 'disable success',
+  CREATE_SERVICE_SUCCESS: 'Tạo thành công dịch vụ của sân',
 };
-export const MAX_SIZE = 100000;
+export const MAX_SIZE = 1000000000000;
 export const FILE_LIMIT = 'File limit';
 export enum ORDER_STATUS {
   WAIT_CONFIRM = 0,

@@ -18,6 +18,11 @@ import { ReturnIPNDto } from './dto/return-ipn.dto';
 import { OrderStatus, PaymentStatus } from '../../common/constant';
 import { Order } from '../order/entities/order.entity';
 import { Customer } from '../users/entities/customer.entity';
+import * as qs from 'qs';
+import * as crypto from 'crypto';
+import { format } from 'date-fns';
+import * as date from 'date-and-time';
+
 @Injectable()
 export class AppotaService {
   @InjectRepository(HistoryAppotaTransaction)
@@ -226,21 +231,18 @@ export class AppotaService {
     }
   }
 
-  sortObject(o) {
+  sortObject(obj) {
     const sorted = {};
+    const str = [];
     let key;
-    const a = [];
-
-    for (key in o) {
-      if (o.hasOwnProperty(key)) {
-        a.push(key);
+    for (key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        str.push(encodeURIComponent(key));
       }
     }
-
-    a.sort();
-
-    for (key = 0; key < a.length; key++) {
-      sorted[a[key]] = o[a[key]];
+    str.sort();
+    for (key = 0; key < str.length; key++) {
+      sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, '+');
     }
     return sorted;
   }
@@ -358,5 +360,64 @@ export class AppotaService {
     // } else {
     //   throw new BadRequestException(500, `Sai Chu Ky`);
     // }
+  }
+
+  async createPaymentVnpayUrl(req, createVnpayDto, user) {
+    const ipAddr =
+      req.headers['x-forwarded-for'] ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      req.connection.socket.remoteAddress;
+    const tmnCode = process.env.vnp_TmnCode;
+    const secretKey = process.env.vnp_HashSecret;
+    let vnpUrl = process.env.vnp_Url;
+    const returnUrl = process.env.vnp_ReturnUrl;
+
+    const amount = req.body.amount.toString();
+    const bankCode = req.body.bankCode;
+    const orderInfo = req.body.orderDescription;
+    const orderType = req.body.orderType;
+    let locale = req.body.language;
+    const createDate = this.getFormat();
+    const orderId = date.format(new Date(), 'HHmmss');
+    if (locale == null || locale == '') {
+      locale = 'vn';
+    }
+    const currCode = 'VND';
+    let vnp_Params = {};
+    vnp_Params['vnp_Version'] = '2.1.0';
+    vnp_Params['vnp_Command'] = 'pay';
+    vnp_Params['vnp_TmnCode'] = tmnCode;
+    // vnp_Params['vnp_Merchant'] = '';
+    vnp_Params['vnp_Locale'] = locale;
+    vnp_Params['vnp_CurrCode'] = currCode;
+    vnp_Params['vnp_TxnRef'] = orderId;
+    vnp_Params['vnp_OrderInfo'] = orderInfo;
+    vnp_Params['vnp_OrderType'] = orderType;
+    vnp_Params['vnp_Amount'] = amount;
+    vnp_Params['vnp_ReturnUrl'] = returnUrl;
+    vnp_Params['vnp_IpAddr'] = ipAddr;
+    vnp_Params['vnp_CreateDate'] = createDate;
+    if (bankCode != null && bankCode !== '') {
+      vnp_Params['vnp_BankCode'] = bankCode;
+    }
+    vnp_Params = this.sortObject(vnp_Params);
+    const signData = qs.stringify(vnp_Params, { encode: false });
+    const hmac = crypto.createHmac('sha512', secretKey);
+    const signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
+    vnp_Params['vnp_SecureHash'] = signed;
+    vnpUrl += '?' + qs.stringify(vnp_Params, { encode: false });
+
+    return vnpUrl;
+  }
+  getFormat() {
+    const d_t = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+    const year = d_t.getFullYear();
+    const month = ('0' + (d_t.getMonth() + 1)).slice(-2);
+    const day = ('0' + d_t.getDate()).slice(-2);
+    const hour = ('0' + d_t.getHours()).slice(-2);
+    const minute = ('0' + d_t.getMinutes()).slice(-2);
+    const seconds = ('0' + d_t.getSeconds()).slice(-2);
+    return `${year}${month}${day}${hour}${minute}${seconds}`;
   }
 }

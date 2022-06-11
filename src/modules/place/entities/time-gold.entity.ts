@@ -19,6 +19,9 @@ export class TimeGold {
   @Column()
   price: string;
 
+  @Column({ nullable: true })
+  lastPrice: string;
+
   @ManyToOne(() => Place, (place) => place.timeGold)
   place: Place;
 }

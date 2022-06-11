@@ -7,9 +7,19 @@ import { Place } from './entities/place.entity';
 import { TypePlace } from './entities/type-place.entity';
 import { AdminPlaceController } from './admin.place.controller';
 import { OwnerPlaceController } from './owner.place.controller';
+import { ServicePlace } from './entities/service-place.entity';
+import { TimeGold } from './entities/time-gold.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Place, OwnerPlace, TypePlace])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Place,
+      OwnerPlace,
+      TypePlace,
+      ServicePlace,
+      TimeGold,
+    ]),
+  ],
   controllers: [PlaceController, AdminPlaceController, OwnerPlaceController],
   providers: [PlaceService],
 })

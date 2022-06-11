@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, isString, IsString } from 'class-validator';
 
 export class CreateAppotaDto {
   @ApiProperty({ example: 'user@gmail.com' })
@@ -19,7 +19,28 @@ export class CreateAppotaDto {
   @IsOptional()
   paymentMethod: string;
 }
+export class CreateVnpay {
+  @ApiProperty({ example: 'user@gmail.com' })
+  @IsString()
+  amount: string;
 
+  @ApiProperty({ example: 'user@gmail.com' })
+  @IsOptional()
+  @IsString()
+  bankCode: string;
+
+  @ApiProperty({ example: 'user@gmail.com' })
+  @IsOptional()
+  orderType: string;
+
+  @ApiProperty({ example: 'user@gmail.com' })
+  @IsOptional()
+  orderDescription;
+
+  @ApiProperty({ example: 'user@gmail.com' })
+  @IsOptional()
+  language;
+}
 export class CreatePaymentDto {
   @ApiProperty({ example: 'user@gmail.com' })
   @IsString()

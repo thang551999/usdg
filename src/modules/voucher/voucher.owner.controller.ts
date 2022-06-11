@@ -31,7 +31,7 @@ export class VoucherOwnerPlaceController {
   }
 
   @Get()
-  getVoucherCreate() {
+  async getVoucherCreate() {
     return 0;
   }
 

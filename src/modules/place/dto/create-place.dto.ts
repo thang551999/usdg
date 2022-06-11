@@ -8,6 +8,7 @@ import {
   IsOptional,
   Matches,
 } from 'class-validator';
+import { Place } from '../entities/place.entity';
 import { TypePlace } from '../entities/type-place.entity';
 
 export class CreatePlaceDto {
@@ -48,13 +49,13 @@ export class CreatePlaceDto {
   @ApiProperty({ required: true, example: 1000 })
   @IsNotEmpty()
   @Matches(/^[0-9]*$/, {
-    message: 'F-NFT number must be number',
+    message: 'Giá phải chứ ký tự 0-9',
   })
   priceMin: string;
 
-  @ApiProperty()
-  @IsArray()
-  imageBanner;
+  // @ApiProperty()
+  // @IsArray()
+  // imageBanner;
 
   @ApiProperty()
   @IsArray()
@@ -84,4 +85,46 @@ export class TypePlaceDto {
   @ApiProperty({ example: 1000 })
   @IsString()
   name: string;
+}
+
+export class CreateServiceDto {
+  @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
+  @IsNotEmpty()
+  @IsString()
+  price: string;
+
+  @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
+  @IsNotEmpty()
+  @IsString()
+  lastPrice: string;
+
+  @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
+  @IsNotEmpty()
+  place: Place;
+}
+
+export class TimeGold {
+  @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
+  @IsNotEmpty()
+  @IsString()
+  price: string;
+
+  @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
+  @IsNotEmpty()
+  @IsString()
+  lastPrice: string;
+
+  @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
+  @IsNotEmpty()
+  @IsString()
+  timeStart: string;
+
+  @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
+  @IsNotEmpty()
+  place: Place;
 }

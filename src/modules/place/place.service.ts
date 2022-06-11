@@ -8,6 +8,8 @@ import { CreatePlaceDto } from './dto/create-place.dto';
 import { GetPlaceParams } from './dto/get-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { Place } from './entities/place.entity';
+import { ServicePlace } from './entities/service-place.entity';
+import { TimeGold } from './entities/time-gold.entity';
 import { TypePlace } from './entities/type-place.entity';
 
 @Injectable()
@@ -19,6 +21,10 @@ export class PlaceService {
     private typePlaceRepository: Repository<TypePlace>,
     @InjectRepository(OwnerPlace)
     private ownerPlaceRepository: Repository<OwnerPlace>,
+    @InjectRepository(ServicePlace)
+    private servicePlaceRepository: Repository<ServicePlace>,
+    @InjectRepository(TimeGold)
+    private timeGoldPlaceRepository: Repository<TimeGold>,
     private readonly jwtService: JwtService,
   ) {}
   async create(createPlaceDto: CreatePlaceDto, user) {
@@ -71,13 +77,21 @@ export class PlaceService {
         isEnable: true,
         id,
       },
-      relations: ['services', 'timeGold', 'owner', 'comments', 'voucherCreate'],
+      relations: [
+        'services',
+        'timeGold',
+        'owner',
+        'comments',
+        'voucherCreate',
+        'typePlace',
+      ],
     });
     return place;
   }
 
-  update(id: number, updatePlaceDto: UpdatePlaceDto) {
-    return `This action updates a #${id} place`;
+  async update(id: string, updatePlaceDto: UpdatePlaceDto) {
+    const update = await this.placeRepository.update(id, updatePlaceDto);
+    return { message: 'Cập nhật thành công' };
   }
 
   async remove(id: string, user) {
@@ -116,5 +130,25 @@ export class PlaceService {
       },
     });
     return typePlace;
+  }
+
+  async createService(createSerivceDto, user) {
+    const isOwner = await this.placeRepository.findOne({
+      where: {
+        id: createSerivceDto.place.id,
+        owner: {
+          id: user.relativeId,
+        },
+      },
+    });
+    const service = await this.servicePlaceRepository.create(createSerivceDto);
+    await this.servicePlaceRepository.save(service);
+    return service;
+  }
+
+  async createTimeGold(timeGoldDto, user) {
+    const timeGold = await this.timeGoldPlaceRepository.create(timeGoldDto);
+    await this.timeGoldPlaceRepository.save(timeGold);
+    return timeGold;
   }
 }

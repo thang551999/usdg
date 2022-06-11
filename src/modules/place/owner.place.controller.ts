@@ -9,7 +9,11 @@ import {
   Put,
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
-import { CreatePlaceDto } from './dto/create-place.dto';
+import {
+  CreatePlaceDto,
+  CreateServiceDto,
+  TimeGold,
+} from './dto/create-place.dto';
 import { OwnerAuthGuard } from '../auth/jwt.strategy';
 import { API_SUCCESS, PLACE_MESSAGE } from '../../common/constant';
 import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
@@ -35,13 +39,26 @@ export class OwnerPlaceController {
 
   @Post('service')
   async createService(
-    @Body() createPlaceDto: CreatePlaceDto,
+    @Body() createServiceDto: CreateServiceDto,
     @UserInfo() user: IUserInfo,
   ) {
-    const place = await this.placeService.create(createPlaceDto, user);
+    const place = await this.placeService.createService(createServiceDto, user);
     return {
       code: API_SUCCESS,
-      message: PLACE_MESSAGE.CREATE_PLACE_SUCCESS,
+      message: PLACE_MESSAGE.CREATE_SERVICE_SUCCESS,
+      data: place,
+    };
+  }
+
+  @Post('time-gold')
+  async createTimeGold(
+    @Body() timeGoldDto: TimeGold,
+    @UserInfo() user: IUserInfo,
+  ) {
+    const place = await this.placeService.createTimeGold(timeGoldDto, user);
+    return {
+      code: API_SUCCESS,
+      message: PLACE_MESSAGE.CREATE_SERVICE_SUCCESS,
       data: place,
     };
   }
@@ -58,7 +75,7 @@ export class OwnerPlaceController {
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updatePlaceDto: UpdatePlaceDto) {
-    return this.placeService.update(+id, updatePlaceDto);
+    return this.placeService.update(id, updatePlaceDto);
   }
 
   @Delete(':id')
