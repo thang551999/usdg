@@ -50,7 +50,6 @@ export class AppotaController {
 
   @Get('vnpay/ipn')
   @ApiOperation({ summary: '{Thang}' })
-  @UseGuards(JwtAuthGuard)
   async vnpayIpn(
     @Body() createVnpayDto: CreateVnpay,
     @UserInfo() user: IUserInfo,
