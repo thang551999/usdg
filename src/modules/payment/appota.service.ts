@@ -22,15 +22,19 @@ import * as qs from 'qs';
 import * as crypto from 'crypto';
 import { format } from 'date-fns';
 import * as date from 'date-and-time';
+import VnpayHistory from './entities/vnpay-history.entity';
 
 @Injectable()
 export class AppotaService {
   @InjectRepository(HistoryAppotaTransaction)
   private orderTable: Repository<HistoryAppotaTransaction>;
+  @InjectRepository(VnpayHistory)
+  private vnpayTable: Repository<VnpayHistory>;
   @InjectRepository(Order)
   private orderTableResponse: Repository<Order>;
   @InjectRepository(UserEntity)
   private userRepository: Repository<UserEntity>;
+
   @InjectRepository(Customer)
   private customerRepository: Repository<Customer>;
   constructor(
@@ -380,6 +384,17 @@ export class AppotaService {
     let locale = req.body.language;
     const createDate = this.getFormat();
     const orderId = date.format(new Date(), 'HHmmss');
+    const customerInfo = await this.customerRepository.findOne({
+      where: {
+        id: user.relativeId,
+      },
+    });
+    const historyVnPay = this.vnpayTable.create({
+      money: amount.toString(),
+      status: PaymentStatus.CREATE,
+      user: customerInfo,
+    });
+    await this.vnpayTable.save(historyVnPay);
     if (locale == null || locale == '') {
       locale = 'vn';
     }
@@ -391,10 +406,10 @@ export class AppotaService {
     // vnp_Params['vnp_Merchant'] = '';
     vnp_Params['vnp_Locale'] = locale;
     vnp_Params['vnp_CurrCode'] = currCode;
-    vnp_Params['vnp_TxnRef'] = orderId;
+    vnp_Params['vnp_TxnRef'] = historyVnPay.id;
     vnp_Params['vnp_OrderInfo'] = orderInfo;
     vnp_Params['vnp_OrderType'] = orderType;
-    vnp_Params['vnp_Amount'] = amount;
+    vnp_Params['vnp_Amount'] = amount * 100;
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
     vnp_Params['vnp_IpAddr'] = ipAddr;
     vnp_Params['vnp_CreateDate'] = createDate;
@@ -452,6 +467,9 @@ export class AppotaService {
 
     if (secureHash === signed) {
       const orderId = vnp_Params['vnp_TxnRef'];
+      await this.vnpayTable.update(orderId, {
+        status: PaymentStatus.SUCCESS,
+      });
       const rspCode = vnp_Params['vnp_ResponseCode'];
       //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
       return { RspCode: '00', Message: 'success' };

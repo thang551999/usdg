@@ -10,7 +10,7 @@ import { PaymentStatus } from '../../../common/constant';
 import { Customer } from '../../users/entities/customer.entity';
 
 @Entity({ name: 'vnpay-history' })
-class HistoryAppotaTransaction {
+class VnpayHistory {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
@@ -28,4 +28,4 @@ class HistoryAppotaTransaction {
   createdAt: Date;
 }
 
-export default HistoryAppotaTransaction;
+export default VnpayHistory;

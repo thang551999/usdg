@@ -9,10 +9,17 @@ import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from '../auth/jwt.strategy';
 import { Order } from '../order/entities/order.entity';
 import { Customer } from '../users/entities/customer.entity';
+import VnpayHistory from './entities/vnpay-history.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([OrderVnPay, UserEntity, Order, Customer]),
+    TypeOrmModule.forFeature([
+      OrderVnPay,
+      UserEntity,
+      Order,
+      Customer,
+      VnpayHistory,
+    ]),
     HttpModule,
   ],
   controllers: [AppotaController],
