@@ -50,11 +50,7 @@ export class AppotaController {
 
   @Get('vnpay/ipn')
   @ApiOperation({ summary: '{Thang}' })
-  async vnpayIpn(
-    @Body() createVnpayDto: CreateVnpay,
-    @UserInfo() user: IUserInfo,
-    @Req() req,
-  ) {
+  async vnpayIpn(@Req() req) {
     return this.vnpayService.returnIpn(req);
   }
 
