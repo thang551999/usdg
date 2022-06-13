@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -50,6 +51,9 @@ export class Place {
   @Column({ name: 'isEnable', default: true })
   isEnable: boolean;
 
+  @Column({ default: false })
+  isDeleted: boolean;
+
   @Column({ name: 'timeClose' })
   timeClose: string;
 
@@ -66,6 +70,7 @@ export class Place {
   timeDistance: number;
 
   @ManyToOne(() => OwnerPlace, (ownerPlace) => ownerPlace.places)
+  @JoinColumn()
   owner: OwnerPlace;
 
   @ManyToOne(() => TypePlace, (typePlace) => typePlace.place)
@@ -73,12 +78,14 @@ export class Place {
   //one to many bang time vip
   @OneToMany(() => TimeGold, (timeGold) => timeGold.place, {
     cascade: true,
+    eager: true,
   })
   timeGold: TimeGold[];
 
   //one to many dich vu
   @OneToMany(() => ServicePlace, (service) => service.place, {
     cascade: true,
+    eager: true,
   })
   services: ServicePlace[];
 

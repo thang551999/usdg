@@ -424,7 +424,7 @@ export class AppotaService {
     vnp_Params['vnp_SecureHash'] = signed;
     vnpUrl += '?' + qs.stringify(vnp_Params, { encode: false });
 
-    return vnpUrl;
+    return { url: vnpUrl };
   }
 
   async returnVnpayUrl(req, res) {

@@ -33,3 +33,19 @@ export class GetPlaceParams {
   @IsString()
   typePlace: string;
 }
+
+export class GetPlaceOwner {
+  @ApiProperty({ example: 1 })
+  @IsNumber()
+  @Min(0)
+  pageSize: number;
+
+  @ApiProperty({ example: 1 })
+  @IsNumber()
+  @Min(0)
+  page: number;
+
+  @ApiProperty({ example: 1 })
+  @IsOptional()
+  name: string;
+}

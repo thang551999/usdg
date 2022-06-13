@@ -234,6 +234,7 @@ export class AuthService {
       where: {
         id,
       },
+      relations: ['customer'],
       select: [
         'avatar',
         'email',

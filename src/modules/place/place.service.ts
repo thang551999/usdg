@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { API_FAIL, PLACE_MESSAGE, ROLE } from '../../common/constant';
+import { IUserInfo } from '../../common/decorators/user.decorator';
 import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 import { CreatePlaceDto } from './dto/create-place.dto';
-import { GetPlaceParams } from './dto/get-place.dto';
+import { GetPlaceOwner, GetPlaceParams } from './dto/get-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { Place } from './entities/place.entity';
 import { ServicePlace } from './entities/service-place.entity';
@@ -61,7 +62,7 @@ export class PlaceService {
       },
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
-      relations: ['typePlace', 'timeGold'],
+      relations: ['typePlace', 'timeGold', 'services'],
     });
     return {
       total: places[1],
@@ -106,6 +107,7 @@ export class PlaceService {
     if (place.owner.id === user.relativeId) {
       await this.placeRepository.update(id, {
         isEnable: false,
+        isDeleted: true,
       });
     }
     return PLACE_MESSAGE.DISABLE_SUCCESS;
@@ -126,6 +128,27 @@ export class PlaceService {
     return typePlace;
   }
 
+  async getPlaceOwner(getParams: GetPlaceOwner, user: IUserInfo) {
+    const places = await this.placeRepository.findAndCount({
+      relations: ['owner'],
+      where: {
+        isDeleted: false,
+        name: getParams.name ? Like(`%${getParams.name}%`) : Like(`%%`),
+        owner: {
+          id: user.relativeId,
+        },
+      },
+      skip: (getParams.page - 1) * getParams.pageSize,
+      take: getParams.pageSize,
+    });
+    return {
+      total: places[1],
+      pageSize: getParams.pageSize,
+      currentPage: getParams.page,
+      records: places[0],
+    };
+  }
+
   async getTypePlace() {
     const typePlace = await this.typePlaceRepository.find({
       where: {
@@ -138,7 +161,7 @@ export class PlaceService {
     return typePlace;
   }
 
-  async createService(createSerivceDto, user) {
+  async createService(createSerivceDto, user: IUserInfo) {
     const isOwner = await this.placeRepository.findOne({
       where: {
         id: createSerivceDto.place.id,
@@ -147,11 +170,54 @@ export class PlaceService {
         },
       },
     });
-    const service = await this.servicePlaceRepository.create(createSerivceDto);
-    await this.servicePlaceRepository.save(service);
-    return service;
+    if (isOwner) {
+      const service = await this.servicePlaceRepository.create(
+        createSerivceDto,
+      );
+      await this.servicePlaceRepository.save(service);
+      return service;
+    } else {
+      return { message: 'Không phải chủ sân ' };
+    }
+  }
+  async updateTimeGold(id, updateTimeGold, user: IUserInfo) {
+    const timeGold = await this.timeGoldPlaceRepository.findOne({
+      where: { id },
+      relations: ['place'],
+    });
+    if (timeGold) {
+      const place = await this.placeRepository.findOne({
+        where: { id: timeGold.place.id },
+        relations: ['owner'],
+      });
+      if (place.owner.id !== user.relativeId) {
+        return { message: 'Không tìm thấy time Gold' };
+      }
+      await this.timeGoldPlaceRepository.update(id, updateTimeGold);
+
+      return { message: 'Cập nhật time gold thành công' };
+    }
+    return { message: 'Không tìm thấy time Gold' };
   }
 
+  async updateService(id, updateTimeGold, user: IUserInfo) {
+    const service = await this.servicePlaceRepository.findOne({
+      where: { id },
+      relations: ['place'],
+    });
+    if (service) {
+      const place = await this.placeRepository.findOne({
+        where: { id: service.place.id },
+        relations: ['owner'],
+      });
+      if (place.owner.id !== user.relativeId) {
+        return { message: 'Không tìm thấy dịch vu' };
+      }
+      await this.servicePlaceRepository.update(id, updateTimeGold);
+      return { message: 'Cập nhật dịch vụ thành công' };
+    }
+    return { message: 'Không tìm thấy dịch vu' };
+  }
   async createTimeGold(timeGoldDto, user) {
     const timeGold = await this.timeGoldPlaceRepository.create(timeGoldDto);
     await this.timeGoldPlaceRepository.save(timeGold);

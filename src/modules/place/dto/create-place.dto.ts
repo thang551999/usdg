@@ -94,7 +94,7 @@ export class CreateServiceDto {
   price: string;
 
   @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   lastPrice: string;
 
@@ -115,7 +115,7 @@ export class TimeGold {
   price: string;
 
   @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   lastPrice: string;
 

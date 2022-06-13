@@ -7,6 +7,7 @@ import {
   Delete,
   Param,
   Put,
+  Query,
 } from '@nestjs/common';
 import { PlaceService } from './place.service';
 import {
@@ -17,7 +18,13 @@ import {
 import { OwnerAuthGuard } from '../auth/jwt.strategy';
 import { API_SUCCESS, PLACE_MESSAGE } from '../../common/constant';
 import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
-import { UpdatePlaceDto } from './dto/update-place.dto';
+import {
+  UpdatePlaceDto,
+  UpdateService,
+  UpdateTimeGold,
+} from './dto/update-place.dto';
+import { GetParams } from '../payment/dto/create-vnpay.dto';
+import { GetPlaceOwner } from './dto/get-place.dto';
 
 @UseGuards(OwnerAuthGuard)
 @Controller('owner/place')
@@ -63,7 +70,7 @@ export class OwnerPlaceController {
     };
   }
 
-  @Get()
+  @Get('type-place')
   async getTypePlace() {
     const place = await this.placeService.getTypePlaceAdmin();
     return {
@@ -71,6 +78,35 @@ export class OwnerPlaceController {
       message: PLACE_MESSAGE.CREATE_PLACE_SUCCESS,
       data: place,
     };
+  }
+
+  @Get()
+  async getPlace(
+    @Query() getParams: GetPlaceOwner,
+    @UserInfo() user: IUserInfo,
+  ) {
+    const place = await this.placeService.getPlaceOwner(getParams, user);
+    return {
+      code: API_SUCCESS,
+      data: place,
+    };
+  }
+
+  @Put('time-gold/:id')
+  updateTimeGold(
+    @Param('id') id: string,
+    @Body() updatePlaceDto: UpdateTimeGold,
+    @UserInfo() user: IUserInfo,
+  ) {
+    return this.placeService.updateTimeGold(id, updatePlaceDto, user);
+  }
+  @Put('service/:id')
+  updateService(
+    @Param('id') id: string,
+    @Body() updatePlaceDto: UpdateService,
+    @UserInfo() user: IUserInfo,
+  ) {
+    return this.placeService.updateService(id, updatePlaceDto, user);
   }
 
   @Put(':id')
