@@ -27,6 +27,9 @@ export class OwnerPlace {
   @Column()
   phone: string;
 
+  @Column({ default: '0' })
+  money: string;
+
   @OneToOne(() => UserEntity, (user) => user.ownerPlace)
   @JoinColumn()
   userInfo: UserEntity;
