@@ -5,12 +5,7 @@ import {
   ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiConsumes,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IUserInfo, UserInfo } from 'src/common/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/jwt.strategy';
 import { UserService } from './user.service';

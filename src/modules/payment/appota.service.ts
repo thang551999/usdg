@@ -23,6 +23,7 @@ import * as crypto from 'crypto';
 import { format } from 'date-fns';
 import * as date from 'date-and-time';
 import VnpayHistory from './entities/vnpay-history.entity';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class AppotaService {
@@ -470,6 +471,14 @@ export class AppotaService {
       await this.vnpayTable.update(orderId, {
         status: PaymentStatus.SUCCESS,
       });
+      const order = await this.vnpayTable.findOne({
+        where: { id: orderId },
+        relations: ['user'],
+      });
+      const money = new BigNumber(order.user.money)
+        .plus(new BigNumber(order.money))
+        .toString();
+      await this.customerRepository.update(order.user.id, { money });
       const rspCode = vnp_Params['vnp_ResponseCode'];
       //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
       return { RspCode: '00', Message: 'success' };

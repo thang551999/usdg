@@ -13,6 +13,9 @@ import { CommentModule } from './modules/comment/comment.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { PaymentModule } from './modules/payment/payment.module';
+import { ArticleModule } from './modules/article/article.module';
+import { FindCompetitorModule } from './modules/find-competitor/find-competitor.module';
+import { AdressModule } from './modules/adress/adress.module';
 @Module({
   imports: [
     SharedModule,
@@ -46,6 +49,9 @@ import { PaymentModule } from './modules/payment/payment.module';
     AdminModule,
     UploadModule,
     PaymentModule,
+    ArticleModule,
+    FindCompetitorModule,
+    AdressModule,
   ],
   controllers: [AppController],
   providers: [AppService],

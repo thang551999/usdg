@@ -88,7 +88,11 @@ export class PlaceService {
     });
     return place;
   }
-
+  async getTimeAvailable(placeId, day) {
+    const place = await this.placeRepository.findOne({
+      where: { id: placeId },
+    });
+  }
   async update(id: string, updatePlaceDto: UpdatePlaceDto) {
     const update = await this.placeRepository.update(id, updatePlaceDto);
     return { message: 'Cập nhật thành công' };
@@ -128,7 +132,9 @@ export class PlaceService {
         isDeleted: false,
         isActive: true,
       },
+      relations: ['place'],
     });
+
     return typePlace;
   }
 

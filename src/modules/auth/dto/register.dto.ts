@@ -1,5 +1,11 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { ROLE } from '../../../common/constant';
 
@@ -18,6 +24,14 @@ export class RegisterUserDto {
   @IsEnum(ROLE)
   @IsNotEmpty()
   role: number;
+
+  @ApiProperty({ example: {} })
+  @IsOptional()
+  ownerPlace;
+
+  @ApiProperty({ example: {} })
+  @IsOptional()
+  admin;
 }
 export class ResRegisterDto {
   @ApiProperty({ example: 'Thành Công' })
