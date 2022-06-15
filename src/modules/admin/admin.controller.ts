@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -19,6 +20,21 @@ export class AdminController {
   create(@Body() createAdminDto: CreateAdminDto) {
     return this.adminService.create(createAdminDto);
   }
+
+  @Get('owner-place')
+  getOwnerPlace(@Body() createAdminDto: CreateAdminDto) {
+    return this.adminService.create(createAdminDto);
+  }
+
+  @Put('owner-place')
+  approveOwnerPlace(@Body() createAdminDto: CreateAdminDto) {
+    return this.adminService.create(createAdminDto);
+  }
+
+  // @Get('owner-place')
+  // approveOwnerPlace(@Body() createAdminDto: CreateAdminDto) {
+  //   return this.adminService.create(createAdminDto);
+  // }
 
   @Get()
   findAll() {

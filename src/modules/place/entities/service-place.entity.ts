@@ -15,6 +15,9 @@ export class ServicePlace {
   @Column()
   name: string;
 
+  @Column()
+  image: string;
+
   @Column({ default: false })
   isDelete: boolean;
 

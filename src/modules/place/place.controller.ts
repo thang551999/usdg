@@ -37,6 +37,15 @@ export class PlaceController {
     };
   }
 
+  @Get('available/:id')
+  async getAvailableTime(@Param('id') id: string, @Query() day: string) {
+    const place = await this.placeService.getTimeAvailable(id, day);
+    return {
+      code: API_SUCCESS,
+      data: place,
+    };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const place = await this.placeService.findOne(id);

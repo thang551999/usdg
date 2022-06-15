@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { subMinutes } from 'date-fns';
 import { Like, Repository } from 'typeorm';
 import { API_FAIL, PLACE_MESSAGE, ROLE } from '../../common/constant';
 import { IUserInfo } from '../../common/decorators/user.decorator';
@@ -93,6 +94,8 @@ export class PlaceService {
     const place = await this.placeRepository.findOne({
       where: { id: placeId },
     });
+    const time = subMinutes(new Date(), 30);
+    console.log(time);
   }
   async update(id: string, updatePlaceDto: UpdatePlaceDto) {
     const update = await this.placeRepository.update(id, updatePlaceDto);

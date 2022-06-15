@@ -105,6 +105,11 @@ export class CreateServiceDto {
 
   @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
   @IsNotEmpty()
+  @IsString()
+  image: string;
+
+  @ApiProperty({ required: true, example: 'Lãng Yên hai bà trung' })
+  @IsNotEmpty()
   place: Place;
 }
 
