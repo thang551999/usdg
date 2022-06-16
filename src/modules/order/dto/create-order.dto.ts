@@ -42,4 +42,10 @@ export class CreateOrderDto {
   @IsOptional()
   @IsArray()
   voucher: [];
+
+  @IsArray()
+  timeBooks: string[];
+
+  @IsArray()
+  services: string[];
 }

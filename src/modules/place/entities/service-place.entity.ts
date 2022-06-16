@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
+import { HistoryService } from '../../order/entities/history-service.entity';
 import { Place } from './place.entity';
 
 @Entity({ name: 'service-place' })
@@ -23,4 +30,10 @@ export class ServicePlace {
 
   @ManyToOne(() => Place, (place) => place.services)
   place: Place;
+
+  @OneToMany(
+    () => HistoryService,
+    (historyService) => historyService.servicePlace,
+  )
+  historyServices: HistoryService[];
 }

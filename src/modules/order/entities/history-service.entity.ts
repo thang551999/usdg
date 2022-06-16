@@ -1,13 +1,18 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { ServicePlace } from '../../place/entities/service-place.entity';
+import { Order } from './order.entity';
 
 @Entity()
 export class HistoryService {
   @PrimaryGeneratedColumn('uuid')
   is: string;
 
-  //nôi đến service
+  @ManyToOne(() => Order, (order) => order.historyServices)
+  order: Order;
 
-  // gia tien
+  @Column()
+  price: string;
 
-  // orderId
+  @ManyToOne(() => ServicePlace, (service) => service.historyServices)
+  servicePlace: ServicePlace;
 }

@@ -24,17 +24,15 @@ export class OrderService {
       where: { id: createOrderDto.place.id },
       relations: ['timeGold'],
     });
-
-    let money = '';
-    const isTimeGold = place.timeGold.find(
-      (e) => e.timeStart == createOrderDto.timeStart.toString(),
-    );
-    if (isTimeGold) {
-      money = isTimeGold.price;
-    } else {
-      money = place.priceMin;
-    }
-
+    const money = new BigNumber(
+      this.getPriceTimes(
+        createOrderDto.timeBooks,
+        place.timeGold,
+        place.priceMin,
+      ),
+    )
+      .plus(new BigNumber(this.getPriceServices(createOrderDto.services)))
+      .toString();
     const user = await this.customerRepository.findOne({
       where: {
         id: userInfor.relativeId,
@@ -42,8 +40,8 @@ export class OrderService {
     });
     if (new BigNumber(user.money).isLessThan(new BigNumber(money)))
       return ORDER_MESSAGE.NOT_ENOUGH_MONEY;
-    if (this.checkExitOrder(createOrderDto.orderDay, createOrderDto.timeStart))
-      return ORDER_MESSAGE.TIME_AVAILABILITY;
+    // if (this.checkExitOrder(createOrderDto.orderDay, createOrderDto.timeStart))
+    //   return ORDER_MESSAGE.TIME_AVAILABILITY;
     const connection = getConnection();
     const queryRunner = connection.createQueryRunner();
 
@@ -59,6 +57,14 @@ export class OrderService {
         status: ORDER_STATUS.OK,
         phoneNumber: createOrderDto.phoneNumber,
         type: TypeOrder.PaymentWithWallet,
+        timeBlocks: [
+          {
+            timeStart: createOrderDto.timeBooks[0],
+            dayOrder: new Date().toString(),
+            price: place.priceMin,
+            place: place,
+          },
+        ],
       });
       await this.orderPlaceRepository.save(order);
       await this.customerRepository.update(
@@ -81,6 +87,36 @@ export class OrderService {
     return { error: 'error' };
   }
 
+  getPriceServices(services) {
+    return services.reduce(
+      (moneny, service) =>
+        new BigNumber(service.price).plus(new BigNumber(moneny)),
+      0,
+    );
+  }
+
+  getPriceTimes(times, timeGold, priceMin) {
+    return times.reduce(
+      (moneny, time) =>
+        new BigNumber(this.checkPriceTimeGold(timeGold, time, priceMin)).plus(
+          new BigNumber(moneny),
+        ),
+      0,
+    );
+  }
+
+  checkPriceTimeGold(timeGold, timeStart, priceMin) {
+    let money = '';
+    const isTimeGold = timeGold.find(
+      (e) => e.timeStart == timeStart.toString(),
+    );
+    if (isTimeGold) {
+      money = isTimeGold.price;
+    } else {
+      money = priceMin;
+    }
+    return money;
+  }
   findAll() {
     return `This action returns all order`;
   }

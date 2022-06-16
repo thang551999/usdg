@@ -10,6 +10,8 @@ import { ORDER_STATUS } from '../../../common/constant';
 import { Place } from '../../place/entities/place.entity';
 import { Customer } from '../../users/entities/customer.entity';
 import { VoucherOrder } from '../../voucher/entities/voucher_order.entity';
+import { HistoryBlockBooking } from './history-block-booking.entity';
+import { HistoryService } from './history-service.entity';
 
 @Entity({ name: 'order' })
 export class Order {
@@ -37,11 +39,22 @@ export class Order {
   @Column()
   timeStart: string;
 
+  @OneToMany(
+    () => HistoryBlockBooking,
+    (historyBlockBooking) => historyBlockBooking.order,
+    { cascade: true },
+  )
+  timeBlocks: HistoryBlockBooking[];
+
+  @OneToMany(() => HistoryService, (historyService) => historyService.order, {
+    cascade: true,
+  })
+  historyServices: HistoryService[];
+
   @OneToMany(() => VoucherOrder, (voucherOrder) => voucherOrder.order)
   voucherOrder: VoucherOrder[];
 
   //many to one use
-
   @ManyToOne(() => Customer, (customer) => customer.order)
   customer: Customer;
 

@@ -15,6 +15,7 @@ import { TimeGold } from './time-gold.entity';
 import { TypePlace } from './type-place.entity';
 import { Voucher } from '../../voucher/entities/voucher.entity';
 import { Order } from '../../order/entities/order.entity';
+import { HistoryBlockBooking } from '../../order/entities/history-block-booking.entity';
 
 @Entity({ name: 'places' })
 export class Place {
@@ -98,4 +99,10 @@ export class Place {
 
   @OneToMany(() => Order, (order) => order.place)
   order: Order[];
+
+  @OneToMany(
+    () => HistoryBlockBooking,
+    (historyBlockBooking) => historyBlockBooking.place,
+  )
+  timeBooking: HistoryBlockBooking[];
 }
