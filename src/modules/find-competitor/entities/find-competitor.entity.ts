@@ -13,4 +13,7 @@ export class FindCompetitor {
 
   @Column({ type: 'text' })
   content: string;
+
+  @Column({ type: 'text' })
+  phone: string;
 }

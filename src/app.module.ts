@@ -32,7 +32,7 @@ import { AdressModule } from './modules/adress/adress.module';
         password: config.get<string>('MYSQL_PASSWORD'),
         synchronize: true,
         autoLoadEntities: true,
-        logging: true,
+        logging: false,
         entities: ['dist/**/*.entity.{ts,js}'],
         // migrationsTableName: 'migration',
         // migrations: ['src/migration/*.ts'],

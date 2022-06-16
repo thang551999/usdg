@@ -3,7 +3,6 @@ import { PlaceService } from './place.service';
 import { UserAuthGuard } from '../auth/jwt.strategy';
 import { API_SUCCESS, PLACE_MESSAGE } from '../../common/constant';
 import { GetPlaceParams } from './dto/get-place.dto';
-
 @Controller('place')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}

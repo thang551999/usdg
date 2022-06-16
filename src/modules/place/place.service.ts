@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { subMinutes } from 'date-fns';
+import { addMinutes, subMinutes } from 'date-fns';
 import { Like, Repository } from 'typeorm';
 import { API_FAIL, PLACE_MESSAGE, ROLE } from '../../common/constant';
 import { IUserInfo } from '../../common/decorators/user.decorator';
@@ -13,7 +13,7 @@ import { Place } from './entities/place.entity';
 import { ServicePlace } from './entities/service-place.entity';
 import { TimeGold } from './entities/time-gold.entity';
 import { TypePlace } from './entities/type-place.entity';
-
+import * as moment from 'moment';
 @Injectable()
 export class PlaceService {
   constructor(
@@ -30,7 +30,6 @@ export class PlaceService {
     private readonly jwtService: JwtService,
   ) {}
   async create(createPlaceDto: CreatePlaceDto, user) {
-    console.log(user);
     const owner = await this.ownerPlaceRepository.findOne({
       where: { id: user.relativeId },
     });
@@ -93,10 +92,65 @@ export class PlaceService {
   async getTimeAvailable(placeId, day) {
     const place = await this.placeRepository.findOne({
       where: { id: placeId },
+      relations: ['timeGold'],
     });
-    const time = subMinutes(new Date(), 30);
-    console.log(time);
+    return this.getTimeFromBlock(
+      place.timeOpen,
+      place.timeClose,
+      place.timeGold,
+      place.timeDistance,
+      place.priceMin,
+    );
   }
+  getTimeFromBlock(timeOpen, timeClose, TimeGolds, timeDistance, price) {
+    const timeStart = new Date(
+      2020,
+      1,
+      1,
+      Number(timeOpen.slice(0, 2)),
+      Number(timeOpen.slice(-2)),
+    );
+    const times = [];
+    if (
+      TimeGolds.find(
+        (timeGold) => timeGold.timeStart == timeStart.toString().slice(16, 21),
+      )
+    ) {
+      const isTimeGood = TimeGolds.find(
+        (timeGold) => timeGold.timeStart == timeStart.toString().slice(16, 21),
+      );
+      times.push({
+        time: timeStart.toString().slice(16, 21),
+        price: isTimeGood.price,
+      });
+    } else {
+      times.push({ time: timeStart.toString().slice(16, 21), price });
+    }
+    const timeEnd = new Date(
+      2020,
+      1,
+      1,
+      timeClose.slice(0, 2),
+      timeClose.slice(-2),
+    );
+    let timeConut = timeStart;
+
+    while (timeConut < timeEnd) {
+      timeConut = addMinutes(timeConut, timeDistance);
+      const timeAdd = timeConut.toString().slice(16, 21);
+      const isTimeGood = TimeGolds.find(
+        (timeGold) => timeGold.timeStart == timeAdd,
+      );
+      if (isTimeGood) {
+        times.push({ time: timeAdd, price: isTimeGood.price });
+      } else {
+        times.push({ time: timeAdd, price });
+      }
+    }
+
+    return times;
+  }
+
   async update(id: string, updatePlaceDto: UpdatePlaceDto) {
     const update = await this.placeRepository.update(id, updatePlaceDto);
     return { message: 'Cập nhật thành công' };
