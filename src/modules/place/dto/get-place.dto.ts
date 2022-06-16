@@ -31,7 +31,7 @@ export class GetPlaceParams {
 
   @ApiProperty({ example: 1 })
   @IsOptional()
-  typePlace: TypePlace;
+  typePlace: string;
 }
 
 export class GetPlaceOwner {

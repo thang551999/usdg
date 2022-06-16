@@ -63,7 +63,7 @@ export class PlaceService {
           address: getParams.address
             ? Like(`%${getParams.address}%`)
             : Like(`%%`),
-          typePlace: getParams.typePlace,
+          typePlace: { id: getParams.typePlace },
         }
       : {
           isEnable: true,
