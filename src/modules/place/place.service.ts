@@ -56,10 +56,25 @@ export class PlaceService {
   }
 
   async findAll(getParams: GetPlaceParams) {
+    const queryTypePlace = getParams.typePlace
+      ? {
+          isEnable: true,
+          name: getParams.name ? Like(`%${getParams.name}%`) : Like(`%%`),
+          address: getParams.address
+            ? Like(`%${getParams.address}%`)
+            : Like(`%%`),
+          typePlace: getParams.typePlace,
+        }
+      : {
+          isEnable: true,
+          name: getParams.name ? Like(`%${getParams.name}%`) : Like(`%%`),
+          address: getParams.address
+            ? Like(`%${getParams.address}%`)
+            : Like(`%%`),
+        };
+    console.log(queryTypePlace);
     const places = await this.placeRepository.findAndCount({
-      where: {
-        isEnable: true,
-      },
+      where: { ...queryTypePlace },
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
       relations: ['typePlace', 'timeGold', 'services'],

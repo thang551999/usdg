@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString, Min, MIN } from 'class-validator';
+import { TypePlace } from '../entities/type-place.entity';
 
 export class GetPlaceParams {
   @ApiProperty({ example: 1 })
@@ -30,8 +31,7 @@ export class GetPlaceParams {
 
   @ApiProperty({ example: 1 })
   @IsOptional()
-  @IsString()
-  typePlace: string;
+  typePlace: TypePlace;
 }
 
 export class GetPlaceOwner {
