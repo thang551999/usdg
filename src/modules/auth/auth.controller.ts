@@ -1,4 +1,4 @@
-import { HttpCode, Put, Query, Res, UseGuards } from '@nestjs/common';
+import { HttpCode, Param, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 // import { AuthGuard } from '@nestjs/passport';
 import {
@@ -19,6 +19,7 @@ import {
   ForgotPasswordDto,
   ResForgotPasswordDto,
 } from './dto/forgot-password.dto';
+import { GetOwnerParams } from './dto/get-params.dto';
 import { ActiveEmail, LoginUserDto, ResLoginUserDto } from './dto/login.dto';
 import { RefreshTokenDto, ResRefreshTokenDto } from './dto/refresh-token.dto';
 import {
@@ -55,6 +56,26 @@ export class AuthController {
     return res.redirect(`${process.env.FE_USER_URL}/active-success`);
   }
 
+  @Get('owner-place')
+  @ApiOperation({ summary: 'Login user Api - {Thang}' })
+  @ApiOkResponse({ type: ResLoginUserDto, status: 200 })
+  async getOwnerPlace(@Query() params: GetOwnerParams) {
+    await this.authService.GetOwnerPlace(params);
+  }
+
+  @Put('owner-place/approve/:id')
+  @ApiOperation({ summary: 'Login user Api - {Thang}' })
+  @ApiOkResponse({ type: ResLoginUserDto, status: 200 })
+  async approveOwnerPlace(@Param('id') id: string) {
+    await this.authService.approveOwnerPlace(id);
+  }
+
+  @Put('owner-place/disable/:id')
+  @ApiOperation({ summary: 'Login user Api - {Thang}' })
+  @ApiOkResponse({ type: ResLoginUserDto, status: 200 })
+  async disableOwnerPlace(@Param('id') id: string) {
+    await this.authService.disableOwnerPlace(id);
+  }
   // @Post('forgot-password')
   // @ApiOperation({
   //   summary: 'Send mail Forgot Password . Gửi mail khi quên mật khẩu - {Thang}',

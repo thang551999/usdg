@@ -342,4 +342,28 @@ export class AuthService {
       }
     }
   }
+
+  async GetOwnerPlace(params) {
+    const ownerPlaces = await this.usersRepository.findAndCount({
+      where: { role: ROLE.owner },
+      skip: (params.page - 1) * params.pageSize,
+      take: params.pageSize,
+      relations: ['ownerPlace'],
+    });
+    return {
+      total: ownerPlaces[1],
+      pageSize: params.pageSize,
+      currentPage: params.page,
+      records: ownerPlaces[0],
+    };
+  }
+
+  async approveOwnerPlace(id) {
+    await this.usersRepository.update({ id: id }, { approved: true });
+    return { message: 'Phê duyệt chủ sân thành công' };
+  }
+  async disableOwnerPlace(id) {
+    await this.usersRepository.update({ id: id }, { approved: false });
+    return { message: 'Chặn chủ sân thành công' };
+  }
 }
