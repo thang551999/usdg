@@ -10,9 +10,6 @@ export class HistoryService {
   @ManyToOne(() => Order, (order) => order.historyServices)
   order: Order;
 
-  @Column()
-  price: string;
-
   @ManyToOne(() => ServicePlace, (service) => service.historyServices)
   servicePlace: ServicePlace;
 }

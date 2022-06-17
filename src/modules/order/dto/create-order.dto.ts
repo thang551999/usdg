@@ -47,5 +47,5 @@ export class CreateOrderDto {
   timeBooks: string[];
 
   @IsArray()
-  services: string[];
+  services;
 }

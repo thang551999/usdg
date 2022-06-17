@@ -6,12 +6,14 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Admin } from '../../admin/entities/admin.entity';
 import { Customer } from './customer.entity';
+import { FindCompetitorEntity } from '../../find-competitor/entities/find-competitor.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -108,4 +110,10 @@ export class UserEntity {
   })
   @JoinColumn()
   customer: Customer;
+
+  @OneToMany(
+    () => FindCompetitorEntity,
+    (findCompetitor) => findCompetitor.user,
+  )
+  findCompetitors: FindCompetitorEntity[];
 }

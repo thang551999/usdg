@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { FindCompetitorService } from './find-competitor.service';
 import { CreateFindCompetitorDto } from './dto/create-find-competitor.dto';
 import { UpdateFindCompetitorDto } from './dto/update-find-competitor.dto';
@@ -23,7 +31,10 @@ export class FindCompetitorController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFindCompetitorDto: UpdateFindCompetitorDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateFindCompetitorDto: UpdateFindCompetitorDto,
+  ) {
     return this.findCompetitorService.update(+id, updateFindCompetitorDto);
   }
 

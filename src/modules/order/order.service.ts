@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import BigNumber from 'bignumber.js';
 import { getConnection, Repository } from 'typeorm';
 import { ORDER_MESSAGE, ORDER_STATUS, TypeOrder } from '../../common/constant';
+import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 import { Place } from '../place/entities/place.entity';
 import { Customer } from '../users/entities/customer.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -18,21 +19,26 @@ export class OrderService {
     private orderPlaceRepository: Repository<Order>,
     @InjectRepository(Customer)
     private customerRepository: Repository<Customer>,
+    @InjectRepository(OwnerPlace)
+    private onwerPlaceRepository: Repository<OwnerPlace>,
   ) {}
   async create(createOrderDto: CreateOrderDto, userInfor) {
     const place = await this.placeRepository.findOne({
       where: { id: createOrderDto.place.id },
-      relations: ['timeGold'],
+      relations: ['timeGold', 'owner'],
     });
-    const money = new BigNumber(
-      this.getPriceTimes(
-        createOrderDto.timeBooks,
-        place.timeGold,
-        place.priceMin,
-      ),
-    )
-      .plus(new BigNumber(this.getPriceServices(createOrderDto.services)))
+    const { moneyTimes, timeBlocks } = this.getPriceTimes(
+      createOrderDto.timeBooks,
+      place.timeGold,
+      place.priceMin,
+      createOrderDto.orderDay,
+      place,
+    );
+    const priceServices = this.getPriceServices(createOrderDto.services);
+    const money = new BigNumber(moneyTimes)
+      .plus(new BigNumber(priceServices))
       .toString();
+
     const user = await this.customerRepository.findOne({
       where: {
         id: userInfor.relativeId,
@@ -57,16 +63,18 @@ export class OrderService {
         status: ORDER_STATUS.OK,
         phoneNumber: createOrderDto.phoneNumber,
         type: TypeOrder.PaymentWithWallet,
-        timeBlocks: [
-          {
-            timeStart: createOrderDto.timeBooks[0],
-            dayOrder: new Date().toString(),
-            price: place.priceMin,
-            place: place,
-          },
-        ],
+        timeBlocks: timeBlocks,
+        historyServices: createOrderDto.services,
       });
       await this.orderPlaceRepository.save(order);
+      await this.onwerPlaceRepository.update(
+        { id: place.owner.id },
+        {
+          money: new BigNumber(place.owner.money)
+            .plus(new BigNumber(money))
+            .toString(),
+        },
+      );
       await this.customerRepository.update(
         { id: user.id },
         {
@@ -95,17 +103,25 @@ export class OrderService {
     );
   }
 
-  getPriceTimes(times, timeGold, priceMin) {
-    return times.reduce(
-      (moneny, time) =>
-        new BigNumber(this.checkPriceTimeGold(timeGold, time, priceMin)).plus(
-          new BigNumber(moneny),
-        ),
-      0,
-    );
+  getPriceTimes(times, timeGold, priceMin, dayOrder, place) {
+    let money = '';
+    const timeBlocks = times.map((time) => {
+      const price = this.getPriceTimeBlock(timeGold, time, priceMin);
+      money = new BigNumber(money).plus(new BigNumber(price)).toString();
+      return {
+        timeStart: time,
+        dayOrder,
+        price,
+        place,
+      };
+    });
+    return {
+      timeBlocks,
+      moneyTimes: money,
+    };
   }
 
-  checkPriceTimeGold(timeGold, timeStart, priceMin) {
+  getPriceTimeBlock(timeGold, timeStart, priceMin) {
     let money = '';
     const isTimeGold = timeGold.find(
       (e) => e.timeStart == timeStart.toString(),
