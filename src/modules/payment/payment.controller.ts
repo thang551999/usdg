@@ -54,6 +54,12 @@ export class AppotaController {
     return this.vnpayService.returnIpn(req);
   }
 
+  @Get('admin/vnpay')
+  @ApiOperation({ summary: '{Thang}' })
+  async getAllHistoryOrder(@Query() getPram: GetParams) {
+    return this.vnpayService.getPaymentAdmin(getPram);
+  }
+
   // @Post('appotapay/create-payment-order')
   // @ApiOperation({ summary: '{Thang}' })
   // async createPaymentOrder(

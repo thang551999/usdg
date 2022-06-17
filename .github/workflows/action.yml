@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -29,14 +29,13 @@ jobs:
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
-          host: 103.101.162.46 #hostname of server
-          username: root #username login to server
-          password: Fo0GbbOQlOAnbpv #password login to server
+          host: 20.187.121.157 #hostname of server
+          username: VM #username login to server
+          password: VPSGIARE12345$ #password login to server
           port: 22 #port of server - often port is 22
           script: | # run with multiple script
-            cd /var/www/vnsupplements/back_end
-            git checkout .
+            cd /home/VM/doan-totnghiep-backend
             git pull
             yarn
-            yarn build
-            pm2 start ecosystem-dev.json
+            yarn dcc up -d
+

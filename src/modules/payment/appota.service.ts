@@ -42,6 +42,7 @@ export class AppotaService {
   ) {}
   async getPaymentAdmin(getParams: GetParams) {
     const historyPayment = await this.vnpayTable.findAndCount({
+      where: { status: PaymentStatus.SUCCESS },
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
     });
