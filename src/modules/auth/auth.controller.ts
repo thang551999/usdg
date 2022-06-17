@@ -55,14 +55,14 @@ export class AuthController {
     return res.redirect(`${process.env.FE_USER_URL}/active-success`);
   }
 
-  @Post('forgot-password')
-  @ApiOperation({
-    summary: 'Send mail Forgot Password . Gửi mail khi quên mật khẩu - {Thang}',
-  })
-  @ApiOkResponse({ type: ResForgotPasswordDto, status: 200 })
-  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
-    return this.authService.forgotPassword(forgotPasswordDto);
-  }
+  // @Post('forgot-password')
+  // @ApiOperation({
+  //   summary: 'Send mail Forgot Password . Gửi mail khi quên mật khẩu - {Thang}',
+  // })
+  // @ApiOkResponse({ type: ResForgotPasswordDto, status: 200 })
+  // async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+  //   return this.authService.forgotPassword(forgotPasswordDto);
+  // }
 
   @Get('me')
   @ApiBearerAuth()
@@ -75,37 +75,37 @@ export class AuthController {
     return this.authService.getUser(user.id);
   }
 
-  @Put('update')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({
-    summary: 'Update User Info . Cập nhật thông tin của user -{thangdp}',
-  })
-  @ApiOkResponse({ type: ResUpdateUserDto, status: 200 })
-  async updateInfo(
-    @Body() updateUserDto: UpdateUserDto,
-    @UserInfo() user: IUserInfo,
-  ) {
-    return this.authService.updateInfo(user.id, updateUserDto);
-  }
+  // @Put('update')
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @ApiOperation({
+  //   summary: 'Update User Info . Cập nhật thông tin của user -{thangdp}',
+  // })
+  // @ApiOkResponse({ type: ResUpdateUserDto, status: 200 })
+  // async updateInfo(
+  //   @Body() updateUserDto: UpdateUserDto,
+  //   @UserInfo() user: IUserInfo,
+  // ) {
+  //   return this.authService.updateInfo(user.id, updateUserDto);
+  // }
 
-  @Put('change-password')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Change Password User .Đổi mật khẩu của user' })
-  @ApiOkResponse({ type: ResChangePasswordUserDto, status: 200 })
-  async changePassword(
-    @Body() changePasswordUserDto: ChangePasswordUserDto,
-    @UserInfo() user: IUserInfo,
-  ) {
-    return this.authService.changePassword(user.id, changePasswordUserDto);
-  }
+  // @Put('change-password')
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @ApiOperation({ summary: 'Change Password User .Đổi mật khẩu của user' })
+  // @ApiOkResponse({ type: ResChangePasswordUserDto, status: 200 })
+  // async changePassword(
+  //   @Body() changePasswordUserDto: ChangePasswordUserDto,
+  //   @UserInfo() user: IUserInfo,
+  // ) {
+  //   return this.authService.changePassword(user.id, changePasswordUserDto);
+  // }
 
-  @Post('refresh-token')
-  @ApiOperation({ summary: 'Refresh token Api .Refresh token Api' })
-  @ApiOkResponse({ type: ResRefreshTokenDto, status: 200 })
-  @HttpCode(200)
-  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
-    return this.authService.refreshToken(refreshTokenDto.token);
-  }
+  // @Post('refresh-token')
+  // @ApiOperation({ summary: 'Refresh token Api .Refresh token Api' })
+  // @ApiOkResponse({ type: ResRefreshTokenDto, status: 200 })
+  // @HttpCode(200)
+  // async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+  //   return this.authService.refreshToken(refreshTokenDto.token);
+  // }
 }

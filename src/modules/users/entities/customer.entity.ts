@@ -9,7 +9,8 @@ import {
 } from 'typeorm';
 import { Comment } from '../../comment/entities/comment.entity';
 import { Order } from '../../order/entities/order.entity';
-import OrderVnPay from '../../payment/entities/history-appota.entity';
+import VnpayHistory from '../../payment/entities/vnpay-history.entity';
+
 import { UserEntity } from './user.entity';
 
 @Entity({ name: 'customer' })
@@ -33,6 +34,6 @@ export class Customer {
   @OneToMany(() => Order, (order) => order.customer)
   order: Order[];
 
-  @OneToMany(() => OrderVnPay, (orderVnpay) => orderVnpay.user)
-  historyChargeMoney: OrderVnPay[];
+  @OneToMany(() => VnpayHistory, (orderVnpay) => orderVnpay.user)
+  historyChargeMoney: VnpayHistory[];
 }

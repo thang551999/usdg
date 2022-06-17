@@ -11,48 +11,34 @@ import {
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { SystemConfigDto } from './dto/system-config.dto';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Post()
-  create(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.create(createAdminDto);
+  @Put('system-config')
+  approveOwnerPlace(@Body() systemConfig: SystemConfigDto) {
+    return this.adminService.updateConfig(systemConfig);
   }
 
-  @Get('owner-place')
-  getOwnerPlace(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.create(createAdminDto);
+  @Get('system-config')
+  findAll() {
+    return this.adminService.getSystemConfig();
   }
 
-  @Put('owner-place')
-  approveOwnerPlace(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.create(createAdminDto);
-  }
-
-  // @Get('owner-place')
-  // approveOwnerPlace(@Body() createAdminDto: CreateAdminDto) {
-  //   return this.adminService.create(createAdminDto);
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.adminService.findOne(+id);
   // }
 
-  @Get()
-  findAll() {
-    return this.adminService.findAll();
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
+  //   return this.adminService.update(+id, updateAdminDto);
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminService.update(+id, updateAdminDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.adminService.remove(+id);
+  // }
 }

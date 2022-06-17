@@ -5,7 +5,6 @@ import {
   GetParams,
 } from './dto/create-vnpay.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import HistoryAppotaTransaction from './entities/history-appota.entity';
 import { getConnection, Repository } from 'typeorm';
 import * as CryptoJS from 'crypto-js';
 import { UserEntity } from '../users/entities/user.entity';
@@ -27,8 +26,6 @@ import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class AppotaService {
-  @InjectRepository(HistoryAppotaTransaction)
-  private orderTable: Repository<HistoryAppotaTransaction>;
   @InjectRepository(VnpayHistory)
   private vnpayTable: Repository<VnpayHistory>;
   @InjectRepository(Order)
@@ -44,7 +41,7 @@ export class AppotaService {
     private readonly httpService: HttpService,
   ) {}
   async getPaymentAdmin(getParams: GetParams) {
-    const historyPayment = await this.orderTable.findAndCount({
+    const historyPayment = await this.vnpayTable.findAndCount({
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
     });
@@ -54,67 +51,6 @@ export class AppotaService {
       currentPage: getParams.page,
       records: historyPayment,
     };
-  }
-  async createPaymentUrl(createVnpayDto: CreateAppotaDto, userId) {
-    const token = await this.jwtService.signAsync(
-      {
-        iss: process.env.appotaPartnerCode,
-        jti: process.env.appotaApiKey + '-' + new Date().getTime(),
-        api_key: process.env.appotaApiKey,
-      },
-      {
-        expiresIn: '10m',
-        header: {
-          alg: 'HS256',
-          typ: 'JWT',
-          cty: 'appotapay-api;v=1',
-        },
-        secret: process.env.appotaSecretKey,
-      },
-    );
-    const user = await this.customerRepository.findOne(userId);
-    const order = await this.orderTable.create({
-      money: createVnpayDto.amount.toString(),
-      status: '0',
-      user: user,
-    });
-
-    await this.orderTable.save(order);
-    const dataSignature = `amount=${createVnpayDto.amount}&bankCode=&clientIp=${process.env.ip}&extraData=&notifyUrl=${process.env.appotaIPNUrl}&orderId=${order.id}&orderInfo=naptienvnsup&paymentMethod=&redirectUrl=${process.env.appotaReturnUrl}`;
-
-    const hmac = CryptoJS.enc.Hex.stringify(
-      CryptoJS.HmacSHA256(dataSignature, process.env.appotaSecretKey),
-    );
-    const requestConfig: AxiosRequestConfig = {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-APPOTAPAY-AUTH': `Bearer ${token}`,
-      },
-    };
-    try {
-      const body = {
-        amount: createVnpayDto.amount,
-        orderId: order.id,
-        orderInfo: 'naptienvnsup',
-        bankCode: '',
-        paymentMethod: '',
-        clientIp: process.env.ip,
-        extraData: '',
-        notifyUrl: process.env.appotaIPNUrl,
-        redirectUrl: process.env.appotaReturnUrl,
-        signature: hmac,
-      };
-      const data = await lastValueFrom(
-        this.httpService.post(
-          this.configService.get('appotaUrl') + '/api/v1/orders/payment/bank',
-          body,
-          requestConfig,
-        ),
-      );
-      return data.data;
-    } catch (error) {
-      throw new HttpException(error.response.data, error.response.status);
-    }
   }
 
   async returnIPN(req: ReturnIPNDto) {
@@ -168,7 +104,7 @@ export class AppotaService {
   }
 
   async historyCharge(id) {
-    const charge = await this.orderTable.findOne({
+    const charge = await this.vnpayTable.findOne({
       // relations: ['user'],
       // where: { id, user: { id: userId } },
       where: {
@@ -179,11 +115,11 @@ export class AppotaService {
       return {
         money: charge.money,
         status: charge.status,
-        appotapayTransId: charge.appotapayTransId,
-        transactionTs: charge.transactionTs,
-        createdAt: charge.createdAt,
-        extraData: charge.extraData,
-        errorCode: charge.errrorCode,
+        // appotapayTransId: charge.appotapayTransId,
+        // transactionTs: charge.transactionTs,
+        // createdAt: charge.createdAt,
+        // extraData: charge.extraData,
+        // errorCode: charge.errrorCode,
       };
     }
     return {};
@@ -384,7 +320,6 @@ export class AppotaService {
     const orderType = req.body.orderType;
     let locale = req.body.language;
     const createDate = this.getFormat();
-    const orderId = date.format(new Date(), 'HHmmss');
     const customerInfo = await this.customerRepository.findOne({
       where: {
         id: user.relativeId,

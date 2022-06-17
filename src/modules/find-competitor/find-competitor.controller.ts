@@ -25,21 +25,21 @@ export class FindCompetitorController {
     return this.findCompetitorService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.findCompetitorService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.findCompetitorService.findOne(+id);
+  // }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateFindCompetitorDto: UpdateFindCompetitorDto,
-  ) {
-    return this.findCompetitorService.update(+id, updateFindCompetitorDto);
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateFindCompetitorDto: UpdateFindCompetitorDto,
+  // ) {
+  //   return this.findCompetitorService.update(+id, updateFindCompetitorDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.findCompetitorService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.findCompetitorService.remove(+id);
+  // }
 }

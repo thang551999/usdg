@@ -18,36 +18,36 @@ import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 export class SchedulePlaceController {
   constructor(private readonly schedulePlaceService: SchedulePlaceService) {}
 
-  @Post('admin')
-  createPlace(@Body() createSchedulePlaceDto: CreateSchedulePlaceDto) {
-    return this.schedulePlaceService.create(createSchedulePlaceDto);
-  }
+  // @Post('admin')
+  // createPlace(@Body() createSchedulePlaceDto: CreateSchedulePlaceDto) {
+  //   return this.schedulePlaceService.create(createSchedulePlaceDto);
+  // }
 
-  @Post('user')
-  createSchedule(@Body() createSchedulePlaceDto: CreateSchedulePlaceDto) {
-    return this.schedulePlaceService.create(createSchedulePlaceDto);
-  }
+  // @Post('user')
+  // createSchedule(@Body() createSchedulePlaceDto: CreateSchedulePlaceDto) {
+  //   return this.schedulePlaceService.create(createSchedulePlaceDto);
+  // }
 
-  @Get('user')
-  findAll() {
-    return this.schedulePlaceService.findAll();
-  }
+  // @Get('user')
+  // findAll() {
+  //   return this.schedulePlaceService.findAll();
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.schedulePlaceService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.schedulePlaceService.findOne(+id);
+  // }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateSchedulePlaceDto: UpdateSchedulePlaceDto,
-  ) {
-    return this.schedulePlaceService.update(+id, updateSchedulePlaceDto);
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateSchedulePlaceDto: UpdateSchedulePlaceDto,
+  // ) {
+  //   return this.schedulePlaceService.update(+id, updateSchedulePlaceDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.schedulePlaceService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.schedulePlaceService.remove(+id);
+  // }
 }

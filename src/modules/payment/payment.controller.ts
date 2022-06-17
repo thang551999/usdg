@@ -54,55 +54,45 @@ export class AppotaController {
     return this.vnpayService.returnIpn(req);
   }
 
-  @Post('appotapay/create-payment')
-  @ApiOperation({ summary: '{Thang}' })
-  @UseGuards(JwtAuthGuard)
-  async createPayment(
-    @Body() createVnpayDto: CreateAppotaDto,
-    @UserInfo() user: IUserInfo,
-  ) {
-    return this.vnpayService.createPaymentUrl(createVnpayDto, user.id);
-  }
+  // @Post('appotapay/create-payment-order')
+  // @ApiOperation({ summary: '{Thang}' })
+  // async createPaymentOrder(
+  //   @Body() createVnpayDto: CreatePaymentDto,
+  //   @UserInfo() user: IUserInfo,
+  // ) {
+  //   return this.vnpayService.paymentOrder(createVnpayDto);
+  // }
 
-  @Post('appotapay/create-payment-order')
-  @ApiOperation({ summary: '{Thang}' })
-  async createPaymentOrder(
-    @Body() createVnpayDto: CreatePaymentDto,
-    @UserInfo() user: IUserInfo,
-  ) {
-    return this.vnpayService.paymentOrder(createVnpayDto);
-  }
+  // @Post('appotapay/return-ipn-order')
+  // @ApiOperation({ summary: '{Thang}' })
+  // @HttpCode(200)
+  // async returnIpnOrder(@Body() ipn: ReturnIPNDto) {
+  //   return this.vnpayService.returnIPNOrder(ipn);
+  // }
 
-  @Post('appotapay/return-ipn-order')
-  @ApiOperation({ summary: '{Thang}' })
-  @HttpCode(200)
-  async returnIpnOrder(@Body() ipn: ReturnIPNDto) {
-    return this.vnpayService.returnIPNOrder(ipn);
-  }
+  // @Get('appotapay/return-url')
+  // @ApiOperation({ summary: '{Thang}' })
+  // async returnUrl(@Query() query, @Res() res) {
+  //   return res.redirect(`${process.env.urlPayment}/${query.orderId}`);
+  // }
+  // @Post('appotapay/return-ipn')
+  // @ApiOperation({ summary: '{Thang}' })
+  // @HttpCode(200)
+  // async returnIPN(@Body() ipn: ReturnIPNDto) {
+  //   return this.vnpayService.returnIPN(ipn);
+  // }
 
-  @Get('appotapay/return-url')
-  @ApiOperation({ summary: '{Thang}' })
-  async returnUrl(@Query() query, @Res() res) {
-    return res.redirect(`${process.env.urlPayment}/${query.orderId}`);
-  }
-  @Post('appotapay/return-ipn')
-  @ApiOperation({ summary: '{Thang}' })
-  @HttpCode(200)
-  async returnIPN(@Body() ipn: ReturnIPNDto) {
-    return this.vnpayService.returnIPN(ipn);
-  }
-
-  @Get('appotapay/history/:id')
-  @ApiOperation({ summary: '{Thang}' })
-  @HttpCode(200)
-  //@UseGuards(JwtAuthGuard)
-  async traceTransaction(@Param('id') id: string) {
-    return this.vnpayService.historyCharge(id);
-  }
-  @Get('admin/appotapay')
-  @ApiOperation({ summary: '{Thang}' })
-  @UseGuards(AdminAuthGuard)
-  async getPaymentAdmin(@Query() getParams: GetParams) {
-    return this.vnpayService.getPaymentAdmin(getParams);
-  }
+  // @Get('appotapay/history/:id')
+  // @ApiOperation({ summary: '{Thang}' })
+  // @HttpCode(200)
+  // //@UseGuards(JwtAuthGuard)
+  // async traceTransaction(@Param('id') id: string) {
+  //   return this.vnpayService.historyCharge(id);
+  // }
+  // @Get('admin/appotapay')
+  // @ApiOperation({ summary: '{Thang}' })
+  // @UseGuards(AdminAuthGuard)
+  // async getPaymentAdmin(@Query() getParams: GetParams) {
+  //   return this.vnpayService.getPaymentAdmin(getParams);
+  // }
 }

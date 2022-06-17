@@ -25,6 +25,12 @@ export class Order {
   money: string;
 
   @Column()
+  price: string;
+
+  @Column()
+  gasFee: string;
+
+  @Column()
   type: number;
 
   @Column({ length: 10 })
