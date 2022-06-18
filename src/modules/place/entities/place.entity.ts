@@ -26,7 +26,7 @@ export class Place {
   @Column({ length: 250, name: 'address-place' })
   address: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   description: string;
 
   @Column({ name: 'point', default: 100 })
