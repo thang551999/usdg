@@ -61,4 +61,10 @@ export class CreateVoucherDto {
   place: Place;
 }
 
-export class GetVoucherOwner {}
+export class GetVoucherOwner {
+  @IsNumber()
+  page: number;
+
+  @IsNumber()
+  pageSize: number;
+}
