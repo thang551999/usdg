@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+} from 'typeorm';
 import { Place } from './place.entity';
 
 @Entity({ name: 'date-off-place' })
@@ -9,6 +15,9 @@ export class DateOff {
   @Column()
   dayOff: string;
 
-  @OneToMany(() => Place, (place) => place.dateOff)
-  place: Place[];
+  @Column()
+  reason: string;
+
+  @ManyToOne(() => Place, (place) => place.dateOff)
+  place: Place;
 }

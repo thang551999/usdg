@@ -9,6 +9,7 @@ import { AdminPlaceController } from './admin.place.controller';
 import { OwnerPlaceController } from './owner.place.controller';
 import { ServicePlace } from './entities/service-place.entity';
 import { TimeGold } from './entities/time-gold.entity';
+import { DateOff } from './entities/place-date-off.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TimeGold } from './entities/time-gold.entity';
       TypePlace,
       ServicePlace,
       TimeGold,
+      DateOff,
     ]),
   ],
   controllers: [PlaceController, AdminPlaceController, OwnerPlaceController],

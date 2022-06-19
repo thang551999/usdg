@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { CreateArticleDto } from './dto/create-article.dto';
+import { CreateArticleDto, GetArticleParams } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { API_SUCCESS } from '../../common/constant';
 
 @Controller('article')
 export class ArticleController {
@@ -21,8 +23,12 @@ export class ArticleController {
   }
 
   @Get()
-  findAll() {
-    return this.articleService.findAll();
+  async findAll(@Query() getParams: GetArticleParams) {
+    const res = this.articleService.findAll(getParams);
+    return {
+      code: API_SUCCESS,
+      data: res,
+    };
   }
 
   @Get(':id')

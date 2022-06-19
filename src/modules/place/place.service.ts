@@ -13,7 +13,7 @@ import { Place } from './entities/place.entity';
 import { ServicePlace } from './entities/service-place.entity';
 import { TimeGold } from './entities/time-gold.entity';
 import { TypePlace } from './entities/type-place.entity';
-import * as moment from 'moment';
+import { DateOff } from './entities/place-date-off.entity';
 @Injectable()
 export class PlaceService {
   constructor(
@@ -27,6 +27,8 @@ export class PlaceService {
     private servicePlaceRepository: Repository<ServicePlace>,
     @InjectRepository(TimeGold)
     private timeGoldPlaceRepository: Repository<TimeGold>,
+    @InjectRepository(DateOff)
+    private dayOffRepository: Repository<DateOff>,
     private readonly jwtService: JwtService,
   ) {}
   async create(createPlaceDto: CreatePlaceDto, user) {
@@ -109,6 +111,11 @@ export class PlaceService {
       where: { id: placeId },
       relations: ['timeGold'],
     });
+    const isDayOff = await this.dayOffRepository.findOneBy({
+      dayOff: day.day,
+      place: { id: place.id },
+    });
+    if (isDayOff) return { messgae: isDayOff.reason };
     return this.getTimeFromBlock(
       place.timeOpen,
       place.timeClose,
@@ -137,6 +144,7 @@ export class PlaceService {
       times.push({
         time: timeStart.toString().slice(16, 21),
         price: isTimeGood.price,
+        isReady: true,
       });
     } else {
       times.push({ time: timeStart.toString().slice(16, 21), price });
@@ -157,9 +165,9 @@ export class PlaceService {
         (timeGold) => timeGold.timeStart == timeAdd,
       );
       if (isTimeGood) {
-        times.push({ time: timeAdd, price: isTimeGood.price });
+        times.push({ time: timeAdd, price: isTimeGood.price, isReady: true });
       } else {
-        times.push({ time: timeAdd, price });
+        times.push({ time: timeAdd, price, isReady: true });
       }
     }
 

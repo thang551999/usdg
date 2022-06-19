@@ -17,8 +17,17 @@ export class ArticleService {
     return article;
   }
 
-  findAll() {
-    return this.articleRepository.find();
+  async findAll(getParams) {
+    const article = await this.articleRepository.findAndCount({
+      skip: (getParams.page - 1) * getParams.pageSize,
+      take: getParams.pageSize,
+    });
+    return {
+      total: article[1],
+      pageSize: getParams.pageSize,
+      currentPage: getParams.page,
+      records: article[0],
+    };
   }
 
   findOne(id: number) {
