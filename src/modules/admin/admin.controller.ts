@@ -27,6 +27,11 @@ export class AdminController {
     return this.adminService.getSystemConfig();
   }
 
+  // @Get('system-config')
+  // findAll() {
+  //   return this.adminService.getSystemConfig();
+  // }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.adminService.findOne(+id);

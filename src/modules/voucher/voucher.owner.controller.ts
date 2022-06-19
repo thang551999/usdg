@@ -6,10 +6,11 @@ import {
   Put,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
 import { OwnerAuthGuard } from '../auth/jwt.strategy';
-import { CreateVoucherDto } from './dto/create-voucher.dto';
+import { CreateVoucherDto, GetVoucherOwner } from './dto/create-voucher.dto';
 import { VoucherService } from './voucher.service';
 import { API_SUCCESS } from '../../common/constant';
 
@@ -31,8 +32,15 @@ export class VoucherOwnerPlaceController {
   }
 
   @Get()
-  async getVoucherCreate() {
-    return 0;
+  async getVoucherCreate(
+    @Query() getVoucher: GetVoucherOwner,
+    @UserInfo() user: IUserInfo,
+  ) {
+    const vouchers = await this.voucherService.findAll(getVoucher, user);
+    return {
+      code: API_SUCCESS,
+      data: vouchers,
+    };
   }
 
   @Get(':id')

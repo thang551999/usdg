@@ -156,15 +156,27 @@ export class PlaceService {
       place: { id: place.id },
     });
     if (isDayOff) return { messgae: isDayOff.reason };
+    const disableBlock = await this.historyBlockBookingRepository.findBy({
+      dayOrder: day,
+      place: { id: placeId },
+    });
     return this.getTimeFromBlock(
       place.timeOpen,
       place.timeClose,
       place.timeGold,
       place.timeDistance,
       place.priceMin,
+      disableBlock,
     );
   }
-  getTimeFromBlock(timeOpen, timeClose, TimeGolds, timeDistance, price) {
+  getTimeFromBlock(
+    timeOpen,
+    timeClose,
+    TimeGolds,
+    timeDistance,
+    price,
+    disableBlock,
+  ) {
     const timeStart = new Date(
       2020,
       1,

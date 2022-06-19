@@ -15,10 +15,10 @@ import { UpdateVoucherDto } from './dto/update-voucher.dto';
 export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
-  @Get()
-  findAll() {
-    return this.voucherService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.voucherService.findAll();
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

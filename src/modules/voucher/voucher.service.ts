@@ -41,8 +41,21 @@ export class VoucherService {
     return voucher;
   }
 
-  findAll() {
-    return `This action returns all voucher`;
+  async findAll(getParams, user) {
+    const vouchers = await this.voucherPlaceRepository.findAndCount({
+      where: {
+        owner: { id: user.relativeId },
+      },
+      skip: (getParams.page - 1) * getParams.pageSize,
+      take: getParams.pageSize,
+      relations: ['owner', 'place'],
+    });
+    return {
+      total: vouchers[1],
+      pageSize: getParams.pageSize,
+      currentPage: getParams.page,
+      records: vouchers[0],
+    };
   }
 
   findOne(id: number) {
