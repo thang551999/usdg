@@ -16,7 +16,7 @@ export class HistoryBlockBooking {
   @ManyToOne(() => Order, (order) => order.timeBlocks)
   order: Order;
 
-  @Column()
+  @Column({ default: '0' })
   price: string;
 
   @ManyToOne(() => Place, (place) => place.timeBooking)

@@ -13,6 +13,8 @@ import { PlaceService } from './place.service';
 import {
   CreatePlaceDto,
   CreateServiceDto,
+  DayOffDto,
+  DisableTimeDto,
   TimeGold,
 } from './dto/create-place.dto';
 import { OwnerAuthGuard } from '../auth/jwt.strategy';
@@ -69,7 +71,28 @@ export class OwnerPlaceController {
       data: place,
     };
   }
+  @Post('day-off')
+  async creatDayOff(@Body() dayOff: DayOffDto, @UserInfo() user: IUserInfo) {
+    const place = await this.placeService.createDayOff(dayOff, user);
+    return {
+      code: API_SUCCESS,
+      message: PLACE_MESSAGE.CREATE_SERVICE_SUCCESS,
+      data: place,
+    };
+  }
 
+  @Post('disable-time')
+  async disableTime(
+    @Body() disableTime: DisableTimeDto,
+    @UserInfo() user: IUserInfo,
+  ) {
+    const place = await this.placeService.disableTimeBlock(disableTime, user);
+    return {
+      code: API_SUCCESS,
+      message: PLACE_MESSAGE.CREATE_SERVICE_SUCCESS,
+      data: place,
+    };
+  }
   @Get('type-place')
   async getTypePlace() {
     const place = await this.placeService.getTypePlaceAdmin();

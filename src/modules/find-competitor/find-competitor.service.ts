@@ -19,8 +19,18 @@ export class FindCompetitorService {
     return findCompertitor;
   }
 
-  findAll() {
-    return this.findCompetitorRepository.find();
+  async findAll(getParams) {
+    const findCompetitor = await this.findCompetitorRepository.findAndCount({
+      relations: ['user'],
+      skip: (getParams.page - 1) * getParams.pageSize,
+      take: getParams.pageSize,
+    });
+    return {
+      total: findCompetitor[1],
+      pageSize: getParams.pageSize,
+      currentPage: getParams.page,
+      records: findCompetitor[0],
+    };
   }
 
   findOne(id: number) {

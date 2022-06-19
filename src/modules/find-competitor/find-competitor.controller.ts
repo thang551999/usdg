@@ -6,10 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { FindCompetitorService } from './find-competitor.service';
-import { CreateFindCompetitorDto } from './dto/create-find-competitor.dto';
+import {
+  CreateFindCompetitorDto,
+  GetParamsFindCompetitor,
+} from './dto/create-find-competitor.dto';
 import { UpdateFindCompetitorDto } from './dto/update-find-competitor.dto';
+import { API_SUCCESS } from '../../common/constant';
 
 @Controller('find-competitor')
 export class FindCompetitorController {
@@ -21,8 +26,12 @@ export class FindCompetitorController {
   }
 
   @Get()
-  findAll() {
-    return this.findCompetitorService.findAll();
+  async findAll(@Query() getParams: GetParamsFindCompetitor) {
+    const findCompetitor = await this.findCompetitorService.findAll(getParams);
+    return {
+      code: API_SUCCESS,
+      data: findCompetitor,
+    };
   }
 
   // @Get(':id')

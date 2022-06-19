@@ -14,6 +14,7 @@ import { ServicePlace } from './entities/service-place.entity';
 import { TimeGold } from './entities/time-gold.entity';
 import { TypePlace } from './entities/type-place.entity';
 import { DateOff } from './entities/place-date-off.entity';
+import { HistoryBlockBooking } from '../order/entities/history-block-booking.entity';
 @Injectable()
 export class PlaceService {
   constructor(
@@ -29,6 +30,9 @@ export class PlaceService {
     private timeGoldPlaceRepository: Repository<TimeGold>,
     @InjectRepository(DateOff)
     private dayOffRepository: Repository<DateOff>,
+    @InjectRepository(HistoryBlockBooking)
+    private historyBlockBookingRepository: Repository<HistoryBlockBooking>,
+
     private readonly jwtService: JwtService,
   ) {}
   async create(createPlaceDto: CreatePlaceDto, user) {
@@ -106,6 +110,42 @@ export class PlaceService {
     });
     return place;
   }
+  async createDayOff(dayOffDto, user) {
+    const isOwner = await this.placeRepository.findOne({
+      where: {
+        id: dayOffDto.place.id,
+        owner: {
+          id: user.relativeId,
+        },
+      },
+    });
+    if (!isOwner) {
+      return { message: 'Không phải chủ sân' };
+    }
+    const dayOff = await this.dayOffRepository.create(dayOffDto);
+    await this.dayOffRepository.save(dayOff);
+    return dayOff;
+  }
+
+  async disableTimeBlock(disableTimeBlock, user) {
+    const isOwner = await this.placeRepository.findOne({
+      where: {
+        id: disableTimeBlock.place.id,
+        owner: {
+          id: user.relativeId,
+        },
+      },
+    });
+    if (!isOwner) {
+      return { message: 'Không phải chủ sân' };
+    }
+    const historyBlock = await this.historyBlockBookingRepository.create(
+      disableTimeBlock,
+    );
+    await this.historyBlockBookingRepository.save(historyBlock);
+    return historyBlock;
+  }
+
   async getTimeAvailable(placeId, day) {
     const place = await this.placeRepository.findOne({
       where: { id: placeId },

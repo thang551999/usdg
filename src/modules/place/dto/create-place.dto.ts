@@ -133,3 +133,25 @@ export class TimeGold {
   @IsNotEmpty()
   place: Place;
 }
+
+export class DayOffDto {
+  @IsString()
+  dayOff: string;
+
+  @IsString()
+  reason: string;
+
+  @IsNotEmpty()
+  place: Place;
+}
+
+export class DisableTimeDto {
+  @IsString()
+  timeStart: string;
+
+  @IsString()
+  dayOrder: string;
+
+  @IsNotEmpty()
+  place: Place;
+}

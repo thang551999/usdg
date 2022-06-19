@@ -10,6 +10,7 @@ import { OwnerPlaceController } from './owner.place.controller';
 import { ServicePlace } from './entities/service-place.entity';
 import { TimeGold } from './entities/time-gold.entity';
 import { DateOff } from './entities/place-date-off.entity';
+import { HistoryBlockBooking } from '../order/entities/history-block-booking.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DateOff } from './entities/place-date-off.entity';
       ServicePlace,
       TimeGold,
       DateOff,
+      HistoryBlockBooking,
     ]),
   ],
   controllers: [PlaceController, AdminPlaceController, OwnerPlaceController],

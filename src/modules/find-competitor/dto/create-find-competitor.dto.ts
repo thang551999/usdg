@@ -1,4 +1,4 @@
-import { IsString, Length } from 'class-validator';
+import { IsString, Length, IsNumber } from 'class-validator';
 
 export class CreateFindCompetitorDto {
   @IsString()
@@ -13,4 +13,12 @@ export class CreateFindCompetitorDto {
   @IsString()
   @Length(10)
   phone: string;
+}
+
+export class GetParamsFindCompetitor {
+  @IsNumber()
+  page: number;
+
+  @IsNumber()
+  pageSize: number;
 }
