@@ -105,7 +105,6 @@ export class OrderService {
       await queryRunner.commitTransaction();
       return order;
     } catch (error) {
-      console.log(error);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
@@ -133,14 +132,18 @@ export class OrderService {
 
   getPriceServices(services) {
     return services.reduce(
-      (moneny, service) =>
-        new BigNumber(service.price).plus(new BigNumber(moneny)),
-      0,
+      (moneny, service) => {
+        return new BigNumber(service.price)
+          .plus(new BigNumber(moneny))
+          .toString();
+      },
+
+      '0',
     );
   }
 
   getPriceTimes(times, timeGold, priceMin, dayOrder, place) {
-    let money = '';
+    let money = '0';
     const timeBlocks = times.map((time) => {
       const price = this.getPriceTimeBlock(timeGold, time, priceMin);
       money = new BigNumber(money).plus(new BigNumber(price)).toString();
@@ -175,14 +178,12 @@ export class OrderService {
       orderInfor,
     );
     const systemConfig = await this.systemConfigRepository.find();
-    console.log(systemConfig);
     const resApplyVoucher = this.checkVoucher(
-      place.voucherCreate,
+      orderInfor.voucher,
       place,
       money,
       systemConfig[0]?.gasFee ? systemConfig[0].gasFee : '0',
     );
-    console.log(resApplyVoucher);
     if (resApplyVoucher == 'Max voucher') {
       return 'Apply voucher Fail';
     }
@@ -233,6 +234,7 @@ export class OrderService {
     if (correctVoucher.length > place.maxVoucherCanUse) return 'Max voucher';
 
     return {
+      money,
       correctVoucher,
       moneyDown,
       gasFee: new BigNumber(money).multipliedBy(gasFee / 100).toString(),
@@ -243,9 +245,7 @@ export class OrderService {
     const historyBlock = await this.historyBlockRepository.findBy({
       dayOrder: day,
     });
-    console.log(historyBlock);
     if (historyBlock.length == 0) {
-      console.log(227);
       return false;
     }
     for (let index = 0; index < timeBlock.length; index++) {

@@ -33,7 +33,7 @@ export class CreateOrderDto {
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  voucher: [];
+  voucher;
 
   @IsArray()
   timeBooks: string[];
