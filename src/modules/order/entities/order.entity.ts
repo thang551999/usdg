@@ -43,10 +43,7 @@ export class Order {
   status: number;
 
   @Column()
-  dayOrder: Date;
-
-  @Column()
-  timeStart: string;
+  dayOrder: string;
 
   @OneToMany(
     () => HistoryBlockBooking,

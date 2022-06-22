@@ -8,11 +8,13 @@ import {
   TypeOrder,
   TypeVoucher,
 } from '../../common/constant';
+import SystemConfigEntity from '../admin/entities/system-config.entity';
 import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 import { Place } from '../place/entities/place.entity';
 import { Customer } from '../users/entities/customer.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { HistoryBlockBooking } from './entities/history-block-booking.entity';
 import { Order } from './entities/order.entity';
 
 @Injectable()
@@ -26,6 +28,10 @@ export class OrderService {
     private customerRepository: Repository<Customer>,
     @InjectRepository(OwnerPlace)
     private onwerPlaceRepository: Repository<OwnerPlace>,
+    @InjectRepository(HistoryBlockBooking)
+    private historyBlockRepository: Repository<HistoryBlockBooking>,
+    @InjectRepository(SystemConfigEntity)
+    private systemConfigRepository: Repository<SystemConfigEntity>,
   ) {}
   async create(createOrderDto: CreateOrderDto, userInfor) {
     const { money, place, moneyTimes, timeBlocks } = await this.calcPrice(
@@ -37,6 +43,7 @@ export class OrderService {
     }
     const totalPrice = new BigNumber(money)
       .minus(new BigNumber(resApplyVoucher.moneyDown))
+      .minus(new BigNumber(resApplyVoucher.gasFee))
       .toString();
     const downPrice = new BigNumber(resApplyVoucher.moneyDown).toString();
     const user = await this.customerRepository.findOne({
@@ -46,20 +53,26 @@ export class OrderService {
     });
     if (new BigNumber(user.money).isLessThan(new BigNumber(money)))
       return ORDER_MESSAGE.NOT_ENOUGH_MONEY;
-    if (this.checkExitOrder(createOrderDto.orderDay, createOrderDto.timeStart))
+    if (
+      await this.checkExitOrder(
+        createOrderDto.orderDay,
+        createOrderDto.timeBooks,
+      )
+    ) {
       return ORDER_MESSAGE.TIME_AVAILABILITY;
+    }
     const connection = getConnection();
     const queryRunner = connection.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
+
     try {
       const order = await this.orderPlaceRepository.create({
         money: new BigNumber(money).toString(),
         customer: user,
         place: createOrderDto.place,
-        timeStart: createOrderDto.timeStart,
-        dayOrder: new Date(createOrderDto.orderDay),
+        dayOrder: createOrderDto.orderDay,
         status: ORDER_STATUS.OK,
         phoneNumber: createOrderDto.phoneNumber,
         type: TypeOrder.PaymentWithWallet,
@@ -67,6 +80,8 @@ export class OrderService {
         historyServices: createOrderDto.services,
         totalPrice,
         downPrice,
+        voucherOrder: resApplyVoucher.correctVoucher,
+        gasFee: resApplyVoucher.gasFee,
       });
       await this.orderPlaceRepository.save(order);
       await this.onwerPlaceRepository.update(
@@ -90,6 +105,7 @@ export class OrderService {
       await queryRunner.commitTransaction();
       return order;
     } catch (error) {
+      console.log(error);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
@@ -158,7 +174,15 @@ export class OrderService {
     const { money, place, moneyTimes, timeBlocks } = await this.calcPrice(
       orderInfor,
     );
-    const resApplyVoucher = this.checkVoucher(orderInfor.voucher, place, money);
+    const systemConfig = await this.systemConfigRepository.find();
+    console.log(systemConfig);
+    const resApplyVoucher = this.checkVoucher(
+      place.voucherCreate,
+      place,
+      money,
+      systemConfig[0]?.gasFee ? systemConfig[0].gasFee : '0',
+    );
+    console.log(resApplyVoucher);
     if (resApplyVoucher == 'Max voucher') {
       return 'Apply voucher Fail';
     }
@@ -166,14 +190,13 @@ export class OrderService {
     return resApplyVoucher;
   }
 
-  checkVoucher(voucher, place, money) {
+  checkVoucher(voucher, place, money, gasFee) {
     const correctVoucher = [];
     let moneyDown = '0';
 
     voucher.map((v) => {
       const a = place.voucherCreate.find((vc) => vc.id === v.id);
       if (a) {
-        correctVoucher.push(a);
         if (a.type === TypeVoucher.Percent) {
           if (
             new BigNumber(money)
@@ -183,10 +206,12 @@ export class OrderService {
             moneyDown = new BigNumber(moneyDown)
               .plus(new BigNumber(a.maxMoneySale))
               .toString();
+            correctVoucher.push({ voucher: a, status: 1, value: moneyDown });
           } else {
             moneyDown = new BigNumber(moneyDown)
               .plus(new BigNumber(money).multipliedBy(a.value / 100))
               .toString();
+            correctVoucher.push({ voucher: a, status: 1, value: moneyDown });
           }
         } else {
           if (
@@ -195,53 +220,41 @@ export class OrderService {
             moneyDown = new BigNumber(moneyDown)
               .plus(new BigNumber(a.maxMoneySale))
               .toString();
+            correctVoucher.push({ voucher: a, status: 1, value: moneyDown });
           } else {
             moneyDown = new BigNumber(moneyDown)
               .plus(new BigNumber(a.value))
               .toString();
+            correctVoucher.push({ voucher: a, status: 1, value: moneyDown });
           }
         }
       }
     });
     if (correctVoucher.length > place.maxVoucherCanUse) return 'Max voucher';
-    return { correctVoucher, moneyDown };
+
+    return {
+      correctVoucher,
+      moneyDown,
+      gasFee: new BigNumber(money).multipliedBy(gasFee / 100).toString(),
+    };
   }
 
-  findAll() {
-    return `This action returns all order`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
-  }
-
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
-  }
-  async checkExitOrder(day, timeStart) {
-    const isOrder = await this.orderPlaceRepository.findOne({
-      where: {
-        dayOrder: day,
-        timeStart: timeStart,
-      },
+  async checkExitOrder(day, timeBlock) {
+    const historyBlock = await this.historyBlockRepository.findBy({
+      dayOrder: day,
     });
-    if (isOrder) return true;
+    console.log(historyBlock);
+    if (historyBlock.length == 0) {
+      console.log(227);
+      return false;
+    }
+    for (let index = 0; index < timeBlock.length; index++) {
+      const element = timeBlock[index];
+      if (historyBlock.find((his) => his.timeStart === element)) return true;
+    }
     return false;
   }
-
-  async useService() {
-    return 1;
-  }
-
-  async calcVoucher() {
-    return 1;
-  }
-
-  async calcMoney() {
-    return 1;
+  async findAll() {
+    return this.orderPlaceRepository.find();
   }
 }

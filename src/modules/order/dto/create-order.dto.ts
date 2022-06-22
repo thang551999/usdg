@@ -28,14 +28,6 @@ export class CreateOrderDto {
     required: false,
   })
   @IsString()
-  timeStart: string;
-
-  @ApiProperty({
-    example: '03/09/2022 11:00:00',
-    description: 'Format: MM/DD/YYYY HH:mm:ss',
-    required: false,
-  })
-  @IsString()
   orderDay: string;
 
   @ApiProperty()
