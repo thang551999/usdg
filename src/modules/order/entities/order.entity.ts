@@ -25,7 +25,10 @@ export class Order {
   money: string;
 
   @Column()
-  price: string;
+  totalPrice: string;
+
+  @Column({ default: '0' })
+  downPrice: string;
 
   @Column()
   gasFee: string;

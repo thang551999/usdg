@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import BigNumber from 'bignumber.js';
 import { getConnection, Repository } from 'typeorm';
-import { ORDER_MESSAGE, ORDER_STATUS, TypeOrder } from '../../common/constant';
+import {
+  ORDER_MESSAGE,
+  ORDER_STATUS,
+  TypeOrder,
+  TypeVoucher,
+} from '../../common/constant';
 import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 import { Place } from '../place/entities/place.entity';
 import { Customer } from '../users/entities/customer.entity';
@@ -23,22 +28,17 @@ export class OrderService {
     private onwerPlaceRepository: Repository<OwnerPlace>,
   ) {}
   async create(createOrderDto: CreateOrderDto, userInfor) {
-    const place = await this.placeRepository.findOne({
-      where: { id: createOrderDto.place.id },
-      relations: ['timeGold', 'owner'],
-    });
-    const { moneyTimes, timeBlocks } = this.getPriceTimes(
-      createOrderDto.timeBooks,
-      place.timeGold,
-      place.priceMin,
-      createOrderDto.orderDay,
-      place,
+    const { money, place, moneyTimes, timeBlocks } = await this.calcPrice(
+      createOrderDto,
     );
-    const priceServices = this.getPriceServices(createOrderDto.services);
-    const money = new BigNumber(moneyTimes)
-      .plus(new BigNumber(priceServices))
+    const resApplyVoucher = await this.ApplyVoucher(createOrderDto);
+    if (resApplyVoucher == 'Apply voucher Fail') {
+      return { message: 'Apply voucher fail' };
+    }
+    const totalPrice = new BigNumber(money)
+      .minus(new BigNumber(resApplyVoucher.moneyDown))
       .toString();
-
+    const downPrice = new BigNumber(resApplyVoucher.moneyDown).toString();
     const user = await this.customerRepository.findOne({
       where: {
         id: userInfor.relativeId,
@@ -46,8 +46,8 @@ export class OrderService {
     });
     if (new BigNumber(user.money).isLessThan(new BigNumber(money)))
       return ORDER_MESSAGE.NOT_ENOUGH_MONEY;
-    // if (this.checkExitOrder(createOrderDto.orderDay, createOrderDto.timeStart))
-    //   return ORDER_MESSAGE.TIME_AVAILABILITY;
+    if (this.checkExitOrder(createOrderDto.orderDay, createOrderDto.timeStart))
+      return ORDER_MESSAGE.TIME_AVAILABILITY;
     const connection = getConnection();
     const queryRunner = connection.createQueryRunner();
 
@@ -65,6 +65,8 @@ export class OrderService {
         type: TypeOrder.PaymentWithWallet,
         timeBlocks: timeBlocks,
         historyServices: createOrderDto.services,
+        totalPrice,
+        downPrice,
       });
       await this.orderPlaceRepository.save(order);
       await this.onwerPlaceRepository.update(
@@ -93,6 +95,24 @@ export class OrderService {
       await queryRunner.release();
     }
     return { error: 'error' };
+  }
+  async calcPrice(createOrderDto) {
+    const place = await this.placeRepository.findOne({
+      where: { id: createOrderDto.place.id },
+      relations: ['timeGold', 'owner', 'voucher'],
+    });
+    const { moneyTimes, timeBlocks } = this.getPriceTimes(
+      createOrderDto.timeBooks,
+      place.timeGold,
+      place.priceMin,
+      createOrderDto.orderDay,
+      place,
+    );
+    const priceServices = this.getPriceServices(createOrderDto.services);
+    const money = new BigNumber(moneyTimes)
+      .plus(new BigNumber(priceServices))
+      .toString();
+    return { money, place, moneyTimes, timeBlocks };
   }
 
   getPriceServices(services) {
@@ -133,6 +153,60 @@ export class OrderService {
     }
     return money;
   }
+
+  async ApplyVoucher(orderInfor) {
+    const { money, place, moneyTimes, timeBlocks } = await this.calcPrice(
+      orderInfor,
+    );
+    const resApplyVoucher = this.checkVoucher(orderInfor.voucher, place, money);
+    if (resApplyVoucher == 'Max voucher') {
+      return 'Apply voucher Fail';
+    }
+
+    return resApplyVoucher;
+  }
+
+  checkVoucher(voucher, place, money) {
+    const correctVoucher = [];
+    let moneyDown = '0';
+
+    voucher.map((v) => {
+      const a = place.voucherCreate.find((vc) => vc.id === v.id);
+      if (a) {
+        correctVoucher.push(a);
+        if (a.type === TypeVoucher.Percent) {
+          if (
+            new BigNumber(money)
+              .multipliedBy(a.value / 100)
+              .isGreaterThan(new BigNumber(a.maxMoneySale))
+          ) {
+            moneyDown = new BigNumber(moneyDown)
+              .plus(new BigNumber(a.maxMoneySale))
+              .toString();
+          } else {
+            moneyDown = new BigNumber(moneyDown)
+              .plus(new BigNumber(money).multipliedBy(a.value / 100))
+              .toString();
+          }
+        } else {
+          if (
+            new BigNumber(a.value).isGreaterThan(new BigNumber(a.maxMoneySale))
+          ) {
+            moneyDown = new BigNumber(moneyDown)
+              .plus(new BigNumber(a.maxMoneySale))
+              .toString();
+          } else {
+            moneyDown = new BigNumber(moneyDown)
+              .plus(new BigNumber(a.value))
+              .toString();
+          }
+        }
+      }
+    });
+    if (correctVoucher.length > place.maxVoucherCanUse) return 'Max voucher';
+    return { correctVoucher, moneyDown };
+  }
+
   findAll() {
     return `This action returns all order`;
   }

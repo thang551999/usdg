@@ -45,10 +45,15 @@ export class OrderController {
     };
   }
 
-  // @Post('without-login')
-  // async createWithOutLogin(@Body() createOrderDto: CreateOrderDto) {
-  //   return this.orderService.create(createOrderDto);
-  // }
+  @Post('report-order')
+  async reportOrder(@Body() createOrderDto: CreateOrderDto) {
+    // return this.orderService.create(createOrderDto);
+  }
+
+  @Post('apply/voucher')
+  async applyVoucher(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.ApplyVoucher(createOrderDto);
+  }
 
   // @UseGuards(OwnerAuthGuard)
   // @Get()

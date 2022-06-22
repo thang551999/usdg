@@ -61,7 +61,7 @@ export class AdminService {
     });
     const revenue = orders.reduce(
       (cash, order) =>
-        new BigNumber(cash).plus(new BigNumber(order.price)).toString(),
+        new BigNumber(cash).plus(new BigNumber(order.totalPrice)).toString(),
       '0',
     );
     return { revenue, orders };

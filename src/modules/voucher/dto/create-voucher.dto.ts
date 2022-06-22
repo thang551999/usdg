@@ -32,6 +32,10 @@ export class CreateVoucherDto {
   @IsString()
   name: string;
 
+  @ApiProperty({ required: true, example: '1000' })
+  @IsString()
+  value: string;
+
   @ApiProperty({ required: true, enum: TypeVoucher })
   @IsEnum(TypeVoucher)
   type: number;

@@ -22,6 +22,9 @@ export class Voucher {
   name: string;
 
   @Column()
+  value: string;
+
+  @Column()
   type: number;
 
   @Column({ default: false })
