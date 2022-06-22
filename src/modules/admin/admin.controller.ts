@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { SystemConfigDto } from './dto/system-config.dto';
+import { GetRevenueParams } from './dto/get-params.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -25,6 +27,25 @@ export class AdminController {
   @Get('system-config')
   findAll() {
     return this.adminService.getSystemConfig();
+  }
+
+  @Get('dash-board')
+  async getRevenue(@Query() getParams: GetRevenueParams) {
+    const [revenues, places] = await Promise.all([
+      this.adminService.getRevenue(getParams),
+      this.adminService.getPlaces(),
+    ]);
+    return {
+      revenue: revenues.revenue,
+      orders: revenues.orders,
+      numberPlaceAtive: places.length,
+    };
+  }
+
+  @Get('loan')
+  async getLoan() {
+    const loans = await this.adminService.getLoans();
+    return loans;
   }
 
   // @Get('system-config')

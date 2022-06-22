@@ -30,6 +30,7 @@ export enum ORDER_STATUS {
   WAIT_CONFIRM = 0,
   OK = 1,
   CONFIRM_FAIL = 2,
+  ADMIN_PAY = 3,
 }
 
 export enum TypeVoucher {

@@ -27,6 +27,12 @@ export class OwnerPlace {
   @Column()
   phone: string;
 
+  @Column()
+  stk: string;
+
+  @Column()
+  bankSymbol: string;
+
   @Column({ default: '0' })
   money: string;
 
