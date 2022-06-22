@@ -99,7 +99,7 @@ export class OrderService {
   async calcPrice(createOrderDto) {
     const place = await this.placeRepository.findOne({
       where: { id: createOrderDto.place.id },
-      relations: ['timeGold', 'owner', 'voucher'],
+      relations: ['timeGold', 'owner', 'voucherCreate'],
     });
     const { moneyTimes, timeBlocks } = this.getPriceTimes(
       createOrderDto.timeBooks,
