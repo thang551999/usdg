@@ -23,7 +23,7 @@ export class CreateOrderDto {
   place: Place;
 
   @ApiProperty({
-    example: '03/09/2022 11:00:00',
+    example: '2022/03/10',
     description: 'Format: MM/DD/YYYY HH:mm:ss',
     required: false,
   })

@@ -229,8 +229,7 @@ export class PlaceService {
         (timeGold) => timeGold.timeStart == timeAdd,
       );
       const isDisbleBlock = disableBlocks.find(
-        (disableBlock) =>
-          disableBlock.timeStart === timeStart.toString().slice(16, 21),
+        (disableBlock) => disableBlock.timeStart === timeAdd,
       );
       if (isTimeGood) {
         times.push({
