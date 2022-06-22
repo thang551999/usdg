@@ -58,3 +58,7 @@ export enum TypeOrder {
   PaymentWithoutline = 1,
   PaymentWithWallet = 0,
 }
+
+//format
+// HH:mm
+//Day YYYYMMDD

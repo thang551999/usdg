@@ -157,7 +157,7 @@ export class PlaceService {
     });
     if (isDayOff) return { messgae: isDayOff.reason };
     const disableBlock = await this.historyBlockBookingRepository.findBy({
-      dayOrder: day,
+      dayOrder: day.day,
       place: { id: placeId },
     });
     return this.getTimeFromBlock(
@@ -175,7 +175,7 @@ export class PlaceService {
     TimeGolds,
     timeDistance,
     price,
-    disableBlock,
+    disableBlocks,
   ) {
     const timeStart = new Date(
       2020,
@@ -193,13 +193,25 @@ export class PlaceService {
       const isTimeGood = TimeGolds.find(
         (timeGold) => timeGold.timeStart == timeStart.toString().slice(16, 21),
       );
+      const isDisbleBlock = disableBlocks.find(
+        (disableBlock) =>
+          disableBlock.timeStart === timeStart.toString().slice(16, 21),
+      );
       times.push({
         time: timeStart.toString().slice(16, 21),
         price: isTimeGood.price,
-        isReady: true,
+        isReady: isDisbleBlock ? false : true,
       });
     } else {
-      times.push({ time: timeStart.toString().slice(16, 21), price });
+      const isDisbleBlock = disableBlocks.find(
+        (disableBlock) =>
+          disableBlock.timeStart === timeStart.toString().slice(16, 21),
+      );
+      times.push({
+        time: timeStart.toString().slice(16, 21),
+        price,
+        isReady: isDisbleBlock ? false : true,
+      });
     }
     const timeEnd = new Date(
       2020,
@@ -216,10 +228,22 @@ export class PlaceService {
       const isTimeGood = TimeGolds.find(
         (timeGold) => timeGold.timeStart == timeAdd,
       );
+      const isDisbleBlock = disableBlocks.find(
+        (disableBlock) =>
+          disableBlock.timeStart === timeStart.toString().slice(16, 21),
+      );
       if (isTimeGood) {
-        times.push({ time: timeAdd, price: isTimeGood.price, isReady: true });
+        times.push({
+          time: timeAdd,
+          price: isTimeGood.price,
+          isReady: isDisbleBlock ? false : true,
+        });
       } else {
-        times.push({ time: timeAdd, price, isReady: true });
+        times.push({
+          time: timeAdd,
+          price,
+          isReady: isDisbleBlock ? false : true,
+        });
       }
     }
 
