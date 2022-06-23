@@ -19,6 +19,9 @@ export class ArticleTypeEntity {
   @Column({ nullable: true })
   image: string;
 
+  @Column({ default: 1 })
+  isActive: number;
+
   @OneToMany(() => ArticleEntity, (articleEntity) => articleEntity.typeArticle)
   article: ArticleEntity[];
 }

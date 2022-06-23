@@ -10,7 +10,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { CreateArticleDto, GetArticleParams } from './dto/create-article.dto';
+import {
+  CreateArticleDto,
+  GetArticleParams,
+  TypeArticle,
+} from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { API_SUCCESS } from '../../common/constant';
 import { JwtAuthGuard, JwtStrategy } from '../auth/jwt.strategy';
@@ -38,9 +42,32 @@ export class ArticleController {
     };
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articleService.findOne(+id);
+  @Get('type-article')
+  async findOne() {
+    const typeArticle = await this.articleService.findTypeArticle();
+    return {
+      code: API_SUCCESS,
+      data: typeArticle,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('findByUser')
+  async findArticleCreate(@UserInfo() user: IUserInfo) {
+    const typeArticle = await this.articleService.findByUser(user);
+    return {
+      code: API_SUCCESS,
+      data: typeArticle,
+    };
+  }
+
+  @Post('type-article')
+  async createTypeArticle(@Body() typeArticle: TypeArticle) {
+    const resTyper = await this.articleService.creaetArticle(typeArticle);
+    return {
+      code: API_SUCCESS,
+      data: resTyper,
+    };
   }
 
   @Patch(':id')

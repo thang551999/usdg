@@ -5,6 +5,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { ArticleEntity } from './entities/article.entity';
+import { ArticleTypeEntity } from './entities/article.type.entity';
 
 @Injectable()
 export class ArticleService {
@@ -13,6 +14,8 @@ export class ArticleService {
     private articleRepository: Repository<ArticleEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(ArticleTypeEntity)
+    private typerArticleRepository: Repository<ArticleTypeEntity>,
   ) {}
   async create(createArticleDto: CreateArticleDto, user) {
     const users = await this.userRepository.findOne({
@@ -41,10 +44,26 @@ export class ArticleService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  findTypeArticle() {
+    return this.typerArticleRepository.findBy({ isActive: 1 });
   }
 
+  findByUser(user) {
+    return this.articleRepository.find({
+      relations: ['user'],
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
+  }
+
+  async creaetArticle(typeArticle) {
+    const typeArticles = await this.typerArticleRepository.create(typeArticle);
+    await this.typerArticleRepository.save(typeArticles);
+    return typeArticles;
+  }
   update(id: number, updateArticleDto: UpdateArticleDto) {
     return `This action updates a #${id} article`;
   }

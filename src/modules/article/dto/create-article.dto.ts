@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, IsOptional, IsArray } from 'class-validator';
 
 export class CreateArticleDto {
   @IsString()
@@ -9,6 +9,9 @@ export class CreateArticleDto {
 
   @IsString()
   content: string;
+
+  @IsArray()
+  tags: string[];
 }
 
 export class GetArticleParams {
@@ -17,4 +20,13 @@ export class GetArticleParams {
 
   @IsNumber()
   pageSize: number;
+}
+
+export class TypeArticle {
+  @IsString()
+  title: string;
+
+  @IsOptional()
+  @IsString()
+  image: string;
 }
