@@ -7,19 +7,26 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto, GetArticleParams } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { API_SUCCESS } from '../../common/constant';
+import { JwtAuthGuard, JwtStrategy } from '../auth/jwt.strategy';
+import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
 
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto) {
-    return this.articleService.create(createArticleDto);
+  create(
+    @Body() createArticleDto: CreateArticleDto,
+    @UserInfo() user: IUserInfo,
+  ) {
+    return this.articleService.create(createArticleDto, user);
   }
 
   @Get()

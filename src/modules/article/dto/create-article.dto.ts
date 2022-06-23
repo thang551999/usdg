@@ -1,6 +1,15 @@
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
-export class CreateArticleDto {}
+export class CreateArticleDto {
+  @IsString()
+  title: string;
+
+  @IsString()
+  image: string;
+
+  @IsString()
+  content: string;
+}
 
 export class GetArticleParams {
   @IsNumber()
