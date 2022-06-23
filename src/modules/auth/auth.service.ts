@@ -23,6 +23,7 @@ import { AUTH_MESSAGE, ROLE } from 'src/common/constant';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { API_SUCCESS } from '../../common/constant';
 import { Customer } from '../users/entities/customer.entity';
+import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 
 @Injectable()
 export class AuthService {
@@ -31,8 +32,8 @@ export class AuthService {
     private usersRepository: Repository<UserEntity>,
     @InjectRepository(Customer)
     private customerRepository: Repository<Customer>,
-    @InjectRepository(UserEntity)
-    private ownerRepository: Repository<UserEntity>,
+    @InjectRepository(OwnerPlace)
+    private ownerRepository: Repository<OwnerPlace>,
 
     @InjectRepository(UserEntity)
     private adminRepository: Repository<UserEntity>,
@@ -56,18 +57,18 @@ export class AuthService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      if (userCheck.actived === false && userCheck.role === ROLE.user) {
+      if (userCheck.actived === false) {
         const token = await this.jwtService.signAsync(
           {
             id: userCheck.id,
           },
           { expiresIn: '5m' },
         );
-        // await this.mailerService.sendUserConfirmation(
-        //   token,
-        //   userCheck?.fullName,
-        //   registerUserDto.email,
-        // );
+        await this.mailerService.sendUserConfirmation(
+          token,
+          userCheck?.fullName,
+          registerUserDto.email,
+        );
         return {
           message: 'Check email pls',
         };
@@ -108,6 +109,18 @@ export class AuthService {
       //   userCheck?.fullName,
       //   registerUserDto.email,
       // );
+    }
+    if (registerUserDto.role === ROLE.owner) {
+      const ownerPlace = await this.ownerRepository.create({
+        address: registerUserDto.ownerPlace.bankSymbol,
+        phone: registerUserDto.ownerPlace.bankSymbol,
+        stk: registerUserDto.ownerPlace.bankSymbol,
+        bankSymbol: registerUserDto.ownerPlace.bankSymbol,
+      });
+      await this.ownerRepository.save(ownerPlace);
+      await this.usersRepository.update(user.id, {
+        ownerPlace,
+      });
     }
 
     return {
