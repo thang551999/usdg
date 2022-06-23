@@ -18,6 +18,7 @@ export class VoucherService {
     private voucherPlaceRepository: Repository<Voucher>,
   ) {}
   async create(createVoucherDto: CreateVoucherDto, userInfor) {
+    console.log(createVoucherDto);
     const owner = await this.ownerPlaceRepository.findOne({
       where: {
         id: userInfor.relativeId,
@@ -30,12 +31,14 @@ export class VoucherService {
     const voucher = await this.voucherPlaceRepository.create({
       amount: createVoucherDto.amount,
       type: createVoucherDto.type,
-      isActive: createVoucherDto.isActive ? createVoucherDto.isActive : 0,
+      isActive: createVoucherDto.isActive ? 0 : 1,
       endDate: createVoucherDto.endDate,
       maxMoneySale: createVoucherDto.maxMoneySale,
       moneyCondition: createVoucherDto.moneyCondition,
       owner,
       place: createVoucherDto.place,
+      name: createVoucherDto.name,
+      value: createVoucherDto.value,
     });
     await this.voucherPlaceRepository.save(voucher);
     return voucher;
