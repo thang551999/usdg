@@ -51,14 +51,14 @@ export class UpdateVoucherDto {
   amount: number;
 
   @ApiProperty({
-    example: '03/09/2022 11:00:00',
-    description: 'Format: MM/DD/YYYY HH:mm:ss',
+    example: '2022/06/30',
+    description: 'Format:YYYY/MM/DD',
     required: false,
   })
   @IsString()
   @IsOptional()
-  @IsDateStringFormat('MM/DD/YYYY HH:mm:ss', true)
-  endDate: Date;
+  @IsDateStringFormat('YYYY/MM/DD', true)
+  endDate: string;
 
   @ApiProperty({ required: true, example: {} })
   @IsNotEmpty()
