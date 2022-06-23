@@ -10,6 +10,7 @@ import {
 import { VoucherService } from './voucher.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
+import { API_SUCCESS } from '../../common/constant';
 
 @Controller('voucher')
 export class VoucherController {
@@ -21,8 +22,12 @@ export class VoucherController {
   // }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.voucherService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const voucher = await this.voucherService.findOne(id);
+    return {
+      code: API_SUCCESS,
+      data: voucher,
+    };
   }
 
   @Patch(':id')

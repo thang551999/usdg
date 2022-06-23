@@ -45,8 +45,12 @@ export class VoucherOwnerPlaceController {
   }
 
   @Get(':id')
-  getVoucherDetails() {
-    return 0;
+  async findOne(@Param('id') id: string) {
+    const voucher = await this.voucherService.findOne(id);
+    return {
+      code: API_SUCCESS,
+      data: voucher,
+    };
   }
 
   @Put(':id')

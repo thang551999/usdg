@@ -61,8 +61,13 @@ export class VoucherService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} voucher`;
+  findOne(id: string) {
+    return this.voucherPlaceRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['place'],
+    });
   }
 
   update(id: number, updateVoucherDto: UpdateVoucherDto) {
