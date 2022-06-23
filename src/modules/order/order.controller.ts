@@ -55,6 +55,12 @@ export class OrderController {
     return this.orderService.ApplyVoucher(createOrderDto);
   }
 
+  @UseGuards(UserAuthGuard)
+  @Get('/history')
+  async getOrder(@UserInfo() user: IUserInfo) {
+    return this.orderService.findHistoryOrderList(user);
+  }
+
   // @UseGuards(OwnerAuthGuard)
   // @Get()
   // findAll() {

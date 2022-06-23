@@ -257,4 +257,15 @@ export class OrderService {
   async findAll() {
     return this.orderPlaceRepository.find();
   }
+  async findHistoryOrderList(user) {
+    const orderList = await this.orderPlaceRepository.find({
+      relations: ['customer'],
+      where: {
+        customer: {
+          id: user.relativeId,
+        },
+      },
+    });
+    return orderList;
+  }
 }
