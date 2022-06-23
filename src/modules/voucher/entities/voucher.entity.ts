@@ -34,7 +34,7 @@ export class Voucher {
   isActive: number;
 
   @Column({ nullable: true })
-  endDate: Date;
+  endDate: string;
 
   @Column({ nullable: true })
   maxMoneySale: string;
