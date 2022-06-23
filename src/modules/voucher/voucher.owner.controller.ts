@@ -14,6 +14,7 @@ import { OwnerAuthGuard } from '../auth/jwt.strategy';
 import { CreateVoucherDto, GetVoucherOwner } from './dto/create-voucher.dto';
 import { VoucherService } from './voucher.service';
 import { API_SUCCESS } from '../../common/constant';
+import { UpdateVoucherDto } from './dto/update-voucher.dto';
 
 @Controller('owner/voucher')
 @UseGuards(OwnerAuthGuard)
@@ -54,8 +55,16 @@ export class VoucherOwnerPlaceController {
   }
 
   @Put(':id')
-  updateVoucherCreate() {
-    return 0;
+  async updateVoucherCreate(
+    @Param('id') id: string,
+    @UserInfo() user: IUserInfo,
+    @Body() voucher: UpdateVoucherDto,
+  ) {
+    const updateVoucher = await this.voucherService.update(id, voucher, user);
+    return {
+      code: API_SUCCESS,
+      data: updateVoucher,
+    };
   }
 
   @Delete(':id')

@@ -70,8 +70,20 @@ export class VoucherService {
     });
   }
 
-  update(id: number, updateVoucherDto: UpdateVoucherDto) {
-    return `This action updates a #${id} voucher`;
+  async update(id, voucher, user) {
+    const isVoucherOwenr = await this.voucherPlaceRepository.findOne({
+      where: {
+        id: id,
+        owner: {
+          id: user.relativeId,
+        },
+      },
+    });
+    if (isVoucherOwenr) {
+      return await this.voucherPlaceRepository.update({ id }, voucher);
+    } else {
+      return { message: 'Bạn không phải là chủ sân' };
+    }
   }
 
   async remove(id: string, user) {

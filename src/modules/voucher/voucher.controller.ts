@@ -30,8 +30,8 @@ export class VoucherController {
     };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVoucherDto: UpdateVoucherDto) {
-    return this.voucherService.update(+id, updateVoucherDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateVoucherDto: UpdateVoucherDto) {
+  //   return this.voucherService.update(+id, updateVoucherDto);
+  // }
 }
