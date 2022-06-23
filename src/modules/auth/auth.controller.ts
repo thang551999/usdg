@@ -60,7 +60,11 @@ export class AuthController {
   @ApiOperation({ summary: 'Login user Api - {Thang}' })
   @ApiOkResponse({ type: ResLoginUserDto, status: 200 })
   async getOwnerPlace(@Query() params: GetOwnerParams) {
-    await this.authService.GetOwnerPlace(params);
+    const listOwner = await this.authService.GetOwnerPlace(params);
+    return {
+      code: API_SUCCESS,
+      data: listOwner,
+    };
   }
 
   @Put('owner-place/approve/:id')
