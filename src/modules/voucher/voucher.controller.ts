@@ -29,9 +29,4 @@ export class VoucherController {
   update(@Param('id') id: string, @Body() updateVoucherDto: UpdateVoucherDto) {
     return this.voucherService.update(+id, updateVoucherDto);
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.voucherService.remove(+id);
-  }
 }

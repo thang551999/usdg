@@ -7,6 +7,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  Param,
 } from '@nestjs/common';
 import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
 import { OwnerAuthGuard } from '../auth/jwt.strategy';
@@ -54,7 +55,14 @@ export class VoucherOwnerPlaceController {
   }
 
   @Delete(':id')
-  deleteVoucherCreate() {
-    return 0;
+  async deleteVoucherCreate(
+    @Param('id') id: string,
+    @UserInfo() user: IUserInfo,
+  ) {
+    const vouchers = await this.voucherService.remove(id, user);
+    return {
+      code: API_SUCCESS,
+      data: vouchers,
+    };
   }
 }

@@ -69,7 +69,22 @@ export class VoucherService {
     return `This action updates a #${id} voucher`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} voucher`;
+  async remove(id: string, user) {
+    const isVoucherOwenr = await this.voucherPlaceRepository.findOne({
+      where: {
+        id: id,
+        owner: {
+          id: user.relativeId,
+        },
+      },
+    });
+    if (isVoucherOwenr) {
+      return await this.voucherPlaceRepository.update(
+        { id },
+        { place: null, owner: null },
+      );
+    } else {
+      return { message: 'Bạn không phải là chủ sân' };
+    }
   }
 }
