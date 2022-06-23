@@ -104,11 +104,11 @@ export class AuthService {
         },
         { expiresIn: '5m' },
       );
-      // await this.mailerService.sendUserConfirmation(
-      //   token,
-      //   userCheck?.fullName,
-      //   registerUserDto.email,
-      // );
+      await this.mailerService.sendUserConfirmation(
+        token,
+        userCheck?.fullName,
+        registerUserDto.email,
+      );
     }
     if (registerUserDto.role === ROLE.owner) {
       const ownerPlace = await this.ownerRepository.create({
@@ -121,6 +121,19 @@ export class AuthService {
       await this.usersRepository.update(user.id, {
         ownerPlace,
       });
+      const token = await this.jwtService.signAsync(
+        {
+          id: user.id,
+          role: user.role,
+          userType: user.userType,
+        },
+        { expiresIn: '5m' },
+      );
+      await this.mailerService.sendUserConfirmation(
+        token,
+        userCheck?.fullName,
+        registerUserDto.email,
+      );
     }
 
     return {

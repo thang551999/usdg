@@ -16,7 +16,7 @@ import { join } from 'path';
         port: 587,
         auth: {
           user: 'thangngudan55@gmail.com',
-          pass: '123456thang',
+          pass: 'hcjnpsncudjjpsvt',
         },
       },
       defaults: {
