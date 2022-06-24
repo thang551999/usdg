@@ -13,9 +13,6 @@ export class ArticleEntity {
   @Column()
   image: string;
 
-  @Column({ type: 'simple-array' })
-  tags: string[];
-
   @Column({ type: 'text' })
   content: string;
 
