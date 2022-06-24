@@ -50,6 +50,15 @@ export class ArticleController {
       data: typeArticle,
     };
   }
+  
+  @Get('type-article')
+  async findOne() {
+    const typeArticle = await this.articleService.findTypeArticle();
+    return {
+      code: API_SUCCESS,
+      data: typeArticle,
+    };
+  }
 
   @Get(':id')
   async getArticle(@Param('id') id: string) {
@@ -60,14 +69,6 @@ export class ArticleController {
     };
   }
 
-  @Get('type-article')
-  async findOne() {
-    const typeArticle = await this.articleService.findTypeArticle();
-    return {
-      code: API_SUCCESS,
-      data: typeArticle,
-    };
-  }
 
   @UseGuards(JwtAuthGuard)
   @Get('findByUser')
