@@ -8,7 +8,7 @@ import {
 import { UserEntity } from '../../users/entities/user.entity';
 import { ArticleEntity } from './article.entity';
 
-@Entity('typer-article')
+@Entity('typer-articles')
 export class ArticleTypeEntity {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;

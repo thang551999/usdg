@@ -33,8 +33,15 @@ export class ArticleService {
 
   async findAll(getParams) {
     const article = await this.articleRepository.findAndCount({
+      where: { isActive: 1 },
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
+      select: {
+        title: true,
+        image: true,
+        numbersRead: true,
+        description: true,
+      },
     });
     return {
       total: article[1],
@@ -48,6 +55,42 @@ export class ArticleService {
     return this.typerArticleRepository.findBy({ isActive: 1 });
   }
 
+  async getArticleByType() {
+    const typeArticle = await this.typerArticleRepository.find({
+      where: {
+        isActive: 1,
+      },
+    });
+    const res = await Promise.all(
+      typeArticle.map(async (typeAr) => {
+        const article = await this.articleRepository.find({
+          where: { isActive: 1, typeArticle: { id: typeAr.id } },
+          skip: 0,
+          take: 10,
+          select: {
+            title: true,
+            image: true,
+            numbersRead: true,
+            description: true,
+          },
+        });
+        return {
+          ...typeAr,
+          article,
+        };
+      }),
+    );
+    console.log(res);
+    return res;
+  }
+
+  getArticle(id) {
+    return this.typerArticleRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
   findByUser(user) {
     return this.articleRepository.find({
       relations: ['user'],
@@ -64,8 +107,8 @@ export class ArticleService {
     await this.typerArticleRepository.save(typeArticles);
     return typeArticles;
   }
-  update(id: string, updateArticleDto: UpdateArticleDto) {
-    return `This action updates a #${id} article`;
+  async update(id: string, updateArticleDto: UpdateArticleDto) {
+    await this.articleRepository.update({ id }, updateArticleDto);
   }
 
   remove(id: number) {

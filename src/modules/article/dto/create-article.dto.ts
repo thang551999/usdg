@@ -17,6 +17,9 @@ export class CreateArticleDto {
   @IsString()
   content: string;
 
+  @IsString()
+  description: string;
+
   @IsNotEmpty()
   typeArticle: ArticleTypeEntity;
 }

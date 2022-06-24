@@ -35,7 +35,25 @@ export class ArticleController {
 
   @Get()
   async findAll(@Query() getParams: GetArticleParams) {
-    const res = this.articleService.findAll(getParams);
+    const res = await this.articleService.findAll(getParams);
+    return {
+      code: API_SUCCESS,
+      data: res,
+    };
+  }
+
+  @Get('articleByType')
+  async getArticleByType() {
+    const typeArticle = await this.articleService.getArticleByType();
+    return {
+      code: API_SUCCESS,
+      data: typeArticle,
+    };
+  }
+
+  @Get(':id')
+  async getArticle(@Param('id') id: string) {
+    const res = this.articleService.getArticle(id);
     return {
       code: API_SUCCESS,
       data: res,
