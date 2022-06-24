@@ -62,7 +62,7 @@ export class ArticleController {
 
   @Get(':id')
   async getArticle(@Param('id') id: string) {
-    const res = this.articleService.getArticle(id);
+    const res = await this.articleService.getArticle(id);
     return {
       code: API_SUCCESS,
       data: res,

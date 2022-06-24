@@ -81,7 +81,7 @@ export class ArticleService {
   }
 
   getArticle(id) {
-    return this.typerArticleRepository.findOne({
+    return this.articleRepository.findOne({
       where: {
         id,
       },
