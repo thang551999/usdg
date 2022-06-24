@@ -13,7 +13,7 @@ export class ArticleEntity {
   @Column()
   image: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'longtext' })
   content: string;
 
   @Column({ default: '0' })

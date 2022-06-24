@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { config } from 'aws-sdk';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -22,7 +23,8 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
-
+  app.use(bodyParser.json({ limit: '550mb' }));
+  app.use(bodyParser.urlencoded({ limit: '550mb', extended: true }));
   app.enableCors({
     origin: '*',
     allowedHeaders:
