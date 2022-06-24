@@ -37,11 +37,9 @@ export class ArticleService {
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
       select: {
-        title: true,
-        image: true,
-        numbersRead: true,
-        description: true,
+        content: false,
       },
+      relations: ['typeArticle'],
     });
     return {
       total: article[1],
