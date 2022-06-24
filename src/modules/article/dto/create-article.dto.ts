@@ -1,4 +1,11 @@
-import { IsNumber, IsString, IsOptional, IsArray } from 'class-validator';
+import {
+  IsNumber,
+  IsString,
+  IsOptional,
+  IsArray,
+  IsNotEmpty,
+} from 'class-validator';
+import { ArticleTypeEntity } from '../entities/article.type.entity';
 
 export class CreateArticleDto {
   @IsString()
@@ -10,8 +17,8 @@ export class CreateArticleDto {
   @IsString()
   content: string;
 
-  @IsArray()
-  tags: string[];
+  @IsNotEmpty()
+  typeArticle: ArticleTypeEntity;
 }
 
 export class GetArticleParams {
