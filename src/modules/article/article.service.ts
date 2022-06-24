@@ -104,7 +104,7 @@ export class ArticleService {
     return typeArticles;
   }
   async update(id: string, updateArticleDto: UpdateArticleDto) {
-    await this.articleRepository.update({ id }, updateArticleDto);
+    return this.articleRepository.update({ id }, updateArticleDto);
   }
 
   remove(id: number) {

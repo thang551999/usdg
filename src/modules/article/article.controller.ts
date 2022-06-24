@@ -93,7 +93,11 @@ export class ArticleController {
     @Param('id') id: string,
     @Body() updateArticleDto: UpdateArticleDto,
   ) {
-    return this.articleService.update(id, updateArticleDto);
+    const res = await this.articleService.update(id, updateArticleDto);
+    return {
+      code: API_SUCCESS,
+      message: 'Update success',
+    };
   }
 
   @Delete(':id')
