@@ -66,11 +66,9 @@ export class ArticleService {
           skip: 0,
           take: 10,
           select: {
-            title: true,
-            image: true,
-            numbersRead: true,
-            description: true,
+            content: false,
           },
+          relations: ['typeArticle'],
         });
         return {
           ...typeAr,
