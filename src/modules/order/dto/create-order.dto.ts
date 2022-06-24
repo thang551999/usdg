@@ -7,6 +7,7 @@ import {
   IsArray,
   IsNotEmpty,
   IsEmpty,
+  IsNumber,
 } from 'class-validator';
 import { TypeOrder } from '../../../common/constant';
 import { IsDateStringFormat } from '../../../common/validate.decorator';
@@ -40,4 +41,12 @@ export class CreateOrderDto {
 
   @IsArray()
   services;
+}
+
+export class GetOrderHistory {
+  @IsNumber()
+  page: number;
+
+  @IsNumber()
+  pageSize: number;
 }

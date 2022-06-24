@@ -9,9 +9,10 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, GetOrderHistory } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OwnerAuthGuard, UserAuthGuard } from '../auth/jwt.strategy';
 import { IUserInfo, UserInfo } from '../../common/decorators/user.decorator';
@@ -57,7 +58,10 @@ export class OrderController {
 
   @UseGuards(UserAuthGuard)
   @Get('/history')
-  async getOrder(@UserInfo() user: IUserInfo) {
+  async getOrder(
+    @UserInfo() user: IUserInfo,
+    @Query() getParams: GetOrderHistory,
+  ) {
     return this.orderService.findHistoryOrderList(user);
   }
 
