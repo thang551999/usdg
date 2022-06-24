@@ -3,11 +3,11 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import {
@@ -70,9 +70,12 @@ export class ArticleController {
     };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
-    return this.articleService.update(+id, updateArticleDto);
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateArticleDto: UpdateArticleDto,
+  ) {
+    return this.articleService.update(id, updateArticleDto);
   }
 
   @Delete(':id')

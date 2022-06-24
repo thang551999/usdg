@@ -64,7 +64,7 @@ export class ArticleService {
     await this.typerArticleRepository.save(typeArticles);
     return typeArticles;
   }
-  update(id: number, updateArticleDto: UpdateArticleDto) {
+  update(id: string, updateArticleDto: UpdateArticleDto) {
     return `This action updates a #${id} article`;
   }
 

@@ -407,14 +407,17 @@ export class AppotaService {
       await this.vnpayTable.update(orderId, {
         status: PaymentStatus.SUCCESS,
       });
+      console.log(orderId);
       const order = await this.vnpayTable.findOne({
         where: { id: orderId },
         relations: ['user'],
       });
+      console.log(order);
       const money = new BigNumber(order.user.money)
         .plus(new BigNumber(order.money))
         .toString();
       await this.customerRepository.update(order.user.id, { money });
+      console.log(money);
       const rspCode = vnp_Params['vnp_ResponseCode'];
       //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
       return { RspCode: '00', Message: 'success' };
