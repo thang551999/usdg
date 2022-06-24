@@ -413,6 +413,10 @@ export class AppotaService {
         relations: ['user'],
       });
       console.log(order);
+      await this.vnpayTable.update(
+        { id: orderId },
+        { status: PaymentStatus.SUCCESS },
+      );
       const money = new BigNumber(order.user.money)
         .plus(new BigNumber(order.money))
         .toString();
