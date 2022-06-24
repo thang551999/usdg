@@ -50,7 +50,7 @@ export class ArticleController {
       data: typeArticle,
     };
   }
-  
+
   @Get('type-article')
   async findOne() {
     const typeArticle = await this.articleService.findTypeArticle();
@@ -68,7 +68,6 @@ export class ArticleController {
       data: res,
     };
   }
-
 
   @UseGuards(JwtAuthGuard)
   @Get('findByUser')
