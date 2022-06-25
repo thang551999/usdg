@@ -8,6 +8,7 @@ import { Customer } from '../users/entities/customer.entity';
 import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 import { HistoryBlockBooking } from './entities/history-block-booking.entity';
 import SystemConfigEntity from '../admin/entities/system-config.entity';
+import { OrderOwnerController } from './owner-order.controller';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import SystemConfigEntity from '../admin/entities/system-config.entity';
       SystemConfigEntity,
     ]),
   ],
-  controllers: [OrderController],
+  controllers: [OrderController, OrderOwnerController],
   providers: [OrderService],
 })
 export class OrderModule {}

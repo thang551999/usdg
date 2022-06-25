@@ -257,6 +257,35 @@ export class OrderService {
   async findAll() {
     return this.orderPlaceRepository.find();
   }
+
+  async findOrderByOwner(user) {
+    // const places = await this.placeRepository.find({
+    //   where: {
+    //     owner: {
+    //       id: user.relativeId,
+    //     },
+    //   },
+    // });
+    const oder = await this.orderPlaceRepository.find({
+      where: {
+        place: {
+          owner: {
+            id: user.relativeId,
+          },
+        },
+      },
+      relations: [
+        'customer',
+        'place',
+        'historyServices',
+        'timeBlocks',
+        'voucherOrder',
+      ],
+    });
+    console.log(oder);
+    return oder;
+  }
+
   async findHistoryOrderList(getParams, user) {
     const orderList = await this.orderPlaceRepository.findAndCount({
       relations: [
