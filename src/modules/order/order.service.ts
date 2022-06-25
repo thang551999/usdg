@@ -259,7 +259,7 @@ export class OrderService {
   }
   async findHistoryOrderList(getParams, user) {
     const orderList = await this.orderPlaceRepository.findAndCount({
-      relations: ['customer'],
+      relations: ['customer', 'place'],
       where: {
         customer: {
           id: user.relativeId,
