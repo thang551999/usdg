@@ -72,4 +72,22 @@ export class GetParams {
   @ApiProperty({ example: 10 })
   @IsInt()
   pageSize: number;
+
+  @ApiProperty({
+    example: '2022/03/10',
+    description: 'Format: YYYY/MM/DD',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  dateStart: string;
+
+  @ApiProperty({
+    example: '2022/03/10',
+    description: 'Format: YYYY/MM/DD',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  dateEnd: string;
 }

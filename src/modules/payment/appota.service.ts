@@ -5,7 +5,7 @@ import {
   GetParams,
 } from './dto/create-vnpay.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, Repository } from 'typeorm';
+import { Between, getConnection, Repository } from 'typeorm';
 import * as CryptoJS from 'crypto-js';
 import { UserEntity } from '../users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -43,7 +43,13 @@ export class AppotaService {
   async getPaymentAdmin(getParams: GetParams) {
     const historyPayment = await this.vnpayTable.findAndCount({
       relations: ['user'],
-      where: { status: PaymentStatus.SUCCESS },
+      where: {
+        status: PaymentStatus.SUCCESS,
+        createdAt: Between(
+          new Date(getParams.dateStart),
+          new Date(getParams.dateEnd),
+        ),
+      },
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
     });
