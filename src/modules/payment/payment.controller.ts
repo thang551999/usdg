@@ -35,11 +35,10 @@ export class AppotaController {
     @Req() req,
   ) {
     try {
-      console.log(38)
+      console.log(38);
       return this.vnpayService.createPaymentVnpayUrl(req, createVnpayDto, user);
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 

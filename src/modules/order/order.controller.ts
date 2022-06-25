@@ -62,7 +62,7 @@ export class OrderController {
     @UserInfo() user: IUserInfo,
     @Query() getParams: GetOrderHistory,
   ) {
-    return this.orderService.findHistoryOrderList(user);
+    return this.orderService.findHistoryOrderList(getParams, user);
   }
 
   // @UseGuards(OwnerAuthGuard)

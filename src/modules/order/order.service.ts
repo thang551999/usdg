@@ -257,15 +257,22 @@ export class OrderService {
   async findAll() {
     return this.orderPlaceRepository.find();
   }
-  async findHistoryOrderList(user) {
-    const orderList = await this.orderPlaceRepository.find({
+  async findHistoryOrderList(getParams, user) {
+    const orderList = await this.orderPlaceRepository.findAndCount({
       relations: ['customer'],
       where: {
         customer: {
           id: user.relativeId,
         },
       },
+      skip: (getParams.page - 1) * getParams.pageSize,
+      take: getParams.pageSize,
     });
-    return orderList;
+    return {
+      total: orderList[1],
+      pageSize: getParams.pageSize,
+      currentPage: getParams.page,
+      records: orderList[0],
+    };
   }
 }
