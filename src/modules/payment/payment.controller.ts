@@ -34,7 +34,13 @@ export class AppotaController {
     @UserInfo() user: IUserInfo,
     @Req() req,
   ) {
-    return this.vnpayService.createPaymentVnpayUrl(req, createVnpayDto, user);
+    try {
+      console.log(38)
+      return this.vnpayService.createPaymentVnpayUrl(req, createVnpayDto, user);
+      
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   @Get('vnpay/return-url')

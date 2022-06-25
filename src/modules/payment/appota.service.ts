@@ -42,15 +42,40 @@ export class AppotaService {
   ) {}
   async getPaymentAdmin(getParams: GetParams) {
     const historyPayment = await this.vnpayTable.findAndCount({
+      relations: ['user'],
       where: { status: PaymentStatus.SUCCESS },
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
     });
+    const userInfor = await Promise.all(
+      historyPayment[0].map((h) =>
+        this.userRepository.findOne({
+          where: {
+            customer: {
+              id: h.user.id,
+            },
+          },
+          select: {
+            email: true,
+            fullName: true,
+            avatar: true,
+            address: true,
+            phone: true,
+            id: true,
+            customer: {
+              id: true,
+            },
+          },
+        }),
+      ),
+    );
     return {
       total: historyPayment[1],
       pageSize: getParams.pageSize,
       currentPage: getParams.page,
-      records: historyPayment,
+      records: historyPayment[0].map((h, index) => {
+        return { ...h, ...userInfor[index] };
+      }),
     };
   }
 
