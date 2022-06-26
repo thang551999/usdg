@@ -18,7 +18,11 @@ export class CommentService {
     private customerRepository: Repository<Customer>,
   ) {}
   async create(createCommentDto: CreateCommentDto, user) {
-    const customer = await this.customerRepository.findOne(user.relativeId);
+    const customer = await this.customerRepository.findOne({
+      where: {
+        id: user.relativeId,
+      },
+    });
     const comment = await this.commentRepository.create({
       star: createCommentDto.star,
       comment: createCommentDto.comment,
