@@ -36,7 +36,9 @@ export class AdminService {
   }
 
   async updateConfig(systemConfig: SystemConfigDto) {
-    const isExistSystemConfig = await this.systemConfigRepository.findOne({});
+    const isExistSystemConfig = await this.systemConfigRepository.findOne({
+      where: {},
+    });
     if (isExistSystemConfig) {
       await this.systemConfigRepository.update(
         {
