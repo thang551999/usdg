@@ -21,7 +21,9 @@ export class AdminService {
     private placeRepository: Repository<Place>,
   ) {}
   async getSystemConfig() {
-    const systemConfig = await this.systemConfigRepository.findOne({});
+    const systemConfig = await this.systemConfigRepository.findOne({
+      where: {},
+    });
     if (systemConfig) {
       return systemConfig;
     } else {
