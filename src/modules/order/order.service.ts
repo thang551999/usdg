@@ -43,7 +43,7 @@ export class OrderService {
     }
     const totalPrice = new BigNumber(money)
       .minus(new BigNumber(resApplyVoucher.moneyDown))
-      .minus(new BigNumber(resApplyVoucher.gasFee))
+      .plus(new BigNumber(resApplyVoucher.gasFee))
       .toString();
     const downPrice = new BigNumber(resApplyVoucher.moneyDown).toString();
     const user = await this.customerRepository.findOne({
@@ -88,7 +88,7 @@ export class OrderService {
         { id: place.owner.id },
         {
           money: new BigNumber(place.owner.money)
-            .plus(new BigNumber(money))
+            .plus(new BigNumber(totalPrice))
             .toString(),
         },
       );
@@ -259,13 +259,6 @@ export class OrderService {
   }
 
   async findOrderByOwner(user) {
-    // const places = await this.placeRepository.find({
-    //   where: {
-    //     owner: {
-    //       id: user.relativeId,
-    //     },
-    //   },
-    // });
     const oder = await this.orderPlaceRepository.find({
       where: {
         place: {

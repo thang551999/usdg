@@ -39,6 +39,7 @@ export class AdminController {
       revenue: revenues.revenue,
       orders: revenues.orders,
       numberPlaceAtive: places.length,
+      gasFee: revenues.gasFee
     };
   }
 

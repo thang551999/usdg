@@ -59,12 +59,19 @@ export class AdminService {
         status: ORDER_STATUS.OK,
       },
     });
-    const revenue = orders.reduce(
-      (cash, order) =>
-        new BigNumber(cash).plus(new BigNumber(order.totalPrice)).toString(),
-      '0',
-    );
-    return { revenue, orders };
+    const revenue = orders.reduce((_cash, order) => {
+      if (order.totalPrice == 'NaN' || order.totalPrice == '')
+        return new BigNumber(_cash).toString();
+      return new BigNumber(_cash)
+        .plus(new BigNumber(order.totalPrice))
+        .toString();
+    }, '0');
+    const gasFee = orders.reduce((_cash, order) => {
+      if (order.gasFee == 'NaN' || order.gasFee == '')
+        return new BigNumber(_cash).toString();
+      return new BigNumber(_cash).plus(new BigNumber(order.gasFee)).toString();
+    }, '0');
+    return { revenue, orders: orders.length, gasFee };
   }
 
   getPlaces() {
