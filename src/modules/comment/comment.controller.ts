@@ -7,9 +7,10 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import { CreateCommentDto, GetCommentParams } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { API_SUCCESS } from '../../common/constant';
 import { JwtAuthGuard, OwnerAuthGuard } from '../auth/jwt.strategy';
@@ -32,14 +33,14 @@ export class CommentController {
   }
 
   @Get()
-  findAll() {
-    return this.commentService.findAll();
+  findAll(@Query() getParams: GetCommentParams) {
+    return this.commentService.findAll(getParams);
   }
 
   @Get('by-owner')
   @UseGuards(OwnerAuthGuard)
-  byOwner(@UserInfo() user: IUserInfo) {
-    return this.commentService.findByOwner(user);
+  byOwner(@UserInfo() user: IUserInfo, @Query() getParams: GetCommentParams) {
+    return this.commentService.findByOwner(user, getParams);
   }
 
   @Get(':id')

@@ -30,3 +30,11 @@ export class CreateCommentDto {
   @IsNotEmpty()
   place: Place;
 }
+
+export class GetCommentParams {
+  @IsNumber()
+  page: number;
+
+  @IsNumber()
+  pageSize: number;
+}

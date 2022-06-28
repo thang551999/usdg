@@ -35,22 +35,42 @@ export class CommentService {
     return comment;
   }
 
-  findAll() {
-    return this.commentRepository.find();
+  async findAll(getParams) {
+    const comment = await this.commentRepository.findAndCount({
+      where: {},
+      skip: (getParams.page - 1) * getParams.pageSize,
+      take: getParams.pageSize,
+    });
+
+    return {
+      total: comment[1],
+      pageSize: getParams.pageSize,
+      currentPage: getParams.page,
+      records: comment[0],
+    };
   }
 
-  findByOwner(user) {
-    console.log(user);
-    return this.commentRepository.find({
+  async findByOwner(user, getParams) {
+    const comment = await this.commentRepository.findAndCount({
       where: {
         place: {
-          owner:{
-            id: user.relativeId
+          owner: {
+            id: user.relativeId,
           },
         },
       },
+      skip: (getParams.page - 1) * getParams.pageSize,
+      take: getParams.pageSize,
     });
+
+    return {
+      total: comment[1],
+      pageSize: getParams.pageSize,
+      currentPage: getParams.page,
+      records: comment[0],
+    };
   }
+
   findOne(id: number) {
     return `This action returns a #${id} comment`;
   }
