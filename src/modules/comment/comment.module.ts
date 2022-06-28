@@ -7,9 +7,10 @@ import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 import { TypePlace } from '../place/entities/type-place.entity';
 import { Customer } from '../users/entities/customer.entity';
 import { Comment } from './entities/comment.entity';
+import { UserEntity } from '../users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Place, Comment, Customer])],
+  imports: [TypeOrmModule.forFeature([Place, Comment, Customer, UserEntity])],
   controllers: [CommentController],
   providers: [CommentService],
 })

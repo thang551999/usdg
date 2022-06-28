@@ -15,6 +15,7 @@ import { Admin } from '../../admin/entities/admin.entity';
 import { Customer } from './customer.entity';
 import { FindCompetitorEntity } from '../../find-competitor/entities/find-competitor.entity';
 import { ArticleEntity } from '../../article/entities/article.entity';
+import { Comment } from '../../comment/entities/comment.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -120,4 +121,7 @@ export class UserEntity {
 
   @OneToMany(() => ArticleEntity, (article) => article.user)
   article: ArticleEntity[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 }

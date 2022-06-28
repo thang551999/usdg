@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Place } from '../place/entities/place.entity';
 import { Customer } from '../users/entities/customer.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from './entities/comment.entity';
@@ -12,6 +13,8 @@ export class CommentService {
   constructor(
     @InjectRepository(Place)
     private placeRepository: Repository<Place>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
     @InjectRepository(Comment)
     private commentRepository: Repository<Comment>,
     @InjectRepository(Customer)
@@ -23,6 +26,11 @@ export class CommentService {
         id: user.relativeId,
       },
     });
+    const users = await this.userRepository.findOne({
+      where: {
+        id: user.id,
+      },
+    });
     const comment = await this.commentRepository.create({
       star: createCommentDto.star,
       comment: createCommentDto.comment,
@@ -30,6 +38,7 @@ export class CommentService {
       commentVideos: createCommentDto.commentVideos,
       place: createCommentDto.place,
       customer,
+      user: users,
     });
     await this.commentRepository.save(comment);
     return comment;
@@ -37,6 +46,7 @@ export class CommentService {
 
   async findAll(getParams) {
     const comment = await this.commentRepository.findAndCount({
+      relations: ['customer', 'user'],
       where: {},
       skip: (getParams.page - 1) * getParams.pageSize,
       take: getParams.pageSize,
@@ -52,6 +62,7 @@ export class CommentService {
 
   async findByOwner(user, getParams) {
     const comment = await this.commentRepository.findAndCount({
+      relations: ['customer', 'user'],
       where: {
         place: {
           owner: {

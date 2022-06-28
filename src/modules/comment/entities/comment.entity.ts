@@ -7,6 +7,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity()
 export class Comment {
@@ -36,6 +37,9 @@ export class Comment {
 
   @ManyToOne(() => Customer, (customer) => customer.comments)
   customer: Customer;
+
+  @ManyToOne(() => UserEntity, (customer) => customer.comments)
+  user: UserEntity;
 
   // many to one user
   // many to one place
