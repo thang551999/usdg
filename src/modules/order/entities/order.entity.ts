@@ -27,6 +27,9 @@ export class Order {
   @Column()
   totalPrice: string;
 
+  @Column({ default: 0 })
+  isPayOwner: number;
+
   @Column({ default: '0' })
   downPrice: string;
 

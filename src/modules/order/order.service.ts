@@ -84,14 +84,14 @@ export class OrderService {
         gasFee: resApplyVoucher.gasFee,
       });
       await this.orderPlaceRepository.save(order);
-      await this.onwerPlaceRepository.update(
-        { id: place.owner.id },
-        {
-          money: new BigNumber(place.owner.money)
-            .plus(new BigNumber(totalPrice))
-            .toString(),
-        },
-      );
+      // await this.onwerPlaceRepository.update(
+      //   { id: place.owner.id },
+      //   {
+      //     money: new BigNumber(place.owner.money)
+      //       .plus(new BigNumber(totalPrice))
+      //       .toString(),
+      //   },
+      // );
       await this.customerRepository.update(
         { id: user.id },
         {

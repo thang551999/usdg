@@ -59,6 +59,11 @@ export enum TypeOrder {
   PaymentWithWallet = 0,
 }
 
+export enum PayemntOwnerOrder {
+  PaymentWait = 0,
+  PaymentDone = 1,
+}
+
 //format
 // HH:mm
 //Day YYYYMMDD

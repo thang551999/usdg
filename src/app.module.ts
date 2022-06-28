@@ -16,8 +16,15 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { ArticleModule } from './modules/article/article.module';
 import { FindCompetitorModule } from './modules/find-competitor/find-competitor.module';
 import { AdressModule } from './modules/adress/adress.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './modules/task/update-order';
+import { Place } from './modules/place/entities/place.entity';
+import { Order } from './modules/order/entities/order.entity';
+import { OwnerPlace } from './modules/owner-place/entities/owner-place.entity';
+
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     SharedModule,
     AuthModule,
     TypeOrmModule.forRootAsync({
@@ -41,6 +48,7 @@ import { AdressModule } from './modules/adress/adress.module';
         // charset: 'utf8mb4_unicode_ci',
       }),
     }),
+    TypeOrmModule.forFeature([Place, Order, OwnerPlace]),
     OrderModule,
     OwnerPlaceModule,
     PlaceModule,
@@ -54,6 +62,6 @@ import { AdressModule } from './modules/adress/adress.module';
     AdressModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TasksService],
 })
 export class AppModule {}
