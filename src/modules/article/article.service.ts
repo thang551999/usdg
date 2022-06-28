@@ -87,6 +87,18 @@ export class ArticleService {
       },
     });
   }
+
+  getTypeArticle(id) {
+    return this.typerArticleRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+  updateTypeArticle(id, body) {
+    return this.typerArticleRepository.update({ id: id }, body);
+  }
+
   findByUser(user) {
     return this.articleRepository.find({
       relations: ['user'],

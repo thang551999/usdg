@@ -60,6 +60,24 @@ export class ArticleController {
     };
   }
 
+  @Get('type-article/:id')
+  async getTypeArticle(@Param('id') id: string) {
+    const res = await this.articleService.getTypeArticle(id);
+    return {
+      code: API_SUCCESS,
+      data: res,
+    };
+  }
+
+  @Put('type-article/:id')
+  async updateTypeArticle(@Param('id') id: string, @Body() data: any) {
+    const res = await this.articleService.updateTypeArticle(id, data);
+    return {
+      code: API_SUCCESS,
+      data: res,
+    };
+  }
+
   @Get(':id')
   async getArticle(@Param('id') id: string) {
     const res = await this.articleService.getArticle(id);
