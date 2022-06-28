@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UserEntity } from '../users/entities/user.entity';
 import { CreateFindCompetitorDto } from './dto/create-find-competitor.dto';
 import { UpdateFindCompetitorDto } from './dto/update-find-competitor.dto';
 import { FindCompetitorEntity } from './entities/find-competitor.entity';
@@ -10,11 +11,17 @@ export class FindCompetitorService {
   constructor(
     @InjectRepository(FindCompetitorEntity)
     private findCompetitorRepository: Repository<FindCompetitorEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
-  async create(createFindCompetitorDto: CreateFindCompetitorDto) {
-    const findCompertitor = await this.findCompetitorRepository.create(
-      createFindCompetitorDto,
-    );
+  async create(createFindCompetitorDto: CreateFindCompetitorDto, userToken) {
+    const user = await this.userRepository.findOne({
+      where: { id: userToken.id },
+    });
+    const findCompertitor = await this.findCompetitorRepository.create({
+      ...createFindCompetitorDto,
+      user,
+    });
     await this.findCompetitorRepository.save(findCompertitor);
     return findCompertitor;
   }
