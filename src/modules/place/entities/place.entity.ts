@@ -71,7 +71,9 @@ export class Place {
   @Column({ nullable: true })
   timeDistance: number;
 
-  @ManyToOne(() => OwnerPlace, (ownerPlace) => ownerPlace.places)
+  @ManyToOne(() => OwnerPlace, (ownerPlace) => ownerPlace.places, {
+    eager: true,
+  })
   @JoinColumn()
   owner: OwnerPlace;
 

@@ -31,7 +31,7 @@ export class Comment {
   @Column({ default: false })
   isDisable: boolean;
 
-  @ManyToOne(() => Place, (place) => place.comments)
+  @ManyToOne(() => Place, (place) => place.comments, { eager: true })
   place: Place;
 
   @ManyToOne(() => Customer, (customer) => customer.comments)

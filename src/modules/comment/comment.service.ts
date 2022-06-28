@@ -36,9 +36,21 @@ export class CommentService {
   }
 
   findAll() {
-    return `This action returns all comment`;
+    return this.commentRepository.find();
   }
 
+  findByOwner(user) {
+    console.log(user);
+    return this.commentRepository.find({
+      where: {
+        place: {
+          owner:{
+            id: user.relativeId
+          },
+        },
+      },
+    });
+  }
   findOne(id: number) {
     return `This action returns a #${id} comment`;
   }
