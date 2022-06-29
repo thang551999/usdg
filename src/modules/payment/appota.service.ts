@@ -156,8 +156,10 @@ export class AppotaService {
     }
     return {};
   }
-  returnUrl(query) {
+  returnUrl(query, res) {
     try {
+      console.log(query);
+      res.redirect('http://localhost:8080/charge/result');
       return query;
       // var vnp_Params = req.query;
       // var secureHash = vnp_Params['vnp_SecureHash'];
