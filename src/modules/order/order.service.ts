@@ -255,7 +255,15 @@ export class OrderService {
     return false;
   }
   async findAll() {
-    return this.orderPlaceRepository.find();
+    return this.orderPlaceRepository.find({
+      relations: [
+        'customer',
+        'place',
+        'historyServices',
+        'timeBlocks',
+        'voucherOrder',
+      ],
+    });
   }
 
   async findOrderByOwner(user) {
