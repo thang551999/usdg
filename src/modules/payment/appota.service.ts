@@ -159,8 +159,11 @@ export class AppotaService {
   returnUrl(query, res) {
     try {
       console.log(query);
-      res.redirect('http://localhost:8080/charge/result');
-      return query;
+      if (query.vnp_ResponseCode != '00') {
+        res.redirect('http://localhost:8080/charge/error');
+      } else {
+        res.redirect('http://localhost:8080/charge/result');
+      }
       // var vnp_Params = req.query;
       // var secureHash = vnp_Params['vnp_SecureHash'];
 
