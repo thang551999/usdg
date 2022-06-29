@@ -31,15 +31,18 @@ export class AdminController {
 
   @Get('dash-board')
   async getRevenue(@Query() getParams: GetRevenueParams) {
-    const [revenues, places] = await Promise.all([
+    const [revenues, places, users] = await Promise.all([
       this.adminService.getRevenue(getParams),
       this.adminService.getPlaces(),
+      this.adminService.getUser(),
     ]);
     return {
       revenue: revenues.revenue,
       orders: revenues.orders,
       numberPlaceAtive: places.length,
-      gasFee: revenues.gasFee
+      gasFee: revenues.gasFee,
+      users: users[0].length,
+      owner: users[1].length,
     };
   }
 

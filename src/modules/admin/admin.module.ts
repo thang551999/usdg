@@ -7,6 +7,7 @@ import { Place } from '../place/entities/place.entity';
 import { Order } from '../order/entities/order.entity';
 import { Customer } from '../users/entities/customer.entity';
 import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
+import { UserEntity } from '../users/entities/user.entity';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
       Order,
       Customer,
       OwnerPlace,
+      UserEntity,
     ]),
   ],
   controllers: [AdminController],

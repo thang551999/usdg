@@ -6,10 +6,11 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { SystemConfigDto } from './dto/system-config.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import SystemConfigEntity from './entities/system-config.entity';
-import { ORDER_STATUS } from '../../common/constant';
+import { ORDER_STATUS, ROLE } from '../../common/constant';
 import { Place } from '../place/entities/place.entity';
 import { BigNumber } from 'bignumber.js';
 import { sub } from 'date-fns';
+import { UserEntity } from '../users/entities/user.entity';
 @Injectable()
 export class AdminService {
   constructor(
@@ -19,6 +20,8 @@ export class AdminService {
     private orderRepository: Repository<Order>,
     @InjectRepository(Place)
     private placeRepository: Repository<Place>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
   async getSystemConfig() {
     const systemConfig = await this.systemConfigRepository.findOne({
@@ -82,6 +85,16 @@ export class AdminService {
     return this.placeRepository.findBy({ isDeleted: false, isEnable: true });
   }
 
+  async getUser() {
+    return Promise.all([
+      this.userRepository.findBy({ role: ROLE.user, actived: true }),
+      this.userRepository.findBy({
+        role: ROLE.owner,
+        actived: true,
+        approved: true,
+      }),
+    ]);
+  }
   async getLoans() {
     const systemConfig = await this.systemConfigRepository.findOne({});
     const dateNeedPay = sub(new Date(), {
