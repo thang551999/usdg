@@ -14,6 +14,7 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { SystemConfigDto } from './dto/system-config.dto';
 import { GetRevenueParams } from './dto/get-params.dto';
+import { PayOwner } from './dto/pay-owner.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -50,6 +51,12 @@ export class AdminController {
   async getLoan() {
     const loans = await this.adminService.getLoans();
     return loans;
+  }
+
+  @Put('pay-owner')
+  async payOwner(@Body() paymemt: PayOwner) {
+    const loans = await this.adminService.payOwner(paymemt);
+    return { message: 'success' };
   }
 
   // @Get('system-config')

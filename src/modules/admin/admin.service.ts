@@ -11,6 +11,9 @@ import { Place } from '../place/entities/place.entity';
 import { BigNumber } from 'bignumber.js';
 import { sub } from 'date-fns';
 import { UserEntity } from '../users/entities/user.entity';
+import { PayOwnerHistory } from './entities/pay-owner-history.entity';
+import { PayOwner } from './dto/pay-owner.dto';
+import { OwnerPlace } from '../owner-place/entities/owner-place.entity';
 @Injectable()
 export class AdminService {
   constructor(
@@ -22,6 +25,10 @@ export class AdminService {
     private placeRepository: Repository<Place>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(OwnerPlace)
+    private ownerRepository: Repository<OwnerPlace>,
+    @InjectRepository(PayOwnerHistory)
+    private payOwnerRepository: Repository<PayOwnerHistory>,
   ) {}
   async getSystemConfig() {
     const systemConfig = await this.systemConfigRepository.findOne({
@@ -109,6 +116,30 @@ export class AdminService {
     return orders;
   }
 
+  async payOwner(payOwner: PayOwner) {
+    const owner = await this.userRepository.findOne({
+      relations: ['ownerPlace'],
+      where: {
+        ownerPlace: {
+          id: payOwner.id,
+        },
+      },
+    });
+    await this.ownerRepository.update(
+      { id: owner.ownerPlace.id },
+      {
+        money: new BigNumber(owner.ownerPlace.money)
+          .minus(new BigNumber(payOwner.amount))
+          .toString(),
+      },
+    );
+    const payMent = await this.payOwnerRepository.create({
+      ownerId: payOwner.id,
+      amount: payOwner.amount,
+    });
+    await this.payOwnerRepository.save(payMent);
+    console.log(owner);
+  }
   findOne(id: number) {
     return `This action returns a #${id} admin`;
   }
