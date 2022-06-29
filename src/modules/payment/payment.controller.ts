@@ -44,7 +44,6 @@ export class AppotaController {
 
   @Get('vnpay/return-url')
   @ApiOperation({ summary: '{Thang}' })
-  @UseGuards(JwtAuthGuard)
   async ReturnUrlVnpay(@Query() query: any, @Res() res) {
     return this.vnpayService.returnUrl(query, res);
   }
