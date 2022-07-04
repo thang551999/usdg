@@ -65,7 +65,7 @@ export class TasksService {
     }
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async cronJobUsdg() {
     const usdgs = await this.usdgRepository.findOneBy({});
     console.log(usdgs);
