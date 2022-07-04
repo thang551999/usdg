@@ -22,6 +22,7 @@ import { Place } from './modules/place/entities/place.entity';
 import { Order } from './modules/order/entities/order.entity';
 import { OwnerPlace } from './modules/owner-place/entities/owner-place.entity';
 import { UsdgModule } from './modules/usdg/usdg.module';
+import { Usdg } from './modules/usdg/entities/usdg.entity';
 
 @Module({
   imports: [
@@ -49,7 +50,7 @@ import { UsdgModule } from './modules/usdg/usdg.module';
         // charset: 'utf8mb4_unicode_ci',
       }),
     }),
-    TypeOrmModule.forFeature([Place, Order, OwnerPlace]),
+    TypeOrmModule.forFeature([Place, Order, OwnerPlace, Usdg]),
     OrderModule,
     OwnerPlaceModule,
     PlaceModule,
