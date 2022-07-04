@@ -21,6 +21,7 @@ import { TasksService } from './modules/task/update-order';
 import { Place } from './modules/place/entities/place.entity';
 import { Order } from './modules/order/entities/order.entity';
 import { OwnerPlace } from './modules/owner-place/entities/owner-place.entity';
+import { UsdgModule } from './modules/usdg/usdg.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { OwnerPlace } from './modules/owner-place/entities/owner-place.entity';
     ArticleModule,
     FindCompetitorModule,
     AdressModule,
+    UsdgModule,
   ],
   controllers: [AppController],
   providers: [AppService, TasksService],

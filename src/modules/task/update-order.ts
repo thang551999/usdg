@@ -61,4 +61,9 @@ export class TasksService {
       }
     }
   }
+
+  @Cron(CronExpression.EVERY_DAY_AT_11PM)
+  async cronJobUsdg() {
+    return 0;
+  }
 }
