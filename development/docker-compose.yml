@@ -1,35 +1,6 @@
 version: "3.8"
 services:
-  # postgres:
-  #   container_name: postgres_container
-  #   image: postgres
-  #   environment:
-  #     POSTGRES_USER: doan
-  #     POSTGRES_PASSWORD: doan
-  #     PGDATA: /data/postgres
-  #     POSTGRES_DB: doan
-  #   volumes:
-  #      - ./postgres:/data/postgres
-  #   ports:
-  #     - "5432:5432"
-  #   networks:
-  #     - nesjs-network
-  #   restart: unless-stopped
-  # pgadmin:
-  #   container_name: pgadmin_container
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-  #     PGADMIN_CONFIG_SERVER_MODE: 'False'
-  #   volumes:
-  #      - ./pgadmin:/var/lib/pgadmin
-  #   ports:
-  #     - "${PGADMIN_PORT:-5050}:80"
-  #   networks:
-  #     - nesjs-network
-  #   restart: unless-stopped
-  doan-mysql:
+  usdg-mysql:
     image: mysql:5.7
     ports:
       - "33061:3306"
@@ -39,15 +10,15 @@ services:
         appNetwork:
             ipv4_address: 172.24.2.1
     environment:
-      MYSQL_DATABASE: doan-thang1
-      MYSQL_USER: doan-thang1
-      MYSQL_PASSWORD: doan-thang1
-      MYSQL_ROOT_PASSWORD: doan-thang1
+      MYSQL_DATABASE: usdg
+      MYSQL_USER: usdg
+      MYSQL_PASSWORD: usdg
+      MYSQL_ROOT_PASSWORD: usdg
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    container_name: doan-mysql
+    container_name: usdg-mysql
   dev:
-    container_name: nestjs_api_dev
-    image: nestjs-api-dev:1.0.0
+    container_name: api-usdg
+    image: api-usdg
     build:
         context: .
         target: development
@@ -62,7 +33,7 @@ services:
         - ../.:/usr/src/app
         # - /usr/src/app/node_modules
     depends_on: 
-        - 'doan-mysql'
+        - 'usdg-mysql'
     restart: unless-stopped
 
 networks:

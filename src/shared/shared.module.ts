@@ -39,38 +39,6 @@ import * as DailyRotateFile from 'winston-daily-rotate-file';
         }),
       ],
     }),
-    // I18nModule.forRoot({
-    //   fallbackLanguage: 'vi',
-    //   parser: I18nJsonParser,
-    //   parserOptions: {
-    //     path: path.join(__dirname, './../i18n/'),
-    //     watch: true,
-    //   },
-    // }),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET'),
-      }),
-    }),
-    // MailerModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: (config: ConfigService<EnvironmentVariables>) => ({
-    //     transport: {
-    //       service: 'gmail',
-    //       secure: false,
-    //       auth: {
-    //         user: config.get<string>('GMAIL_ACCOOUNT'),
-    //         pass: config.get<string>('GMAIL_PASSWORD'),
-    //       },
-    //     },
-    //     defaults: {
-    //       from: 'App <tadinhvinh.dev@gmail.com>',
-    //     },
-    //   }),
-    // }),
   ],
   providers: [
     {
@@ -79,6 +47,6 @@ import * as DailyRotateFile from 'winston-daily-rotate-file';
     },
     ConfigService,
   ],
-  exports: [JwtModule, ConfigService],
+  exports: [ConfigService],
 })
 export class SharedModule {}
