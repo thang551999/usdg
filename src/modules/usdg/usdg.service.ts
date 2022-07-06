@@ -18,7 +18,7 @@ export class UsdgService {
     } else {
       const usdg = await this.usdgRepository.create({
         currenIndex: '1',
-
+        fee: '1',
         APY: '10',
       });
       await this.usdgRepository.save(usdg);
@@ -33,6 +33,7 @@ export class UsdgService {
         { id: usdgs.id },
         {
           APY: updateUsdgDto.APY,
+          fee: updateUsdgDto.fee,
         },
       );
       const usdg = await this.usdgRepository.findOneBy({});

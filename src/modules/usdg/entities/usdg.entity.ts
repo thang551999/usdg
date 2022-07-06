@@ -10,4 +10,7 @@ export class Usdg {
 
   @Column({ nullable: true, default: '0' })
   public APY: string;
+
+  @Column({ nullable: true, default: '1' })
+  public fee: string;
 }
