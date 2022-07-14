@@ -6,4 +6,15 @@ export class CreateUsdgDto {
 
   @IsString()
   fee: string;
+
+  @IsString()
+  time: string;
+}
+
+export class ClaimDto {
+  @IsString()
+  account: string;
+
+  @IsString()
+  amount: string;
 }

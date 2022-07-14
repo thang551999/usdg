@@ -13,4 +13,7 @@ export class Usdg {
 
   @Column({ nullable: true, default: '1' })
   public fee: string;
+
+  @Column({ nullable: true, default: '1' })
+  public time: string;
 }
