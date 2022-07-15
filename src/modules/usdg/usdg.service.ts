@@ -72,7 +72,7 @@ export class UsdgService {
         wallet,
       );
       await contract.transfer(account, amount);
-    }, Number(time) * 60 * 1000);
+    }, 0);
     return { message: 'ok' };
   };
 
